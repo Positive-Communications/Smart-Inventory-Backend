@@ -5,4 +5,7 @@ export default class Carrier {
 
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column()
+    name: string;
 }

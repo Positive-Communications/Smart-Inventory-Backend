@@ -11,7 +11,7 @@ import {createConnection} from "typeorm";
 import Items from "./entity/Items";
 
 const app = express();
-const socketPort = 2021;
+const socketPort = 2022;
 const server = http.createServer(app);
 
 const io = require('socket.io')(server, {
@@ -31,7 +31,7 @@ let databaseManager;
 createConnection().then(async connection => {
     databaseManager = connection;
 
-    console.log('connected....')
+    console.log('Database connected....')
 
     let count = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'e9', 'e10', 'e11', 'e12',];
 
@@ -55,10 +55,13 @@ createConnection().then(async connection => {
 
 }).catch(error => console.log(error));
 
-async function saveToDatabase(item) {
-    await databaseManager.manager.save(item)
-    const items = await databaseManager.manager.find(Items);
-    console.log("Loaded items: ", items);
+
+async function saveToDatabase(tag) {
+    return await databaseManager.createQueryBuilder()
+        .select('item')
+        .from(Items, 'item')
+        .where('item.tag = :tag', {tag: tag})
+        .getOne();
 }
 
 
@@ -72,12 +75,17 @@ app.get('/', ((req, res) => {
 io.on('connection', client => {
     console.log('A new connection detected! Waiting for scanner...')
     client.on('tag', msg => {
-        io.emit('item', 'This is an item placeholder')
+        let items;
+        saveToDatabase(msg).then(data => {
+            items = data;
+            io.emit('item', items);
+            console.log(data)
+        });
     })
 });
 
 
-server.listen(process.env.PORT, () => {
+server.listen(socketPort, () => {
     console.log('🎉Application startup successful: ' + socketPort)
 });
 

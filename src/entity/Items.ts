@@ -1,4 +1,5 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import Alerts from "./Alerts";
 
 @Entity()
 export default class Items {
@@ -44,4 +45,7 @@ export default class Items {
 
     @Column()
     dateTime: string;
+
+    @OneToMany(type => Alerts, alerts => alerts.item)
+    alerts: Alerts[];
 }
