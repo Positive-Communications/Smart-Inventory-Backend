@@ -9,6 +9,7 @@ import * as PostgressConnectionStringParser from "pg-connection-string";
 import {DummyProduct} from './Data/dummy';
 
 import {
+    ConnectionOptions,
     createConnection,
     createQueryBuilder,
     getConnection,
@@ -30,6 +31,24 @@ import Gate from "./entity/Gate";
 import Device from "./entity/Device";
 import Branch from "./entity/Branch";
 import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnectionOptions";
+import Bays from "./entity/Bays";
+import DeviceRole from "./entity/DeviceRole";
+import DispatchTimes from "./entity/DispatchTimes";
+import GeneralItem from "./entity/GeneralItem";
+import ManualEntry from "./entity/ManualEntry";
+import PackagingSection from "./entity/PackagingSection";
+import Pallet from "./entity/Pallet";
+import Presets from "./entity/Presets";
+import ProductTags from "./entity/ProductTags";
+import ProductUnit from "./entity/ProductUnit";
+import Scanners from "./entity/Scanners";
+import ScanProductHistory from "./entity/ScanProductHistory";
+import {Status} from "./entity/Status";
+import StorageBay from "./entity/StorageBay";
+import TemporaryStaff from "./entity/TemporaryStaff";
+import Units from "./entity/Units";
+import Users from "./entity/Users";
+import Visitor from "./entity/Visitor";
 
 const app = express();
 const socketPort = 2022;
@@ -75,9 +94,42 @@ const typeOrmOptions: PostgresConnectionOptions = {
     ]
 }
 
-createConnection(typeOrmOptions).then(async connection => {
+createConnection(<ConnectionOptions>{
+    type: 'postgres',
+    extra: {
+        ssl: true
+    },
+    url: process.env.DATABASE_URL,
+    entities: [Branch,
+        Alerts,
+        Bays,
+        Carrier,
+        Company,
+        Device,
+        DeviceRole,
+        DispatchTimes,
+        Gate,
+        GeneralItem,
+        Items,
+        ManualEntry,
+        PackagingSection,
+        Pallet,
+        Presets,
+        Product,
+        ProductTags,
+        ProductUnit,
+        Scanners,
+        ScanProductHistory,
+        Sections,
+        Status,
+        StorageBay,
+        TemporaryStaff,
+        Units,
+        Users,
+        Visitor
+    ], subscribers: []
+}).then(async connection => {
     databaseManager = connection;
-
     console.log('Database ready... :103')
 
     await saveCompany().then(res => {
@@ -89,9 +141,27 @@ createConnection(typeOrmOptions).then(async connection => {
             })
         })
     })
+})
 
+//  createConnection(typeOrmOptions).then(async connection => {
 
-}).catch(error => console.log(error));
+// createConnection().then(async connection => {
+//     databaseManager = connection;
+//
+//     console.log('Database ready... :103')
+//
+//     await saveCompany().then(res => {
+//         branchesBuilder().then(res => {
+//             addSectionsToBranch().then(res => {
+//                 saveGatesDevicesToSections().then(res => {
+//                     console.log(res);
+//                 })
+//             })
+//         })
+//     })
+//
+
+// }).catch(error => console.log(error));
 
 
 async function getItem(tag) {
