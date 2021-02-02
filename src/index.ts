@@ -65,7 +65,7 @@ const typeOrmOptions: PostgresConnectionOptions = {
         ssl: true
     },
     entities: [
-        "src/entity/**/*.ts"
+        "build/entity/**/*.js"
     ],
     migrations: [
         "src/migration/**/*.ts"
