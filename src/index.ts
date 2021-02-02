@@ -83,23 +83,6 @@ const typeOrmOptions: PostgresConnectionOptions = {
     extra: {
         ssl: true
     },
-    entities: [
-        "build/entity/**/*.js"
-    ],
-    migrations: [
-        "src/migration/**/*.ts"
-    ],
-    subscribers: [
-        "src/subscriber/**/*.ts"
-    ]
-}
-
-createConnection(<ConnectionOptions>{
-    type: 'postgres',
-    extra: {
-        ssl: true
-    },
-    url: process.env.DATABASE_URL,
     entities: [Branch,
         Alerts,
         Bays,
@@ -127,9 +110,21 @@ createConnection(<ConnectionOptions>{
         Units,
         Users,
         Visitor
-    ], subscribers: []
-}).then(async connection => {
+    ],
+    migrations: [
+        "src/migration/**/*.ts"
+    ],
+    subscribers: [
+        "src/subscriber/**/*.ts"
+    ]
+}
+
+
+ createConnection(typeOrmOptions).then(async connection => {
+
+// createConnection().then(async connection => {
     databaseManager = connection;
+
     console.log('Database ready... :103')
 
     await saveCompany().then(res => {
@@ -141,27 +136,9 @@ createConnection(<ConnectionOptions>{
             })
         })
     })
-})
 
-//  createConnection(typeOrmOptions).then(async connection => {
-
-// createConnection().then(async connection => {
-//     databaseManager = connection;
 //
-//     console.log('Database ready... :103')
-//
-//     await saveCompany().then(res => {
-//         branchesBuilder().then(res => {
-//             addSectionsToBranch().then(res => {
-//                 saveGatesDevicesToSections().then(res => {
-//                     console.log(res);
-//                 })
-//             })
-//         })
-//     })
-//
-
-// }).catch(error => console.log(error));
+}).catch(error => console.log(error));
 
 
 async function getItem(tag) {
