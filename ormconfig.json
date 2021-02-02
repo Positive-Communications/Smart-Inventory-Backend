@@ -4,8 +4,7 @@
    "port": 5432,
    "username": "postgres",
    "password": "  ",
-   "database": "positive_c",
-   "synchronize": true,
+   "database": "sally",
    "logging": false,
    "entities": [
       "src/entity/**/*.ts"

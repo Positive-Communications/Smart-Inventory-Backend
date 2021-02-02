@@ -1,9 +1,9 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import Alerts from "./Alerts";
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import Sections from "./Sections";
+import Carrier from "./Carrier";
 
 @Entity()
 export default class Items {
-
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -12,6 +12,7 @@ export default class Items {
 
     @Column()
     description: string;
+
 
     @Column()
     category: string;
@@ -43,9 +44,26 @@ export default class Items {
     @Column()
     expiry: string;
 
+
+    @Column()
+    alertActive: number;
+
+    @Column()
+    hasRFIDTag: boolean;
+
     @Column()
     dateTime: string;
 
-    @OneToMany(type => Alerts, alerts => alerts.item)
-    alerts: Alerts[];
+    @Column()
+    hasErrors: boolean;
+
+    @ManyToOne(() => Sections, section => section.itemsFrom)
+    from: Sections
+
+    @ManyToOne(() => Sections, section => section.itemsTo)
+    destination: Sections
+
+    @ManyToOne(() => Carrier, carrier => carrier.items)
+    carrier: Carrier
+
 }
