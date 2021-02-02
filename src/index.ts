@@ -80,6 +80,9 @@ const typeOrmOptions: PostgresConnectionOptions = {
     username: connectionOptions.user,
     password: connectionOptions.password,
     database: connectionOptions.database,
+    extra:{
+        ssl:true
+    },
     entities: [Branch,
         Alerts,
         Bays,
@@ -107,12 +110,6 @@ const typeOrmOptions: PostgresConnectionOptions = {
         Units,
         Users,
         Visitor
-    ],
-    migrations: [
-        "src/migration/**/*.ts"
-    ],
-    subscribers: [
-        "src/subscriber/**/*.ts"
     ]
 }
 
