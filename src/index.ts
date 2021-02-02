@@ -18,7 +18,6 @@ import {
 
 import Items from "./entity/Items";
 import Alerts from "./entity/Alerts";
-import branch from "./entity/Branch";
 import Sections from "./entity/Sections";
 import Carrier from "./entity/Carrier";
 import axios from "axios";
@@ -28,6 +27,7 @@ import Company from "./entity/Company";
 import Product from "./entity/Product";
 import Gate from "./entity/Gate";
 import Device from "./entity/Device";
+import Branch from "./entity/Branch";
 
 const app = express();
 const socketPort = 2022;
@@ -173,7 +173,7 @@ server.listen(socketPort, () => {
 
 async function getBranchByCode(code) {
     try {
-        return await getRepository(branch)
+        return await getRepository(Branch)
             .createQueryBuilder("branch")
             .leftJoinAndSelect('branch.company', 'company')
             .leftJoinAndSelect('branch.sections', 'sections')
@@ -189,7 +189,7 @@ async function getBranchByCode(code) {
 
 async function getAllBranches(company) {
     try {
-        return await getRepository(branch)
+        return await getRepository(Branch)
             .createQueryBuilder('branch')
             .leftJoinAndSelect('branch.company', 'company')
             .leftJoinAndSelect('branch.sections', 'sections')
@@ -215,7 +215,7 @@ async function addSectionsToBranch() {
     const branch = await getConnection()
         .createQueryBuilder()
         .select('branch')
-        .from(branch, 'branch')
+        .from(Branch, 'branch')
         .where('branch.code = :code', {code: 'A'})
         .getOne();
 
@@ -321,7 +321,7 @@ async function branchesBuilder() {
             {city: 'Mbita', isActive: false, info: 'Rusinga', code: 'D', streetRoad: 'Rusinga MainLand'},
         ]
         branches.forEach(branch => {
-            let _branch = new branch();
+            let _branch = new Branch();
             _branch.code = branch.code;
             _branch.info = branch.city;
             _branch.city = branch.city
@@ -474,7 +474,7 @@ async function editBranch(data) {
             .where('company.id =:id', {id: data.company})
             .getOne();
         let branch = await databaseManager
-            .getRepository(branch)
+            .getRepository(Branch)
             .createQueryBuilder('branch')
             .where('branch.id =:id', {id: data.branchID})
 
