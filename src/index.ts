@@ -49,7 +49,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-// let databaseManager;
+let databaseManager;
 
 const dataBaseUrl: string = process.env.DATABASE_URL;
 const connectionOptions = PostgressConnectionStringParser.parse(dataBaseUrl)
@@ -72,8 +72,8 @@ const typeOrmOptions: PostgresConnectionOptions ={
         "src/subscriber/**/*.ts"
     ]}
 
-createConnection(typeOrmOptions).then(async connection => {
-    // databaseManager = connection;
+createConnection().then(async connection => {
+    databaseManager = connection;
 
     console.log('Database ready... :103')
 
@@ -252,7 +252,7 @@ async function addSectionsToBranch() {
             _section.name = section.name;
             _section.capacity = section.capacity;
             _section.branch = branch;
-            getConnection().manager.save(_section);
+            databaseManager.manager.save(_section);
             console.log(_section)
         })
     } catch (err) {
@@ -263,7 +263,7 @@ async function addSectionsToBranch() {
 
 async function saveItems(item) {
     try {
-        item = await getConnection().manager.save(item)
+        item = await databaseManager.manager.save(item)
     } catch (err) {
         console.log(err)
     }
@@ -291,7 +291,7 @@ async function createItems() {
     carrier.name = 'ForkLift';
     carrier.type = '';
     carrier.status = 'Moving'
-    await getConnection().manager.save(carrier);
+    await databaseManager.manager.save(carrier);
 
     let items = DummyProduct();
 
@@ -321,7 +321,7 @@ async function createItems() {
 
 async function saveBranch(branch) {
     try {
-        await getConnection().manager.save(branch)
+        await databaseManager.manager.save(branch)
         console.log(branch)
     } catch (err) {
         console.log(err)
@@ -371,7 +371,7 @@ async function saveCompany() {
         company.streetRoad = 'Parklands';
         company.primaryNumber = '0793871876';
         company.secondaryNumber = '0746551580';
-        await getConnection().manager.save(company)
+        await databaseManager.manager.save(company)
         console.log(company)
     } catch (err) {
         console.log(err)
@@ -380,7 +380,7 @@ async function saveCompany() {
 
 async function saveGate(gate) {
     try {
-        await getConnection().manager.save(gate);
+        await databaseManager.manager.save(gate);
         console.log(gate);
     } catch (err) {
         console.log(err)
@@ -389,7 +389,7 @@ async function saveGate(gate) {
 
 async function saveDevice(device) {
     try {
-        await getConnection().manager.save(device)
+        await databaseManager.manager.save(device)
     } catch (e) {
         e.toString()
     }
@@ -405,7 +405,7 @@ async function saveAlerts() {
     const alert = new Alerts();
     alert.name = 'Warning';
     alert.type = 'warning';
-    await getConnection().manager.save(alert)
+    await databaseManager.manager.save(alert)
 
     try {
         // await
@@ -492,12 +492,12 @@ async function saveAlerts() {
 
 async function editBranch(data) {
     try {
-        let company = await getConnection()
+        let company = await databaseManager
             .getRepository(Company)
             .createQueryBuilder('company')
             .where('company.id =:id', {id: data.company})
             .getOne();
-        let branch = await getConnection()
+        let branch = await databaseManager
             .getRepository(Branch)
             .createQueryBuilder('branch')
             .where('branch.id =:id', {id: data.branchID})
