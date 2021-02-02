@@ -1,6 +1,6 @@
 import {Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {stat} from "fs";
-import _Branch from "./_Branch";
+import branch from "./Branch";
 
 @Entity()
 export default class Company{
@@ -25,7 +25,7 @@ export default class Company{
     @Column()
     secondaryNumber: string;
 
-    @OneToMany(()=>_Branch, branch=>branch.company)
+    @OneToMany(()=>branch, branch=>branch.company)
     @JoinTable()
-    branches: _Branch[]
+    branches: branch[]
 }

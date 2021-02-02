@@ -1,6 +1,6 @@
 import {Column, PrimaryGeneratedColumn, Entity, OneToMany, JoinTable, ManyToOne, ManyToMany} from "typeorm";
 import Alerts from "./Alerts";
-import _Branch from "./_Branch";
+import branch from "./Branch";
 import Items from "./Items";
 import Gate from "./Gate";
 import Device from "./Device";
@@ -40,8 +40,8 @@ export default class Sections {
     @JoinTable()
     alerts: Alerts[];
 
-    @ManyToOne(type => _Branch, branch => branch.sections)
-    branch: _Branch;
+    @ManyToOne(type => branch, branch => branch.sections)
+    branch: branch;
 
     @OneToMany(type => Items, item => item.from)
     @JoinTable()
