@@ -80,9 +80,6 @@ const typeOrmOptions: PostgresConnectionOptions = {
     username: connectionOptions.user,
     password: connectionOptions.password,
     database: connectionOptions.database,
-    extra: {
-        ssl: true
-    },
     entities: [Branch,
         Alerts,
         Bays,
