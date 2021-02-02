@@ -72,13 +72,13 @@ const typeOrmOptions: PostgresConnectionOptions = {
     ]
 }
 
-createConnection().then(async connection => {
+createConnection(typeOrmOptions).then(async connection => {
     databaseManager = connection;
 
     console.log('Database ready... :103')
 
     await saveCompany().then(res => {
-        branchesBuilder().then(res => {
+         branchesBuilder().then(res => {
             addSectionsToBranch().then(res => {
                 saveGatesDevicesToSections().then(res => {
                     console.log(res);
