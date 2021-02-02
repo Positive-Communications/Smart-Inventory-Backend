@@ -30,25 +30,6 @@ import Product from "./entity/Product";
 import Gate from "./entity/Gate";
 import Device from "./entity/Device";
 import Branch from "./entity/Branch";
-import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnectionOptions";
-import Bays from "./entity/Bays";
-import DeviceRole from "./entity/DeviceRole";
-import DispatchTimes from "./entity/DispatchTimes";
-import GeneralItem from "./entity/GeneralItem";
-import ManualEntry from "./entity/ManualEntry";
-import PackagingSection from "./entity/PackagingSection";
-import Pallet from "./entity/Pallet";
-import Presets from "./entity/Presets";
-import ProductTags from "./entity/ProductTags";
-import ProductUnit from "./entity/ProductUnit";
-import Scanners from "./entity/Scanners";
-import ScanProductHistory from "./entity/ScanProductHistory";
-import {Status} from "./entity/Status";
-import StorageBay from "./entity/StorageBay";
-import TemporaryStaff from "./entity/TemporaryStaff";
-import Units from "./entity/Units";
-import Users from "./entity/Users";
-import Visitor from "./entity/Visitor";
 
 const app = express();
 const socketPort = 2022;
@@ -69,69 +50,22 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 let databaseManager;
 
-const dataBaseUrl: string = process.env.DATABASE_URL;
-const connectionOptions = PostgressConnectionStringParser.parse(dataBaseUrl)
-// @ts-ignore
-
-const typeOrmOptions: PostgresConnectionOptions = {
-    type: "postgres",
-    host: connectionOptions.host,
-    port: parseInt(connectionOptions.port),
-    username: connectionOptions.user,
-    password: connectionOptions.password,
-    database: connectionOptions.database,
-    extra:{
-        ssl:true
-    },
-    entities: [Branch,
-        Alerts,
-        Bays,
-        Carrier,
-        Company,
-        Device,
-        DeviceRole,
-        DispatchTimes,
-        Gate,
-        GeneralItem,
-        Items,
-        ManualEntry,
-        PackagingSection,
-        Pallet,
-        Presets,
-        Product,
-        ProductTags,
-        ProductUnit,
-        Scanners,
-        ScanProductHistory,
-        Sections,
-        Status,
-        StorageBay,
-        TemporaryStaff,
-        Units,
-        Users,
-        Visitor
-    ]
-}
-
-
- createConnection(typeOrmOptions).then(async connection => {
-
-// createConnection().then(async connection => {
+createConnection().then(async connection => {
     databaseManager = connection;
 
     console.log('Database ready... :103')
 
-    await saveCompany().then(res => {
-        branchesBuilder().then(res => {
-            addSectionsToBranch().then(res => {
-                saveGatesDevicesToSections().then(res => {
-                    console.log(res);
-                })
-            })
-        })
-    })
+    // await saveCompany().then(res => {
+    //     branchesBuilder().then(res => {
+    //         addSectionsToBranch().then(res => {
+    //             saveGatesDevicesToSections().then(res => {
+    //                 console.log(res);
+    //             })
+    //         })
+    //     })
+    // })
 
-//
+    // await saveGatesDevicesToSections();
 }).catch(error => console.log(error));
 
 
@@ -212,7 +146,6 @@ io.on('connection', client => {
                 getItem(event.data).then(data => {
                     io.emit('item', data);
                     if (data.hasErrors) {
-                        openPort('err');
                         console.log('Happened here....')
                     }
                     console.log(data)
@@ -232,7 +165,7 @@ io.on('connection', client => {
 });
 
 
-server.listen(process.env.PORT, () => {
+server.listen(socketPort, () => {
     console.log('Application startup successful.... :100 \n' +
         ' Application Listening on port ' + socketPort + '... : 100');
 });
@@ -244,6 +177,7 @@ async function getBranchByCode(code) {
             .leftJoinAndSelect('branch.company', 'company')
             .leftJoinAndSelect('branch.sections', 'sections')
             .leftJoinAndSelect('sections.gates', 'gates')
+            .leftJoinAndSelect('gates.accessTo', 'accessTo')
             .leftJoinAndSelect('sections.devices', 'devices')
             .leftJoinAndSelect('sections.alerts', 'alerts')
             .where('branch.code = :code', {code: code})
@@ -269,13 +203,13 @@ async function getAllBranches(company) {
 
 async function addSectionsToBranch() {
     const data = [
-        {name: 'Bay 1', role: 'storage', capacity: 10},
-        {name: 'Bay 2', role: 'storage', capacity: 20},
-        {name: 'Bay 3', role: 'storage', capacity: 30},
-        {name: 'Section 1', role: 'packaging', capacity: 40},
-        {name: 'Section 2', role: 'packaging', capacity: 50},
-        {name: 'Section 3', role: 'packaging', capacity: 60},
-        {name: 'Dispatch', role: 'dispatch', capacity: 70},
+        {name: 'Bay 1', role: 'storage', hasErrors: true, capacity: 10},
+        {name: 'Bay 2', role: 'storage', hasErrors: true, capacity: 20},
+        {name: 'Bay 3', role: 'storage', hasErrors: true, capacity: 30},
+        {name: 'Section 1', role: 'packaging', hasErrors: true, capacity: 40},
+        {name: 'Section 2', role: 'packaging', hasErrors: true, capacity: 50},
+        {name: 'Section 3', role: 'packaging', hasErrors: true, capacity: 60},
+        {name: 'Dispatch', role: 'dispatch', hasErrors: true, capacity: 70},
     ]
 
     const branch = await getConnection()
@@ -291,6 +225,7 @@ async function addSectionsToBranch() {
         data.forEach(section => {
             let _section = new Sections();
             _section.role = section.role;
+            _section.hasErrors = section.hasErrors
             _section.name = section.name;
             _section.capacity = section.capacity;
             _section.branch = branch;
@@ -462,7 +397,7 @@ async function saveAlerts() {
 
 async function saveGatesDevicesToSections() {
 
-    const sections = [11, 12, 10, 13, 8, 14, 9];
+    const sections = [15, 16, 17, 18, 19, 20, 21];
 
     for (const section of sections) {
         const _section = await getConnection()
