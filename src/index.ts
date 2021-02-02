@@ -6,7 +6,6 @@ import * as bodyParser from "body-parser";
 import * as PostgressConnectionStringParser from "pg-connection-string";
 
 
-
 import {DummyProduct} from './Data/dummy';
 
 import {
@@ -55,7 +54,7 @@ const dataBaseUrl: string = process.env.DATABASE_URL;
 const connectionOptions = PostgressConnectionStringParser.parse(dataBaseUrl)
 // @ts-ignore
 
-const typeOrmOptions: PostgresConnectionOptions ={
+const typeOrmOptions: PostgresConnectionOptions = {
     type: "postgres",
     host: connectionOptions.host,
     port: parseInt(connectionOptions.port),
@@ -70,25 +69,24 @@ const typeOrmOptions: PostgresConnectionOptions ={
     ],
     subscribers: [
         "src/subscriber/**/*.ts"
-    ]}
+    ]
+}
 
 createConnection().then(async connection => {
     databaseManager = connection;
 
     console.log('Database ready... :103')
 
-    // saveCompany().then(res => {
-    //     branchesBuilder().then(res => {
-    //         addSectionsToBranch().then(res => {
-    //             saveGatesDevicesToSections().then(res => {
-    //                 console.log(res);
-    //             })
-    //         })
-    //     })
-    // })
-    //
-    // addSectionsToBranch()
-    // // saveGatesDevicesToSections();
+    saveCompany().then(res => {
+        branchesBuilder().then(res => {
+            addSectionsToBranch().then(res => {
+                saveGatesDevicesToSections().then(res => {
+                    console.log(res);
+                })
+            })
+        })
+    })
+
 
 }).catch(error => console.log(error));
 
@@ -417,78 +415,78 @@ async function saveAlerts() {
     }
 }
 
-//
-// async function saveGatesDevicesToSections() {
-//
-//     const sections = [11, 12, 10, 13, 8, 14, 9];
-//
-//     // for (const section of sections) {
-//     const _section = await getConnection()
-//         .createQueryBuilder()
-//         .select('section')
-//         .from(Sections, 'section')
-//         .where('section.id = :id', {id: section})
-//         .getOne();
-//
-//     const gates = [
-//         {name: 'A'},
-//         {name: 'B'},
-//         {name: 'C'}
-//     ]
-//     gates.forEach(gate => {
-//         let _gate = new Gate();
-//         _gate.name = gate.name;
-//         _gate.role = _section.role;
-//         _gate.accessTo = _section;
-//         _gate.allowManual = true;
-//         _gate.allowEmpty = true;
-//         _gate.verifyByHandheld = true;
-//         _gate.verifyNotTrackedByRFID = false;
-//         _gate.checkContinuouslyForUnauthorized = true;
-//         _gate.doNotAllowRemoved = true;
-//         _gate.useForDispatchOrReceiving = true;
-//         _gate.allowDispatchForAllOrders = true;
-//         _gate.showProductCountError = true;
-//         _gate.allowEmptyPallets = true;
-//         _gate.getToDetermineItemPosition = true;
-//         _gate.verifyCarrierIsEmpty = true;
-//         _gate.isaActive = true;
-//         saveGate(_gate)
-//     })
-// }
 
-//     try {
-//         // for (const section of sections) {
-//         const _section = await getConnection()
-//             .createQueryBuilder()
-//             .select('section')
-//             .from(Sections, 'section')
-//             .where('section.id = :id', {id: 11})
-//             .getOne();
-//
-//         const devices = ['1', 'B', 'C']
-//         devices.forEach(device => {
-//             let _device = new Device();
-//             _device.name = device;
-//             _device.accessTo = _section;
-//             _device.role = _section.role;
-//             _device.allowPalletsToBeCountedManually = true;
-//             _device.doNotAllowRemovalOfEmptyPallet = true;
-//             _device.verifyStoredUsingHandHeld = true;
-//             _device.showProductCountError = true;
-//             _device.doNotAllowRemoval = true;
-//             _device.verifyProductNotTrackedByRFID = true;
-//             _device.automaticallyActivateRecallProductIfRequired = true;
-//             _device.recordEmptyPallets = true;
-//             _device.dispatchingOrReceiving = true;
-//             saveDevice(_device)
-//         })
-//
-//         // }
-//     } catch (e) {
-//         console.log(e)
-//     }
-// }
+async function saveGatesDevicesToSections() {
+
+    const sections = [11, 12, 10, 13, 8, 14, 9];
+
+    for (const section of sections) {
+        const _section = await getConnection()
+            .createQueryBuilder()
+            .select('section')
+            .from(Sections, 'section')
+            .where('section.id = :id', {id: section})
+            .getOne();
+
+        const gates = [
+            {name: 'A'},
+            {name: 'B'},
+            {name: 'C'}
+        ]
+        gates.forEach(gate => {
+            let _gate = new Gate();
+            _gate.name = gate.name;
+            _gate.role = _section.role;
+            _gate.accessTo = _section;
+            _gate.allowManual = true;
+            _gate.allowEmpty = true;
+            _gate.verifyByHandheld = true;
+            _gate.verifyNotTrackedByRFID = false;
+            _gate.checkContinuouslyForUnauthorized = true;
+            _gate.doNotAllowRemoved = true;
+            _gate.useForDispatchOrReceiving = true;
+            _gate.allowDispatchForAllOrders = true;
+            _gate.showProductCountError = true;
+            _gate.allowEmptyPallets = true;
+            _gate.getToDetermineItemPosition = true;
+            _gate.verifyCarrierIsEmpty = true;
+            _gate.isaActive = true;
+            saveGate(_gate)
+        })
+    }
+
+    try {
+        for (const section of sections) {
+            const _section = await getConnection()
+                .createQueryBuilder()
+                .select('section')
+                .from(Sections, 'section')
+                .where('section.id = :id', {id: 11})
+                .getOne();
+
+            const devices = ['1', 'B', 'C']
+            devices.forEach(device => {
+                let _device = new Device();
+                _device.name = device;
+                _device.accessTo = _section;
+                _device.role = _section.role;
+                _device.allowPalletsToBeCountedManually = true;
+                _device.doNotAllowRemovalOfEmptyPallet = true;
+                _device.verifyStoredUsingHandHeld = true;
+                _device.showProductCountError = true;
+                _device.doNotAllowRemoval = true;
+                _device.verifyProductNotTrackedByRFID = true;
+                _device.automaticallyActivateRecallProductIfRequired = true;
+                _device.recordEmptyPallets = true;
+                _device.dispatchingOrReceiving = true;
+                saveDevice(_device)
+            })
+
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
 
 async function editBranch(data) {
     try {
