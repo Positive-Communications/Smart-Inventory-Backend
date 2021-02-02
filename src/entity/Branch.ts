@@ -4,7 +4,7 @@ import Sections from "./Sections";
 import Company from "./Company";
 
 @Entity()
-export default class branch {
+export default class Branch {
 
     @PrimaryGeneratedColumn()
     id: number;
