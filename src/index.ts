@@ -61,6 +61,9 @@ const typeOrmOptions: PostgresConnectionOptions = {
     username: connectionOptions.user,
     password: connectionOptions.password,
     database: connectionOptions.database,
+    extra: {
+        ssl: true
+    },
     entities: [
         "src/entity/**/*.ts"
     ],
@@ -78,7 +81,7 @@ createConnection(typeOrmOptions).then(async connection => {
     console.log('Database ready... :103')
 
     await saveCompany().then(res => {
-         branchesBuilder().then(res => {
+        branchesBuilder().then(res => {
             addSectionsToBranch().then(res => {
                 saveGatesDevicesToSections().then(res => {
                     console.log(res);
