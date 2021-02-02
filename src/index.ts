@@ -77,7 +77,7 @@ createConnection().then(async connection => {
 
     console.log('Database ready... :103')
 
-    saveCompany().then(res => {
+    await saveCompany().then(res => {
         branchesBuilder().then(res => {
             addSectionsToBranch().then(res => {
                 saveGatesDevicesToSections().then(res => {
