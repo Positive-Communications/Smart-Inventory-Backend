@@ -1,10 +1,11 @@
-import {Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import Sections from "./Sections";
 import TemporaryStaff from "./TemporaryStaff";
 import Visitor from "./Visitor";
 import Product from "./Product";
 import ScanProductHistory from "./ScanProductHistory";
 import Alerts from "./Alerts";
+import Branch from "./Branch";
 
 @Entity()
 export default class Gate {
@@ -63,6 +64,9 @@ export default class Gate {
     @OneToMany(() => TemporaryStaff, staff => staff.entryGate)
     @JoinTable()
     temporaryEntryPoint: TemporaryStaff[]
+
+    @ManyToOne(type => Branch, branch => branch.gates)
+    branch: Branch;
 
     @OneToMany(() => TemporaryStaff, staff => staff.exitGate)
     @JoinTable()

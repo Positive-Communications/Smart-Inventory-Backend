@@ -3,7 +3,6 @@ import * as http from "http";
 import * as express from "express";
 import * as cors from "cors";
 import * as bodyParser from "body-parser";
-import * as PostgressConnectionStringParser from "pg-connection-string";
 
 
 import {DummyProduct} from './Data/dummy';
@@ -30,6 +29,8 @@ import Product from "./entity/Product";
 import Gate from "./entity/Gate";
 import Device from "./entity/Device";
 import Branch from "./entity/Branch";
+import Bays from "./entity/Bays";
+import Presets from "./entity/Presets";
 
 const app = express();
 const socketPort = 2022;
@@ -93,6 +94,33 @@ app.get('/', ((req, res) => {
 }));
 
 
+app.get('/saveCompany/', ((req, res) => {
+    saveCompany().then(data => {
+        res.json({
+            data: data
+        })
+    })
+}))
+
+app.get('/saveBranch/', ((req, res) => {
+    branchesBuilder().then(data => {
+        branchesBuilder().then(data => {
+            res.json({
+                data: data
+            })
+        })
+    })
+}))
+
+app.get('/saveGates/', ((req, res) => {
+    buildGates().then(data => {
+        res.json({
+            success: '200'
+        })
+    })
+}))
+
+
 app.get('/branch/id', (req, res) => {
     getBranchByCode('A').then(data => {
         res.json({
@@ -119,6 +147,43 @@ app.post('/edit-branch/:id/', (req, res) => {
         })
     })
 })
+
+
+app.post('/save-bays/:id/', (req, res) => {
+    buildBays().then(bay => {
+        res.json({
+            sections: bay
+        })
+    })
+})
+
+app.post('/save-as-preset/:id', (req, res) => {
+    buildPresets(req.params.id, req.body).then(data => {
+        console.log(data)
+        res.json({
+            res: data
+        })
+    })
+})
+
+
+app.post('/saveSection/', (req, res) => {
+    addSectionsToGates().then(data => {
+        res.json({
+            data: data
+        })
+    })
+})
+
+
+app.post('/create-gate/:id', (req, res) => {
+    buildGates().then(data => {
+        res.json({
+            res: data
+        })
+    })
+})
+
 
 io.on('connection', client => {
 
@@ -175,12 +240,15 @@ async function getBranchByCode(code) {
         return await getRepository(Branch)
             .createQueryBuilder("branch")
             .leftJoinAndSelect('branch.company', 'company')
-            .leftJoinAndSelect('branch.sections', 'sections')
-            .leftJoinAndSelect('sections.gates', 'gates')
-            .leftJoinAndSelect('gates.accessTo', 'accessTo')
-            .leftJoinAndSelect('sections.devices', 'devices')
-            .leftJoinAndSelect('sections.alerts', 'alerts')
-            .where('branch.code = :code', {code: code})
+            .leftJoinAndSelect('branch.gates', 'gates')
+            .leftJoinAndSelect('gates.accessTo', 'sections')
+            .leftJoinAndSelect('gates.alerts', 'alerts')
+            .leftJoinAndSelect('branch.sections', 'branchSections')
+            .leftJoinAndSelect('branchSections.gates', 'accessGates')
+            // .leftJoinAndSelect('accessGates.gates', 'sectionGates')
+            // .leftJoinAndSelect('sections.devices', 'devices')
+            // .leftJoinAndSelect('sections.alerts', 'alerts')
+            .where('branch.id = :id', {id: 1})
             .getOne();
     } catch (err) {
         console.log(err)
@@ -201,14 +269,14 @@ async function getAllBranches(company) {
     }
 }
 
-async function addSectionsToBranch() {
+async function addSectionsToGates() {
     const data = [
-        {name: 'Bay 1', role: 'storage', hasErrors: true, capacity: 10},
-        {name: 'Bay 2', role: 'storage', hasErrors: true, capacity: 20},
-        {name: 'Bay 3', role: 'storage', hasErrors: true, capacity: 30},
+        {name: 'Store 1', role: 'storage', hasErrors: false, capacity: 10},
+        {name: 'Store 2', role: 'storage', hasErrors: false, capacity: 20},
+        {name: 'Store 3', role: 'storage', hasErrors: true, capacity: 30},
         {name: 'Section 1', role: 'packaging', hasErrors: true, capacity: 40},
-        {name: 'Section 2', role: 'packaging', hasErrors: true, capacity: 50},
-        {name: 'Section 3', role: 'packaging', hasErrors: true, capacity: 60},
+        {name: 'Section 2', role: 'packaging', hasErrors: false, capacity: 50},
+        {name: 'Section 3', role: 'packaging', hasErrors: false, capacity: 60},
         {name: 'Dispatch', role: 'dispatch', hasErrors: true, capacity: 70},
     ]
 
@@ -216,22 +284,24 @@ async function addSectionsToBranch() {
         .createQueryBuilder()
         .select('branch')
         .from(Branch, 'branch')
-        .where('branch.code = :code', {code: 'A'})
+        .where('branch.id = :id', {id: 1})
         .getOne();
 
-    console.log(branch)
+
+    let sections = [];
 
     try {
-        data.forEach(section => {
+        for (const section of data) {
             let _section = new Sections();
             _section.role = section.role;
             _section.hasErrors = section.hasErrors
             _section.name = section.name;
             _section.capacity = section.capacity;
             _section.branch = branch;
-            databaseManager.manager.save(_section);
-            console.log(_section)
-        })
+            sections.push(_section);
+            await databaseManager.manager.save(_section);
+        }
+        return sections;
     } catch (err) {
         console.log(err)
     }
@@ -333,6 +403,7 @@ async function branchesBuilder() {
             _branch.streetRoad = branch.streetRoad
             saveBranch(_branch)
         })
+        return {success: 200}
     } catch (err) {
         console.log(err)
     }
@@ -348,8 +419,7 @@ async function saveCompany() {
         company.streetRoad = 'Parklands';
         company.primaryNumber = '0793871876';
         company.secondaryNumber = '0746551580';
-        await databaseManager.manager.save(company)
-        console.log(company)
+        return await databaseManager.manager.save(company)
     } catch (err) {
         console.log(err)
     }
@@ -395,76 +465,48 @@ async function saveAlerts() {
 }
 
 
-async function saveGatesDevicesToSections() {
+async function buildGates() {
 
-    const sections = [15, 16, 17, 18, 19, 20, 21];
 
-    for (const section of sections) {
-        const _section = await getConnection()
-            .createQueryBuilder()
-            .select('section')
-            .from(Sections, 'section')
-            .where('section.id = :id', {id: section})
-            .getOne();
+    const branch = await getConnection()
+        .createQueryBuilder()
+        .select('branch')
+        .from(Branch, 'branch')
+        .where('branch.id =:id', {id: 1})
+        .getOne();
 
-        const gates = [
-            {name: 'A'},
-            {name: 'B'},
-            {name: 'C'}
-        ]
-        gates.forEach(gate => {
-            let _gate = new Gate();
-            _gate.name = gate.name;
-            _gate.role = _section.role;
-            _gate.accessTo = _section;
-            _gate.allowManual = true;
-            _gate.allowEmpty = true;
-            _gate.verifyByHandheld = true;
-            _gate.verifyNotTrackedByRFID = false;
-            _gate.checkContinuouslyForUnauthorized = true;
-            _gate.doNotAllowRemoved = true;
-            _gate.useForDispatchOrReceiving = true;
-            _gate.allowDispatchForAllOrders = true;
-            _gate.showProductCountError = true;
-            _gate.allowEmptyPallets = true;
-            _gate.getToDetermineItemPosition = true;
-            _gate.verifyCarrierIsEmpty = true;
-            _gate.isaActive = true;
-            saveGate(_gate)
-        })
-    }
 
-    try {
-        for (const section of sections) {
-            const _section = await getConnection()
-                .createQueryBuilder()
-                .select('section')
-                .from(Sections, 'section')
-                .where('section.id = :id', {id: 11})
-                .getOne();
+    const gates = [
+        {name: 'A', role: 'storage'},
+        {name: 'B', role: 'packaging'},
+        {name: 'C', role: 'dispatch'},
+        {name: 'D', role: 'storage'},
+        {name: 'F', role: 'packaging'},
+        {name: 'G', role: 'dispatch'}
 
-            const devices = ['1', 'B', 'C']
-            devices.forEach(device => {
-                let _device = new Device();
-                _device.name = device;
-                _device.accessTo = _section;
-                _device.role = _section.role;
-                _device.allowPalletsToBeCountedManually = true;
-                _device.doNotAllowRemovalOfEmptyPallet = true;
-                _device.verifyStoredUsingHandHeld = true;
-                _device.showProductCountError = true;
-                _device.doNotAllowRemoval = true;
-                _device.verifyProductNotTrackedByRFID = true;
-                _device.automaticallyActivateRecallProductIfRequired = true;
-                _device.recordEmptyPallets = true;
-                _device.dispatchingOrReceiving = true;
-                saveDevice(_device)
-            })
+    ]
+    gates.forEach(gate => {
+        let _gate = new Gate();
+        _gate.name = gate.name;
+        _gate.role = gate.role;
+        _gate.branch = branch;
+        _gate.allowManual = true;
+        _gate.allowEmpty = true;
+        _gate.verifyByHandheld = true;
+        _gate.verifyNotTrackedByRFID = false;
+        _gate.checkContinuouslyForUnauthorized = true;
+        _gate.doNotAllowRemoved = true;
+        _gate.useForDispatchOrReceiving = true;
+        _gate.allowDispatchForAllOrders = true;
+        _gate.showProductCountError = true;
+        _gate.allowEmptyPallets = true;
+        _gate.getToDetermineItemPosition = true;
+        _gate.verifyCarrierIsEmpty = true;
+        _gate.isaActive = true;
+        saveGate(_gate)
+    })
 
-        }
-    } catch (e) {
-        console.log(e)
-    }
+
 }
 
 async function editBranch(data) {
@@ -509,3 +551,126 @@ async function editBranch(data) {
     }
 }
 
+
+async function saveBay(bay) {
+    try {
+        await databaseManager.manager.save(bay)
+        console.log(bay)
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+
+async function buildBays() {
+    try {
+        const sections = await getConnection()
+            .createQueryBuilder()
+            .select('section')
+            .from(Sections, 'section')
+            .leftJoinAndSelect('section.branch', 'branch')
+            .where('branch.id = :id', {id: 1})
+            .getMany();
+
+        let bays = ['Bay A', 'Bay B', 'Bay C']
+
+        sections.forEach(sect => {
+            bays.forEach(_bay => {
+                let bay = new Bays()
+                bay.type = _bay;
+                bay.role = 'Storage';
+                bay.isActive = true;
+                bay.sections = sect;
+                saveBay(bay);
+            })
+        })
+        return sections;
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+async function buildPresets(gateID, data) {
+    const packagingName = data.packaging;
+    const preset = data.preset;
+    const gateId = parseInt(gateID)
+
+
+    try {
+        const gate = await getConnection()
+            .createQueryBuilder()
+            .select('gate')
+            .from(Gate, 'gate')
+            .where('gate.id = :id', {id: gateId})
+            .getOne();
+        const section = new Sections()
+        section.role = gate.role;
+        section.name = packagingName;
+        section.capacity = 100;
+        section.hasErrors = false;
+        try {
+            let _section = await databaseManager.manager.save(section)
+            await getConnection()
+                .createQueryBuilder()
+                .update(Gate)
+                .set({
+                    accessTo: _section
+                })
+                .where('id =:id', {id: gateId})
+                .execute()
+
+            let _preset = new Presets();
+            _preset.presetName = preset;
+            _preset.section = section
+            return savePreset(_preset)
+        } catch (e) {
+            console.log(e)
+        }
+
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+
+async function savePreset(preset) {
+    try {
+        return await databaseManager.manager.save(preset)
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+
+// async function buildDevices(){
+//     try {
+//         for (const section of sections) {
+//             const _section = await getConnection()
+//                 .createQueryBuilder()
+//                 .select('section')
+//                 .from(Sections, 'section')
+//                 .where('section.id = :id', {id: 11})
+//                 .getOne();
+//
+//             const devices = ['1', 'B', 'C']
+//             devices.forEach(device => {
+//                 let _device = new Device();
+//                 _device.name = device;
+//                 _device.role = _section.role;
+//                 _device.allowPalletsToBeCountedManually = true;
+//                 _device.doNotAllowRemovalOfEmptyPallet = true;
+//                 _device.verifyStoredUsingHandHeld = true;
+//                 _device.showProductCountError = true;
+//                 _device.doNotAllowRemoval = true;
+//                 _device.verifyProductNotTrackedByRFID = true;
+//                 _device.automaticallyActivateRecallProductIfRequired = true;
+//                 _device.recordEmptyPallets = true;
+//                 _device.dispatchingOrReceiving = true;
+//                 saveDevice(_device)
+//             })
+//
+//         }
+//     } catch (e) {
+//         console.log(e)
+//     }
+// }

@@ -53,9 +53,9 @@ export default class Product {
     tag: ProductTags
 
 
-    @OneToOne(type => Presets, preset => preset.product)
-    @JoinTable()
-    preset: Presets
+    // @OneToOne(type => Presets, preset => preset.product)
+    // @JoinTable()
+    // preset: Presets
 
 
     @OneToMany(type => ProductUnit, unit => unit.product)

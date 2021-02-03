@@ -2,6 +2,7 @@ import {Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinTable, ManyToOne}
 import Alerts from "./Alerts";
 import Sections from "./Sections";
 import Company from "./Company";
+import Gate from "./Gate";
 
 @Entity()
 export default class Branch {
@@ -30,11 +31,15 @@ export default class Branch {
     @Column()
     isActive: boolean;
 
-    @OneToMany(type => Sections, section => section.branch)
+    @OneToMany(type => Gate, gate => gate.branch)
     @JoinTable()
-    sections: Sections[]
+    gates: Gate[]
 
-    @ManyToOne(() => Company, company => company.branches)
+    @ManyToOne(type => Company, company => company.branches)
     company: Company
+
+    @OneToMany(type=>Sections, section=>section.branch)
+    @JoinTable()
+    sections: Branch[];
 }
 

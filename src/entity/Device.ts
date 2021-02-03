@@ -5,6 +5,7 @@ import Alerts from "./Alerts";
 
 @Entity()
 export default class Device {
+
     @PrimaryGeneratedColumn()
     id: number;
 
