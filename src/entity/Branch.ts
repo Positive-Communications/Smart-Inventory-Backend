@@ -1,8 +1,13 @@
-import {Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinTable, ManyToOne} from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinTable, ManyToOne, OneToOne} from 'typeorm';
 import Alerts from "./Alerts";
 import Sections from "./Sections";
 import Company from "./Company";
 import Gate from "./Gate";
+import DispatchTimes from "./DispatchTimes";
+import Store from "./Store";
+import Users from "./Users";
+import CarrierType from "./CarrierType";
+import OrderQue from "./OrderQue";
 
 @Entity()
 export default class Branch {
@@ -31,6 +36,9 @@ export default class Branch {
     @Column()
     isActive: boolean;
 
+    @OneToOne(type => OrderQue, orderQue=>orderQue.branch)
+    orderQue: OrderQue
+
     @OneToMany(type => Gate, gate => gate.branch)
     @JoinTable()
     gates: Gate[]
@@ -38,8 +46,25 @@ export default class Branch {
     @ManyToOne(type => Company, company => company.branches)
     company: Company
 
-    @OneToMany(type=>Sections, section=>section.branch)
+    @OneToMany(type => Sections, section => section.branch)
     @JoinTable()
     sections: Branch[];
+
+    @OneToMany(type => Store, store => store.branch)
+    @JoinTable()
+    stores: Store[]
+
+    @OneToOne(type => DispatchTimes, dispatch => dispatch.branch)
+    dispatchTimes: DispatchTimes
+
+
+    @OneToMany(type => Users, users => users.branch)
+    @JoinTable()
+    users: Users[];
+
+    @OneToMany(type=>CarrierType, type=>type.branch)
+    @JoinTable()
+    carrierTypes: CarrierType[]
+
 }
 

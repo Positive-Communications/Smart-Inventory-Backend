@@ -1,10 +1,23 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
-import {fchmod} from "fs";
+import
+{
+    Column, Entity, JoinColumn,
+    ManyToOne, OneToOne,
+    PrimaryGeneratedColumn
+}
+    from "typeorm";
+
+import * as bcrypt from "bcryptjs";
+import UserPrivileges from "./UserPrivileges";
+import Branch from "./Branch";
+import Carrier from "./Carrier";
 
 @Entity()
 export default class Users {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column()
+    userPicture: string;
 
     @Column()
     userName: string;
@@ -16,7 +29,7 @@ export default class Users {
     identificationType: string;
 
     @Column()
-    identificationNumber: number;
+    identificationNumber: string;
 
     @Column()
     identificationPhoto: string;
@@ -31,10 +44,10 @@ export default class Users {
     departmentWorkArea: string;
 
     @Column()
-    phone: number;
+    phone: string;
 
     @Column()
-    mobile: number;
+    mobile: string;
 
     @Column()
     email: string;
@@ -42,50 +55,23 @@ export default class Users {
     @Column()
     joined: string;
 
-    @Column()
-    isAdmin: boolean;
+    @ManyToOne(type => Branch, branch => branch.users)
+    branch: Branch;
 
-    @Column()
-    canAddUsers: boolean;
+    @OneToOne(type => UserPrivileges, privilege => privilege.user)
+    @JoinColumn()
+    privileges: UserPrivileges;
 
-    @Column()
-    canViewOrderAmount: boolean;
+    @OneToOne(type => Carrier, carrier => carrier.user)
+    carrier: Carrier;
 
-    @Column()
-    issueEditCollectionReplacementOrder: boolean;
 
-    @Column()
-    viewCollectionHistory: boolean;
+    hashPassword() {
+        this.password = bcrypt.hashSync(this.password, 8);
+    }
 
-    @Column()
-    loadCollectionOrder: boolean;
-
-    @Column()
-    setGateDeviceSettings: boolean;
-
-    @Column()
-    setProductsAndTags: boolean;
-
-    @Column()
-    setCarrierSettings: boolean;
-
-    @Column()
-    setStorageBays: boolean;
-
-    @Column()
-    setOrderQueSettings: boolean;
-
-    @Column()
-    setAccessSettings: boolean;
-
-    @Column()
-    setAccessCard: boolean;
-
-    @Column()
-    receivePackagingAndStagingAlerts: boolean;
-
-    @Column()
-    orderDispatchAlerts: boolean;
-
+    checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
+        return bcrypt.compareSync(unencryptedPassword, this.password);
+    }
 
 }

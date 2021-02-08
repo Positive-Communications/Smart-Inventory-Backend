@@ -1,4 +1,5 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import Branch from "./Branch";
 
 @Entity()
 export default class DispatchTimes{
@@ -32,5 +33,21 @@ export default class DispatchTimes{
 
     @Column()
     endTime: string;
+
+    @Column()
+    saturdayStart: string;
+
+    @Column()
+    saturdayEnd: string;
+
+    @Column()
+    sundayStart: string;
+
+    @Column()
+    sundayEnd: string;
+
+    @OneToOne(type => Branch, branch=>branch.dispatchTimes)
+    @JoinColumn()
+    branch: Branch
 
 }

@@ -1,4 +1,4 @@
-import {Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinTable,  OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import Product from "./Product";
 
 @Entity()
@@ -18,7 +18,8 @@ export default class ProductUnit {
     @Column()
     useUnitAsDefault: boolean;
 
-    @ManyToOne(()=>Product, product => product.units)
+    @OneToMany(()=>Product, product => product.unit)
+    @JoinTable()
     product: Product
 
 }

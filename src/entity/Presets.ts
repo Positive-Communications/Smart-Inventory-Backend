@@ -1,5 +1,16 @@
-import {Column, Entity, JoinColumn, JoinTable, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {
+    AfterInsert,
+    Column,
+    Entity,
+    JoinColumn,
+    JoinTable,
+    ManyToOne,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn
+} from "typeorm";
 import Sections from "./Sections";
+import Product from "./Product";
 
 
 @Entity()
@@ -14,6 +25,11 @@ export default class Presets {
     @Column()
     presetName: string;
 
-    // @OneToOne(type => Product, product => product.preset)
-    // product: Product;
+    @OneToOne(type => Product, product => product.preset)
+    product: Product;
+
+    // @AfterInsert()
+    // saveCounters() {
+    //
+    // }
 }

@@ -2,6 +2,7 @@ import {Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn}
 import Sections from "./Sections";
 import ScanProductHistory from "./ScanProductHistory";
 import Alerts from "./Alerts";
+import Bays from "./Bays";
 
 @Entity()
 export default class Device {
@@ -48,14 +49,17 @@ export default class Device {
     @Column()
     dispatchingOrReceiving: boolean;
 
-    @ManyToOne(() => Sections, section => section.devices)
-    accessTo: Sections
+    @ManyToOne(type => Sections, section => section.devices)
+    sections: Sections
 
-    @OneToMany(() => ScanProductHistory, history => history.device)
+    @ManyToOne(type => Bays, bays=>bays.devices )
+    bays: Bays;
+
+    @OneToMany(type => ScanProductHistory, history => history.device)
     @JoinTable()
     history: ScanProductHistory
 
-    @OneToMany(() => Alerts, alert => alert.device)
+    @OneToMany(type => Alerts, alert => alert.device)
     @JoinTable()
     alerts: Alerts[];
 }

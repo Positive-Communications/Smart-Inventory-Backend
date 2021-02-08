@@ -6,6 +6,7 @@ import Product from "./Product";
 import ScanProductHistory from "./ScanProductHistory";
 import Alerts from "./Alerts";
 import Branch from "./Branch";
+import Bays from "./Bays";
 
 @Entity()
 export default class Gate {
@@ -20,10 +21,10 @@ export default class Gate {
     role: string;
 
     @Column()
-    isaActive: boolean;
+    hasErrors: boolean;
 
-    @ManyToOne(() => Sections, section => section.gates)
-    accessTo: Sections
+    @Column()
+    isaActive: boolean;
 
     @Column()
     allowManual: boolean;
@@ -61,12 +62,12 @@ export default class Gate {
     @Column()
     verifyCarrierIsEmpty: boolean;
 
+    @ManyToOne(type => Branch, branch => branch.gates)
+    branch: Branch;
+
     @OneToMany(() => TemporaryStaff, staff => staff.entryGate)
     @JoinTable()
     temporaryEntryPoint: TemporaryStaff[]
-
-    @ManyToOne(type => Branch, branch => branch.gates)
-    branch: Branch;
 
     @OneToMany(() => TemporaryStaff, staff => staff.exitGate)
     @JoinTable()
@@ -86,4 +87,11 @@ export default class Gate {
     @OneToMany(()=>Alerts, alerts=>alerts.gate)
     @JoinTable()
     alerts:[];
+
+    @ManyToMany(() => Sections, section => section.gates)
+    sections: Sections[]
+
+    @ManyToMany(type=>Bays, bays=>bays.gates)
+    @JoinTable()
+    bays: Bays[];
 }

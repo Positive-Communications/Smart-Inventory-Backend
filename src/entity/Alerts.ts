@@ -1,5 +1,4 @@
 import {Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import Items from "./Items";
 import Sections from "./Sections";
 import Product from "./Product";
 import Gate from "./Gate";
@@ -22,10 +21,6 @@ export default class Alerts{
 
     @ManyToOne(type => Sections,  section => section.alerts)
     sections: Sections;
-
-    @ManyToMany(type=>    Product, product=>product.alerts)
-    @JoinTable()
-    forProducts: Items[];
 
     @ManyToOne(type=>Gate, gate=>gate.alerts)
     gate: Gate

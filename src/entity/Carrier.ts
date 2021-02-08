@@ -1,7 +1,7 @@
-import {Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import Items from "./Items";
+import {Column, Entity, JoinColumn, JoinTable, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import Users from "./Users";
 import ManualEntry from "./ManualEntry";
+import CarrierType from "./CarrierType";
 
 @Entity()
 export default class Carrier {
@@ -10,29 +10,24 @@ export default class Carrier {
     id: number;
 
     @Column()
-    name: string;
-
-    @Column()
-    type: string;
+    No: number;
 
     @Column()
     status: string;
 
     @Column()
-    userName: string;
-
-    @Column()
     isFixedUse: boolean;
 
-    @OneToMany(type => Items, item => item.destination)
-    @JoinTable()
-    items: Items[];
+    @OneToOne(type=>Users, user=>user.carrier)
+    @JoinColumn()
+    user: Users;
+
+    @ManyToOne(type=>CarrierType, type=>type.carriers   )
+    type: CarrierType
+
 
     @OneToMany(type => ManualEntry, manualEntry => manualEntry.carrier)
     @JoinTable()
     manualEntry: ManualEntry[];
 
-    // @OneToMany(()=>Users, user=>user.carrier)
-    // @JoinTable()
-    // users[]
 }

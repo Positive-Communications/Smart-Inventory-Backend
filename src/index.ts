@@ -5,40 +5,38 @@ import * as cors from "cors";
 import * as bodyParser from "body-parser";
 
 
-import {DummyProduct} from './Data/dummy';
-
 import {
-    ConnectionOptions,
     createConnection,
-    createQueryBuilder,
-    getConnection,
-    getManager,
-    getRepository,
-    PrimaryGeneratedColumn
 } from "typeorm";
 
-import Items from "./entity/Items";
-import Alerts from "./entity/Alerts";
-import Sections from "./entity/Sections";
-import Carrier from "./entity/Carrier";
-import axios from "axios";
-import {log} from "util";
-import openPort from "./Util";
-import Company from "./entity/Company";
-import Product from "./entity/Product";
-import Gate from "./entity/Gate";
-import Device from "./entity/Device";
-import Branch from "./entity/Branch";
-import Bays from "./entity/Bays";
-import Presets from "./entity/Presets";
+import saveUserPrivileges from "./helpers/C/SaveUserPrivileges";
+import addUsers from "./helpers/C/AddUsers";
+import saveCarrier from "./helpers/C/SaveCarrier";
+import saveCompany from "./helpers/C/saveCompany";
+import saveBays from "./helpers/C/SaveBays";
+import saveCarrierTypes from "./helpers/C/SaveCarrierTypes";
+import saveDispatchTimes from "./helpers/C/SaveDispatchTimes";
+import savePresets from "./helpers/C/SavePresets";
+import AddGate from "./helpers/C/AddGate";
+import saveSections from "./helpers/C/SaveSections";
+import saveBranches from "./helpers/C/saveBranches";
+import getBranchInfo from "./helpers/R/Custom/BranchInfo";
+import getAllBranches from "./helpers/R/Many/AllBranches";
+import saveDevice from "./helpers/C/SaveDevice";
+import saveProductTag from "./helpers/C/saveProductTag";
+import saveProduct from "./helpers/C/AddProduct";
+import addManualEntry from "./helpers/C/AddManualEntry";
+import updateUser from "./helpers/U/ByID/UpdateUser";
+import saveOrderQue from "./helpers/C/SaveOrderQue";
 
 const app = express();
+
 const socketPort = 2022;
 const server = http.createServer(app);
 
 const io = require('socket.io')(server, {
     cors: {
-        origin: 'http://localhost:3000',
+        origin: '/*',
         methods: ['GET', 'POST']
     }
 });
@@ -49,42 +47,11 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-let databaseManager;
-
 createConnection().then(async connection => {
-    databaseManager = connection;
 
-    console.log('Database ready... :103')
+    console.log('Database ready... :103');
 
-    // await saveCompany().then(res => {
-    //     branchesBuilder().then(res => {
-    //         addSectionsToBranch().then(res => {
-    //             saveGatesDevicesToSections().then(res => {
-    //                 console.log(res);
-    //             })
-    //         })
-    //     })
-    // })
-
-    // await saveGatesDevicesToSections();
 }).catch(error => console.log(error));
-
-
-async function getItem(tag) {
-
-
-    try {
-        return await getRepository(Items)
-            .createQueryBuilder('item')
-            .leftJoinAndSelect('item.carrier', 'carrier')
-            .leftJoinAndSelect('item.from', 'from')
-            .leftJoinAndSelect('item.destination', 'destination')
-            .where('item.tag = :tag', {tag: tag})
-            .getOne();
-    } catch (err) {
-        console.log(err)
-    }
-}
 
 
 app.get('/', ((req, res) => {
@@ -94,139 +61,231 @@ app.get('/', ((req, res) => {
 }));
 
 
-app.get('/saveCompany/', ((req, res) => {
-    saveCompany().then(data => {
+app.post('/save-company/', ((req, res) => {
+    saveCompany(req.body).then(data => {
         res.json({
             data: data
-        })
-    })
-}))
+        });
+    });
+}));
 
-app.get('/saveBranch/', ((req, res) => {
-    branchesBuilder().then(data => {
-        branchesBuilder().then(data => {
-            res.json({
-                data: data
-            })
-        })
-    })
-}))
-
-app.get('/saveGates/', ((req, res) => {
-    buildGates().then(data => {
-        res.json({
-            success: '200'
-        })
-    })
-}))
-
-
-app.get('/branch/id', (req, res) => {
-    getBranchByCode('A').then(data => {
+app.post('/save-branch/', (req, res) => {
+    saveBranches(req.body).then(data => {
         res.json({
             branch: data
-        })
-    })
-})
+        });
+    });
+});
 
-app.get('/branches', (req, res) => {
-    getAllBranches(1).then(data => {
-        console.log(data)
+app.post('/save-gate/', (req, res) => {
+    saveSections(req.body).then(data => {
+        res.json({
+            gate: data
+        });
+    });
+});
+
+
+app.post('/save-device/', (req, res) => {
+    saveDevice(req.body).then(data => {
+        res.json({
+            device: data
+        });
+    });
+});
+
+
+app.get('/branch/:id', (req, res) => {
+    getBranchInfo(req.params.id).then(data => {
+        res.json({
+            branch: data
+        });
+    });
+});
+
+app.get('/branches/:id', (req, res) => {
+    console.log(req.params.id)
+    getAllBranches(req.params.id).then(data => {
         res.json({
             branches: data
-        })
-    }).catch(e => {
-        console.log(e);
-    })
-})
+        });
+    });
+});
 
-app.post('/edit-branch/:id/', (req, res) => {
-    editBranch(req.body).then(data => {
-        res.send({
-            data
-        })
-    })
-})
-
-
-app.post('/save-bays/:id/', (req, res) => {
-    buildBays().then(bay => {
+app.post('/save-carrier-type/', (req, res) => {
+    saveCarrierTypes(req.body).then(msg => {
         res.json({
-            sections: bay
-        })
-    })
-})
-
-app.post('/save-as-preset/:id', (req, res) => {
-    buildPresets(req.params.id, req.body).then(data => {
-        console.log(data)
-        res.json({
-            res: data
-        })
-    })
-})
+            carrierType: msg
+        });
+    });
+});
 
 
-app.post('/saveSection/', (req, res) => {
-    addSectionsToGates().then(data => {
+app.post('/save-user/:id/', ((req, res) => {
+    let user;
+    let privs
+    addUsers(req.body.user, req.params.id).then(data => {
+        user = data;
+        saveUserPrivileges(user.id, req.body.privs).then(data => {
+            privs = data;
+            let returnData = user;
+            returnData.privileges = privs
+            res.json(returnData)
+        });
+    });
+}));
+
+app.post('/save-section/', (req, res) => {
+    saveSections(req.body).then(data => {
         res.json({
             data: data
-        })
-    })
-})
+        });
+    });
+});
 
 
-app.post('/create-gate/:id', (req, res) => {
-    buildGates().then(data => {
+app.post('/save-gate/', (req, res) => {
+    AddGate(req.body).then(data => {
         res.json({
             res: data
+        });
+    });
+});
+
+app.post('/save-preset/', (req, res) => {
+    savePresets(req.body).then(data => {
+        res.json({
+            res: data
+        });
+    });
+
+});
+
+app.post('/save-dispatch-times/', ((req, res) => {
+    saveDispatchTimes(req.body).then(data => {
+        res.json({
+            res: data
+        });
+    });
+}));
+
+app.post('/save-bay/:id/', (req, res) => {
+    saveBays(req).then(data => {
+        res.json({
+            res: data
+        });
+    });
+});
+
+app.post('/save-product-tag/', (req, res) => {
+    saveProductTag(req.body).then(data => {
+        res.json({
+            productTag: data
+        });
+    });
+});
+
+
+app.post('/save-product/', (req, res) => {
+    saveProduct(req.body).then(data => {
+        res.json({
+            product: data
+        });
+    });
+});
+
+
+app.post('/save-carriers/', (req, res) => {
+    saveCarrier(req.body.data).then(data => {
+        res.json({
+            carrier: data
+        });
+    });
+});
+
+
+app.post('/save-manual-entry/', (req, res) => {
+    addManualEntry(req.body).then(data => {
+        res.json({
+            manualEntry: data
+        });
+    });
+});
+
+app.patch('/update-user/', (req, res) => {
+    updateUser(req.body).then(data => {
+        res.json({
+            user: data
+        });
+    });
+});
+
+
+app.get('/branches/:id/', (req, res) => {
+    getAllBranches(req.params.id).then(data => {
+        res.json({
+            branches: data
+        });
+    });
+});
+
+app.post('/orderQue/', (req, res) => {
+    saveOrderQue(req.body).then(data=>{
+        res.json({
+            orderQue: data
         })
     })
 })
 
 
 io.on('connection', client => {
-
+    io.emit('msg', 'Connection Successful!');
     console.log(`Client ${.1}' -> Connected successfully. :101`)
 
-    let Tags = [];
 
-    try {
-        const readerConnection = new EventSource("http://localhost:8080/subscribe", {
-            withCredentials: true,
-        });
-        readerConnection.onopen = function () {
-            console.log('Reader connected!... :104')
-            axios.get('http://localhost:8080/start-inventory').then(res => {
-                console.log('Inventory has been started sucessfully... :105')
-            }).catch(err => {
-                console.log('Couldn\'t start inventory... :203');
-            });
-        }
-        readerConnection.onmessage = function (event) {
-            if (Tags.includes(event.data)) {
-                console.log('Tag already scanned..')
-            } else {
-                Tags.push(event.data)
-                getItem(event.data).then(data => {
-                    io.emit('item', data);
-                    if (data.hasErrors) {
-                        console.log('Happened here....')
-                    }
-                    console.log(data)
-                });
-            }
-        }
-    } catch (err) {
-        console.log(err)
-    }
+    // let Tags = [];
+    //
+    // try {
+    //     const readerConnection = new EventSource("http://localhost:8080/subscribe", {
+    //         withCredentials: true,
+    //     });
+    //     readerConnection.onopen = function () {
+    //         console.log('Reader connected!... :104')
+    //         axios.get('http://localhost:8080/start-inventory').then(res => {
+    //             console.log('Inventory has been started sucessfully... :105')
+    //         }).catch(err => {
+    //             console.log('Couldn\'t start inventory... :203');
+    //         });
+    //     }
+    //     readerConnection.onmessage = function (event) {
+    //         if (Tags.includes(event.data)) {
+    //             console.log('Tag already scanned..')
+    //         } else {
+    //             Tags.push(event.data)
+    //             getItem(event.data).then(data => {
+    //                 io.emit('item', data);
+    //                 if (data.hasErrors) {
+    //                     console.log('Happened here....')
+    //                 }
+    //                 console.log(data)
+    //             });
+    //         }
+    //     }
+    // } catch (err) {
+    //     console.log(err)
+    // }
+    //
+    // client.on('tag', msg => {
+    //     getItem(msg).then(data => {
+    //         io.emit('item', data);
+    //         console.log(data)
+    //     });
+    // })
 
-    client.on('tag', msg => {
-        getItem(msg).then(data => {
-            io.emit('item', data);
-            console.log(data)
-        });
+    client.on('ping', msg => {
+        io.emit('pong', 'I got a ping, here\'s a pong!.')
     })
+
 });
 
 
@@ -234,443 +293,3 @@ server.listen(socketPort, () => {
     console.log('Application startup successful.... :100 \n' +
         ' Application Listening on port ' + socketPort + '... : 100');
 });
-
-async function getBranchByCode(code) {
-    try {
-        return await getRepository(Branch)
-            .createQueryBuilder("branch")
-            .leftJoinAndSelect('branch.company', 'company')
-            .leftJoinAndSelect('branch.gates', 'gates')
-            .leftJoinAndSelect('gates.accessTo', 'sections')
-            .leftJoinAndSelect('gates.alerts', 'alerts')
-            .leftJoinAndSelect('branch.sections', 'branchSections')
-            .leftJoinAndSelect('branchSections.gates', 'accessGates')
-            // .leftJoinAndSelect('accessGates.gates', 'sectionGates')
-            // .leftJoinAndSelect('sections.devices', 'devices')
-            // .leftJoinAndSelect('sections.alerts', 'alerts')
-            .where('branch.id = :id', {id: 1})
-            .getOne();
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-async function getAllBranches(company) {
-    try {
-        return await getRepository(Branch)
-            .createQueryBuilder('branch')
-            .leftJoinAndSelect('branch.company', 'company')
-            .leftJoinAndSelect('branch.sections', 'sections')
-            .leftJoinAndSelect('sections.gates', 'gates')
-            .where('branch.company.id =:company', {company: company})
-            .getMany();
-    } catch (e) {
-        console.log(e)
-    }
-}
-
-async function addSectionsToGates() {
-    const data = [
-        {name: 'Store 1', role: 'storage', hasErrors: false, capacity: 10},
-        {name: 'Store 2', role: 'storage', hasErrors: false, capacity: 20},
-        {name: 'Store 3', role: 'storage', hasErrors: true, capacity: 30},
-        {name: 'Section 1', role: 'packaging', hasErrors: true, capacity: 40},
-        {name: 'Section 2', role: 'packaging', hasErrors: false, capacity: 50},
-        {name: 'Section 3', role: 'packaging', hasErrors: false, capacity: 60},
-        {name: 'Dispatch', role: 'dispatch', hasErrors: true, capacity: 70},
-    ]
-
-    const branch = await getConnection()
-        .createQueryBuilder()
-        .select('branch')
-        .from(Branch, 'branch')
-        .where('branch.id = :id', {id: 1})
-        .getOne();
-
-
-    let sections = [];
-
-    try {
-        for (const section of data) {
-            let _section = new Sections();
-            _section.role = section.role;
-            _section.hasErrors = section.hasErrors
-            _section.name = section.name;
-            _section.capacity = section.capacity;
-            _section.branch = branch;
-            sections.push(_section);
-            await databaseManager.manager.save(_section);
-        }
-        return sections;
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-
-async function saveItems(item) {
-    try {
-        item = await databaseManager.manager.save(item)
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-
-async function createItems() {
-
-    let from = await getConnection()
-        .createQueryBuilder()
-        .select('section')
-        .from(Sections, 'section')
-        .where('section.id =:id', {id: 5})
-        .getOne();
-
-
-    let destination = await getConnection()
-        .createQueryBuilder()
-        .select('section')
-        .from(Sections, 'section')
-        .where('section.id =:id', {id: 1})
-        .getOne();
-
-    let carrier = new Carrier();
-    carrier.name = 'ForkLift';
-    carrier.type = '';
-    carrier.status = 'Moving'
-    await databaseManager.manager.save(carrier);
-
-    let items = DummyProduct();
-
-    // items.forEach(data => {
-    //     const _item = new Product();
-    //     _item.name = `Product ${data.tag}`;
-    //     _item.description = data.description;
-    //     _item.category = data.category;
-    //     _item.carrier = carrier;
-    //     _item.carrierStatus = 'Available in Carrier'
-    //     _item.status = data.status;
-    //     _item.type = data.type;
-    //     _item.manualEntry = data.manual_entry;
-    //     _item.pallet = data.pallet;
-    //     _item.tag = data.tag;
-    //     _item.quantity = 20;
-    //     _item.carrierNumber = data.carrier_number;
-    //     _item.expiry = data.expiry;
-    //     _item.dateTime = data.date_time;
-    //     _item.from = from;
-    //     _item.destination = destination;
-    //     _item.hasErrors = data.hasErrors
-    //     saveItems(_item)
-    // });
-}
-
-
-async function saveBranch(branch) {
-    try {
-        await databaseManager.manager.save(branch)
-        console.log(branch)
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-
-async function branchesBuilder() {
-    try {
-        let company = await getConnection()
-            .createQueryBuilder()
-            .select('company')
-            .from(Company, 'company')
-            .where('company.id =:id', {id: 1})
-            .getOne();
-
-        let branches = [
-            {city: 'Nairobi', isActive: true, info: 'Industrial Area', code: 'A', streetRoad: 'Road A, Inda'},
-            {city: 'Naivasha', isActive: false, info: 'Town', code: 'B', streetRoad: 'Road B, Town'},
-            {city: 'Mombasa', isActive: true, info: '', code: 'Old Town', streetRoad: 'Old Town Road'},
-            {city: 'Mbita', isActive: false, info: 'Rusinga', code: 'D', streetRoad: 'Rusinga MainLand'},
-        ]
-        branches.forEach(branch => {
-            let _branch = new Branch();
-            _branch.code = branch.code;
-            _branch.info = branch.city;
-            _branch.city = branch.city
-            _branch.isActive = branch.isActive;
-            _branch.phone = '0793871876';
-            _branch.email = 'bryodiiidah@gmail.com';
-            _branch.company = company;
-            _branch.streetRoad = branch.streetRoad
-            saveBranch(_branch)
-        })
-        return {success: 200}
-    } catch (err) {
-        console.log(err)
-    }
-
-}
-
-async function saveCompany() {
-    try {
-        let company = new Company();
-        company.name = 'Positive Communications';
-        company.headOffice = 'Nairobi';
-        company.email = 'bryodiiidah@gmail.com';
-        company.streetRoad = 'Parklands';
-        company.primaryNumber = '0793871876';
-        company.secondaryNumber = '0746551580';
-        return await databaseManager.manager.save(company)
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-async function saveGate(gate) {
-    try {
-        await databaseManager.manager.save(gate);
-        console.log(gate);
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-async function saveDevice(device) {
-    try {
-        await databaseManager.manager.save(device)
-    } catch (e) {
-        e.toString()
-    }
-}
-
-async function buildAlerts() {
-    const sections = [11, 3, 13, 6, 9];
-
-
-}
-
-async function saveAlerts() {
-    const alert = new Alerts();
-    alert.name = 'Warning';
-    alert.type = 'warning';
-    await databaseManager.manager.save(alert)
-
-    try {
-        // await
-        // createQueryBuilder()
-        //     .relation(Items, 'alerts')
-        //      .add(alert)
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-
-async function buildGates() {
-
-
-    const branch = await getConnection()
-        .createQueryBuilder()
-        .select('branch')
-        .from(Branch, 'branch')
-        .where('branch.id =:id', {id: 1})
-        .getOne();
-
-
-    const gates = [
-        {name: 'A', role: 'storage'},
-        {name: 'B', role: 'packaging'},
-        {name: 'C', role: 'dispatch'},
-        {name: 'D', role: 'storage'},
-        {name: 'F', role: 'packaging'},
-        {name: 'G', role: 'dispatch'}
-
-    ]
-    gates.forEach(gate => {
-        let _gate = new Gate();
-        _gate.name = gate.name;
-        _gate.role = gate.role;
-        _gate.branch = branch;
-        _gate.allowManual = true;
-        _gate.allowEmpty = true;
-        _gate.verifyByHandheld = true;
-        _gate.verifyNotTrackedByRFID = false;
-        _gate.checkContinuouslyForUnauthorized = true;
-        _gate.doNotAllowRemoved = true;
-        _gate.useForDispatchOrReceiving = true;
-        _gate.allowDispatchForAllOrders = true;
-        _gate.showProductCountError = true;
-        _gate.allowEmptyPallets = true;
-        _gate.getToDetermineItemPosition = true;
-        _gate.verifyCarrierIsEmpty = true;
-        _gate.isaActive = true;
-        saveGate(_gate)
-    })
-
-
-}
-
-async function editBranch(data) {
-    try {
-        let company = await databaseManager
-            .getRepository(Company)
-            .createQueryBuilder('company')
-            .where('company.id =:id', {id: data.company})
-            .getOne();
-        let branch = await databaseManager
-            .getRepository(Branch)
-            .createQueryBuilder('branch')
-            .where('branch.id =:id', {id: data.branchID})
-
-        if (company.name == data.branch.companyName) {
-            console.log('Company name stays')
-        } else {
-            await getConnection()
-                .createQueryBuilder()
-                .update(Company)
-                .set({name: data.branch.companyName})
-                .where('id =:id', {id: data.company})
-                .execute();
-        }
-
-        await getConnection()
-            .createQueryBuilder()
-            .update(Branch)
-            .set({
-                city: data.branch.city,
-                streetRoad: data.branch.road,
-                phone: data.branch.phone,
-                email: data.branch.email
-            })
-            .where('id =:id', {id: data.branch.id})
-            .execute();
-
-        return {success: 200}
-
-    } catch (e) {
-        console.log(e)
-    }
-}
-
-
-async function saveBay(bay) {
-    try {
-        await databaseManager.manager.save(bay)
-        console.log(bay)
-    } catch (e) {
-        console.log(e)
-    }
-}
-
-
-async function buildBays() {
-    try {
-        const sections = await getConnection()
-            .createQueryBuilder()
-            .select('section')
-            .from(Sections, 'section')
-            .leftJoinAndSelect('section.branch', 'branch')
-            .where('branch.id = :id', {id: 1})
-            .getMany();
-
-        let bays = ['Bay A', 'Bay B', 'Bay C']
-
-        sections.forEach(sect => {
-            bays.forEach(_bay => {
-                let bay = new Bays()
-                bay.type = _bay;
-                bay.role = 'Storage';
-                bay.isActive = true;
-                bay.sections = sect;
-                saveBay(bay);
-            })
-        })
-        return sections;
-    } catch (e) {
-        console.log(e)
-    }
-}
-
-async function buildPresets(gateID, data) {
-    const packagingName = data.packaging;
-    const preset = data.preset;
-    const gateId = parseInt(gateID)
-
-
-    try {
-        const gate = await getConnection()
-            .createQueryBuilder()
-            .select('gate')
-            .from(Gate, 'gate')
-            .where('gate.id = :id', {id: gateId})
-            .getOne();
-        const section = new Sections()
-        section.role = gate.role;
-        section.name = packagingName;
-        section.capacity = 100;
-        section.hasErrors = false;
-        try {
-            let _section = await databaseManager.manager.save(section)
-            await getConnection()
-                .createQueryBuilder()
-                .update(Gate)
-                .set({
-                    accessTo: _section
-                })
-                .where('id =:id', {id: gateId})
-                .execute()
-
-            let _preset = new Presets();
-            _preset.presetName = preset;
-            _preset.section = section
-            return savePreset(_preset)
-        } catch (e) {
-            console.log(e)
-        }
-
-    } catch (e) {
-        console.log(e)
-    }
-}
-
-
-async function savePreset(preset) {
-    try {
-        return await databaseManager.manager.save(preset)
-    } catch (e) {
-        console.log(e)
-    }
-}
-
-
-// async function buildDevices(){
-//     try {
-//         for (const section of sections) {
-//             const _section = await getConnection()
-//                 .createQueryBuilder()
-//                 .select('section')
-//                 .from(Sections, 'section')
-//                 .where('section.id = :id', {id: 11})
-//                 .getOne();
-//
-//             const devices = ['1', 'B', 'C']
-//             devices.forEach(device => {
-//                 let _device = new Device();
-//                 _device.name = device;
-//                 _device.role = _section.role;
-//                 _device.allowPalletsToBeCountedManually = true;
-//                 _device.doNotAllowRemovalOfEmptyPallet = true;
-//                 _device.verifyStoredUsingHandHeld = true;
-//                 _device.showProductCountError = true;
-//                 _device.doNotAllowRemoval = true;
-//                 _device.verifyProductNotTrackedByRFID = true;
-//                 _device.automaticallyActivateRecallProductIfRequired = true;
-//                 _device.recordEmptyPallets = true;
-//                 _device.dispatchingOrReceiving = true;
-//                 saveDevice(_device)
-//             })
-//
-//         }
-//     } catch (e) {
-//         console.log(e)
-//     }
-// }

@@ -1,5 +1,4 @@
-import {Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import Sections from "./Sections";
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import Gate from "./Gate";
 
 @Entity()
