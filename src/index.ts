@@ -28,6 +28,9 @@ import saveProduct from "./helpers/C/AddProduct";
 import addManualEntry from "./helpers/C/AddManualEntry";
 import updateUser from "./helpers/U/ByID/UpdateUser";
 import saveOrderQue from "./helpers/C/SaveOrderQue";
+import getAddDevices from "./helpers/R/Many/AllDevices";
+import updateDevices from "./helpers/U/ByID/UpdateDevice";
+import getDispatchByBranch from "./helpers/R/ByBranch/GetDispatchByBranch";
 
 const app = express();
 
@@ -230,13 +233,45 @@ app.get('/branches/:id/', (req, res) => {
 });
 
 app.post('/orderQue/', (req, res) => {
-    saveOrderQue(req.body).then(data=>{
+    saveOrderQue(req.body).then(data => {
         res.json({
             orderQue: data
-        })
-    })
-})
+        });
+    });
+});
 
+app.get('/devices/:id/', (req, res) => {
+    getAddDevices(req.params.id).then(data => {
+        res.json({
+            devices: data
+        });
+    });
+});
+
+
+app.patch('/device/:id/', (req, res) => {
+    updateDevices(req.body, req.params.id).then(data => {
+        res.json({
+            device: data
+        });
+    });
+});
+
+app.post('/add-dispatch/', (req, res) => {
+    saveDispatchTimes(req.body).then(data => {
+        res.json({
+            productDispatch: data
+        });
+    });
+});
+
+app.get('/dispatch/:id', (req, res) => {
+    getDispatchByBranch(req.params.id).then(data => {
+        res.json({
+            dispatch: data
+        });
+    });
+});
 
 io.on('connection', client => {
     io.emit('msg', 'Connection Successful!');

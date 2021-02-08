@@ -3,6 +3,7 @@ import Sections from "./Sections";
 import ScanProductHistory from "./ScanProductHistory";
 import Alerts from "./Alerts";
 import Bays from "./Bays";
+import Branch from "./Branch";
 
 @Entity()
 export default class Device {
@@ -62,4 +63,7 @@ export default class Device {
     @OneToMany(type => Alerts, alert => alert.device)
     @JoinTable()
     alerts: Alerts[];
+
+    @ManyToOne(type=>Branch, branch=>branch.devices)
+    branch: Branch;
 }

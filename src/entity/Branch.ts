@@ -8,6 +8,7 @@ import Store from "./Store";
 import Users from "./Users";
 import CarrierType from "./CarrierType";
 import OrderQue from "./OrderQue";
+import Device from "./Device";
 
 @Entity()
 export default class Branch {
@@ -65,6 +66,10 @@ export default class Branch {
     @OneToMany(type=>CarrierType, type=>type.branch)
     @JoinTable()
     carrierTypes: CarrierType[]
+
+    @OneToMany(type=>Device, device=> device.branch)
+    @JoinTable()
+    devices: Device[];
 
 }
 

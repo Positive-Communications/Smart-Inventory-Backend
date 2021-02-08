@@ -3,23 +3,24 @@ import Device from "../../entity/Device";
 import {getConnection} from "typeorm";
 import readBayByID from "../R/ByID/ReadBayByID";
 import readSectionByID from "../R/ByID/ReadSectionByID";
+import readBranchByID from "../R/ByID/ReadBranchByID";
 
 export default async function saveDevice(data) {
 
-    let context;
-    switch (data.context) {
-        case "storage":
-            context = await readBayByID(data.contextID);
-            break;
-
-        case "packaging":
-            context = await readSectionByID(data.contextID);
-            break;
-
-        default:
-            context = null;
-            break;
-    }
+    // let context;
+    // switch (data.context) {
+    //     case "storage":
+    //         context = await readBayByID(data.contextID);
+    //         break;
+    //
+    //     case "packaging":
+    //         context = await readSectionByID(data.contextID);
+    //         break;
+    //
+    //     default:
+    //         context = null;
+    //         break;
+    // }
 
     let device = new Device();
 
@@ -36,7 +37,8 @@ export default async function saveDevice(data) {
     device.automaticallyActivateRecallProductIfRequired = data.automaticallyActivateRecallProductIfRequired;
     device.recordEmptyPallets = data.recordEmptyPallets;
     device.dispatchingOrReceiving = data.dispatchingOrReceiving;
-    data.context === "packaging" ? device.sections = context : data.context === "storage" ? device.bays = context : null;
+    device.branch = await readBranchByID(data.branchID)
+    // data.context === "packaging" ? device.sections = context : data.context === "storage" ? device.bays = context : null;
 
     try {
 
@@ -62,6 +64,7 @@ let json = {
     automaticallyActivateRecallProductIfRequired: false,
     recordEmptyPallets: false,
     dispatchingOrReceiving: false,
-    context: "",
-    contextID: ""
+    branchID: ""
+    // context: "",
+    // contextID: ""
 }
