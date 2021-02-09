@@ -98,15 +98,15 @@ export default class Product {
 
     async createItself(data) {
         this.name = data.name;
-        this.status = data.status;
         this.description = data.description;
+        this.status = data.status;
         this.expiry = data.expiry;
-        this.hasErrors = data.hasErrors;
         this.monthsLeftToExpire = data.monthsLeftToExpire;
+        this.hasErrors = data.hasErrors;
         this.unit = await readProductUnitByID(data.unitID)
+        this.dispatchGate = await readGateByID(data.gateID)
         this.isStoredOnPallet = data.isStoredOnPallet;
         this.palletIsTrackedByRFID = data.palletIsTrackedByRFID;
-        this.dispatchGate = await readGateByID(data.gateID)
     }
 
     async isLegit() {

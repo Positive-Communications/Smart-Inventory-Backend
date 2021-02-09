@@ -24,8 +24,9 @@ let json = {
     expiry: "",
     monthsLeftToExpire: "",
     isStoredOnPallet: false,
-    palletIsTrackedByRFID: "",
+    palletIsTrackedByRFID: true,
     unitID: "",
-    status: "empty",
-    dispatchGateID: "",
+    gateID: "",
+    status: "",
+    hasErrors: false
 }
