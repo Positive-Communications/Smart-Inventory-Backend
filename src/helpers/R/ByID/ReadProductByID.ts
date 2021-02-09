@@ -1,12 +1,8 @@
 import {getConnection} from "typeorm";
 import Product from "../../../entity/Product";
 
-export default async function readProductByID(productId) {
+export default async function readProductByID(productID) {
     return await
         getConnection()
-            .createQueryBuilder()
-            .select('product')
-            .from(Product, 'product')
-            .where('product.id =:id', {id: parseInt(productId)})
-            .getOne();
+            .manager.findOne(Product, parseInt(productID));
 }

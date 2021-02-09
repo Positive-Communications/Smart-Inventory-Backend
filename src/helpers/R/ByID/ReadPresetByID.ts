@@ -5,9 +5,5 @@ export default async function readPresetByID(presetID) {
 
     return await
         getConnection()
-            .createQueryBuilder()
-            .select('preset')
-            .from(Presets, 'preset')
-            .where('preset.id =:id', {id: parseInt(presetID)})
-            .getOne();
+            .manager.findOne(Presets, parseInt(presetID));
 }

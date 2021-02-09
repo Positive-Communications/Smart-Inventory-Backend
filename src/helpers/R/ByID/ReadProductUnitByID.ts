@@ -5,10 +5,6 @@ export default async function readProductUnitByID(productUnitID) {
 
     return await
         getConnection()
-            .createQueryBuilder()
-            .select('productUnit')
-            .from(ProductUnit, 'unit')
-            .where('unit.id =:', {id: parseInt(productUnitID)})
-            .getOne();
+            .manager.findOne(ProductUnit, parseInt(productUnitID));
 
 }

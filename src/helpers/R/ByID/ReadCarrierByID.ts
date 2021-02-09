@@ -5,10 +5,6 @@ export default async function readCarrierById(carrierID) {
 
     return await
         getConnection()
-            .createQueryBuilder()
-            .select('carrier')
-            .from(Carrier, 'carrier')
-            .where('carrier.id =:id', {id:parseInt(carrierID)})
-            .getOne();
+            .manager.findOne(Carrier, parseInt(carrierID));
 
 }

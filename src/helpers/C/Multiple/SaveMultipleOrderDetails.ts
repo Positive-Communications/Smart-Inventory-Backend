@@ -11,3 +11,11 @@ export default async function saveMultipleOrderDetails(orderDetailsArray) {
     return orderDetails;
 
 }
+
+let configArray = [
+    {
+        productID: "",
+        quantity: "",
+        unitID: ""
+    }
+]

@@ -127,7 +127,7 @@ app.post('/save-carrier-type/', (req, res) => {
 app.post('/save-user/:id/', ((req, res) => {
     let user;
     let privs
-    addUsers(req.body.user, req.params.id).then(data => {
+    addUsers(req.body).then(data => {
         user = data;
         saveUserPrivileges(user.id, req.body.privs).then(data => {
             privs = data;

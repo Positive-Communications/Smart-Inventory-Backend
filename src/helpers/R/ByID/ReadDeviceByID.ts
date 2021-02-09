@@ -5,9 +5,5 @@ export default async function readDeviceByID(deviceID) {
 
     return await
         getConnection()
-            .createQueryBuilder()
-            .select('device')
-            .from(Device, 'device')
-            .where('device =:id', {id: parseInt(deviceID)})
-            .getOne();
+            .manager.findOne(Device, parseInt(deviceID));
 }

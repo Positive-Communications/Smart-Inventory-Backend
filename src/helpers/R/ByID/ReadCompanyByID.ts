@@ -5,9 +5,5 @@ export default async function readCompanyByID(companyID) {
 
     return await
         getConnection()
-            .createQueryBuilder()
-            .select('company')
-            .from(Company, 'company')
-            .where('company.id =:id', {id: parseInt(companyID)})
-            .getOne();
+            .manager.findOne(Company, parseInt(companyID));
 }
