@@ -22,7 +22,7 @@ let config = {
     name: "",
     role: "",
     hasErrors: false,
-    isaActive: true,
+    isActive: true,
     allowEmpty: false,
     verifyNotTrackedByRFID: false,
     checkContinuouslyForUnauthorized: false,
@@ -33,5 +33,7 @@ let config = {
     allowEmptyPallets: false,
     getToDetermineItemPosition: false,
     verifyCarrierIsEmpty: false,
-    branchID: ""
+    branchID: "",
+    allowManual: false,
+    verifyStoredUsingHandHeld: false,
 }

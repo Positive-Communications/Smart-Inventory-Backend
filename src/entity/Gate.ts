@@ -113,13 +113,14 @@ export default class Gate {
     visitors: VisitorAccessTags[]
 
     async createItself(data) {
+
         this.name = data.name;
         this.role = data.role;
         this.hasErrors = data.hasErrors;
         this.isaActive = data.isActive;
         this.allowManual = data.allowManual;
         this.allowEmpty = data.allowEmpty;
-        this.verifyNotTrackedByRFID = data.verifyProductNotTrackedByRFID;
+        this.verifyNotTrackedByRFID = data.verifyNotTrackedByRFID;
         this.checkContinuouslyForUnauthorized = data.checkContinuouslyForUnauthorized;
         this.doNotAllowRemoved = data.doNotAllowRemoved;
         this.useForDispatchOrReceiving = data.useForDispatchOrReceiving;
@@ -128,6 +129,7 @@ export default class Gate {
         this.allowEmptyPallets = data.allowEmptyPallets;
         this.getToDetermineItemPosition = data.getToDetermineItemPosition;
         this.verifyCarrierIsEmpty = data.verifyCarrierIsEmpty;
+        this.verifyByHandheld = data.verifyStoredUsingHandHeld;
         this.branch = await readBranchByID(data.branchID)
     }
 

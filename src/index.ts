@@ -80,14 +80,6 @@ app.post('/save-branch/', (req, res) => {
     });
 });
 
-app.post('/save-gate/', (req, res) => {
-    saveSections(req.body).then(data => {
-        res.json({
-            gate: data
-        });
-    });
-});
-
 
 app.post('/save-device/', (req, res) => {
     saveDevice(req.body).then(data => {
