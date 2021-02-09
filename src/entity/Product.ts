@@ -97,6 +97,7 @@ export default class Product {
 
 
     async createItself(data) {
+
         this.name = data.name;
         this.description = data.description;
         this.status = data.status;

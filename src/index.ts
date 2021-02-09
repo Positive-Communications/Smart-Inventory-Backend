@@ -32,6 +32,7 @@ import getAddDevices from "./helpers/R/Many/AllDevices";
 import updateDevices from "./helpers/U/ByID/UpdateDevice";
 import getDispatchByBranch from "./helpers/R/ByBranch/GetDispatchByBranch";
 import saveProductUnit from "./entity/SaveProductUnit";
+import getAllCarrierTypes from "./helpers/R/Many/CarrierTypes";
 
 const app = express();
 
@@ -40,7 +41,7 @@ const server = http.createServer(app);
 
 const io = require('socket.io')(server, {
     cors: {
-        origin: '/*',
+        origin: '*',
         methods: ['GET', 'POST']
     }
 });
@@ -271,6 +272,14 @@ app.get('/dispatch/:id', (req, res) => {
     getDispatchByBranch(req.params.id).then(data => {
         res.json({
             dispatch: data
+        });
+    });
+});
+
+app.get('/all-carrier-types/', (req, res) => {
+    getAllCarrierTypes().then(data=>{
+        res.json({
+            carrierTypes: data
         });
     });
 });

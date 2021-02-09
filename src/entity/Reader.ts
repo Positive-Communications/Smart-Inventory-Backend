@@ -7,6 +7,9 @@ export default class Reader{
     id: number;
 
     @Column()
+    address: string;
+
+    @Column()
     numberOfAnts: number;
 
     @Column()

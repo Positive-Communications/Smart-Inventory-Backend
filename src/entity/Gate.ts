@@ -10,6 +10,7 @@ import Bays from "./Bays";
 import PackingTags from "./PackingTags";
 import readBranchByID from "../helpers/R/ByID/ReadBranchByID";
 
+
 @Entity()
 export default class Gate {
 
@@ -18,6 +19,42 @@ export default class Gate {
 
     @Column()
     name: string;
+
+    @Column()
+    readerAddress: string;
+
+    @Column()
+    numberOfAnts: string;
+
+    @Column()
+    antToDetectOutgoing: number;
+
+    @Column()
+    antToDetectIncoming: number;
+
+    @Column()
+    ant1: boolean;
+
+    @Column()
+    ant2: boolean;
+
+    @Column()
+    ant3: boolean;
+
+    @Column()
+    ant4: boolean;
+
+    @Column()
+    ant1Power: string;
+
+    @Column()
+    ant2Power: string;
+
+    @Column()
+    ant3Power: string;
+
+    @Column()
+    ant4Power: string;
 
     @Column()
     role: string;
@@ -115,6 +152,18 @@ export default class Gate {
     async createItself(data) {
 
         this.name = data.name;
+        this.readerAddress = data.readerAddress;
+        this.numberOfAnts = data.numberOfAnts;
+        this.antToDetectOutgoing = data.antToDetectOutgoing
+        this.antToDetectIncoming = data.antToDetectIncoming
+        this.ant1 = data.ant1
+        this.ant2 = data.ant2
+        this.ant3 = data.ant3
+        this.ant4 = data.ant4
+        this.ant1Power = data.ant1Power
+        this.ant2Power = data.ant2Power
+        this.ant3Power = data.ant3Power
+        this.ant4Power = data.ant4Power
         this.role = data.role;
         this.hasErrors = data.hasErrors;
         this.isaActive = data.isActive;
