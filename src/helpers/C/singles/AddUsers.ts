@@ -22,7 +22,7 @@ export default async function addUsers(data) {
 }
 
 let config = {
-    branch: "",
+    branchID: "",
     identificationNumber: "",
     identificationType: "",
     userPicture: "",
