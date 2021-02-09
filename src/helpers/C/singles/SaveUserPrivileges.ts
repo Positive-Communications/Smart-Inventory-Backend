@@ -1,28 +1,10 @@
 import UserPrivileges from "../../../entity/UserPrivileges";
 import {getConnection} from "typeorm";
-import Users from "../../../entity/Users";
-import readUserByID from "../../R/ByID/ReadUserByID";
 
-export default async function saveUserPrivileges(userId, user) {
+export default async function saveUserPrivileges(data) {
 
     let userPrivilege = new UserPrivileges();
-
-    userPrivilege.user = await readUserByID(userId);
-    userPrivilege.isAdmin = user.isAdmin;
-    userPrivilege.addOrEditUsers = user.addOrEditUsers;
-    userPrivilege.canViewOrderAmount = user.canViewOrderAmount;
-    userPrivilege.issueEditCollectionReplacementOrder = user.issueEditCollectionReplacementOrder;
-    userPrivilege.loadCollectionOrder = user.loadCollectionOrder;
-    userPrivilege.loadPartialProductQuantity = user.loadPartialProductQuantity;
-    userPrivilege.setGateDeviceSettings = user.setGateDeviceSettings;
-    userPrivilege.setProductTags = user.setProductTags;
-    userPrivilege.setCarrierSettings = user.setCarrierSettings;
-    userPrivilege.setStorageBays = user.setStorageBays;
-    userPrivilege.setOrderQueSettings = user.setOrderQueSettings
-    userPrivilege.setAccessSettings = user.setAccessSettings;
-    userPrivilege.scanAccessCard = user.scanAccessCard;
-    userPrivilege.packagingAndStorageAlerts = user.packagingAndStorageAlerts;
-    userPrivilege.orderDispatchAlerts = true;
+    await userPrivilege.createItself(data)
 
     try{
         return await getConnection()
@@ -31,4 +13,22 @@ export default async function saveUserPrivileges(userId, user) {
         console.log(e)
     }
 
+}
+
+let config = {
+    isAdmin: false,
+    addOrEditUsers: false,
+    canViewOrderAmount: false,
+    issueEditCollectionReplacementOrder: false,
+    loadCollectionOrder: false,
+    loadPartialProductQuantity: false,
+    setGateDeviceSettings: false,
+    setProductTags: false,
+    setCarrierSettings: false,
+    setStorageBays: false,
+    setOrderQueSettings: false,
+    setAccessSettings: false,
+    scanAccessCard: false,
+    packagingAndStorageAlerts: false,
+    orderDispatchAlerts: false,
 }

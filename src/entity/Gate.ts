@@ -59,46 +59,74 @@ export default class Gate {
     @Column()
     role: string;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     hasErrors: boolean;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     isaActive: boolean;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     allowManual: boolean;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     allowEmpty: boolean;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     verifyByHandheld: boolean;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     verifyNotTrackedByRFID: boolean;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     checkContinuouslyForUnauthorized: boolean;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     doNotAllowRemoved: boolean;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     useForDispatchOrReceiving: boolean;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     allowDispatchForAllOrders: boolean;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     showProductCountError: boolean;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     allowEmptyPallets: boolean;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     getToDetermineItemPosition: boolean;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     verifyCarrierIsEmpty: boolean;
 
     @ManyToOne(type => PackingTags, parking => parking.accessGates)
@@ -165,20 +193,6 @@ export default class Gate {
         this.ant3Power = data.ant3Power
         this.ant4Power = data.ant4Power
         this.role = data.role;
-        this.hasErrors = data.hasErrors;
-        this.isaActive = data.isActive;
-        this.allowManual = data.allowManual;
-        this.allowEmpty = data.allowEmpty;
-        this.verifyNotTrackedByRFID = data.verifyNotTrackedByRFID;
-        this.checkContinuouslyForUnauthorized = data.checkContinuouslyForUnauthorized;
-        this.doNotAllowRemoved = data.doNotAllowRemoved;
-        this.useForDispatchOrReceiving = data.useForDispatchOrReceiving;
-        this.allowDispatchForAllOrders = data.allowDispatchForAllOrders;
-        this.showProductCountError = data.showProductCountError;
-        this.allowEmptyPallets = data.allowEmptyPallets;
-        this.getToDetermineItemPosition = data.getToDetermineItemPosition;
-        this.verifyCarrierIsEmpty = data.verifyCarrierIsEmpty;
-        this.verifyByHandheld = data.verifyStoredUsingHandHeld;
         this.branch = await readBranchByID(data.branchID)
     }
 

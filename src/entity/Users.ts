@@ -13,6 +13,7 @@ import Carrier from "./Carrier";
 import PackingTags from "./PackingTags";
 import readBranchByID from "../helpers/R/ByID/ReadBranchByID";
 import Orders from "./Orders";
+import saveUserPrivileges from "../helpers/C/singles/SaveUserPrivileges";
 
 @Entity()
 export default class Users {
@@ -75,8 +76,9 @@ export default class Users {
     @JoinTable()
     checkedOrders: Orders[];
 
-
     async createItself(data) {
+
+        this.privileges = await saveUserPrivileges(data.privileges)
         this.branch = await readBranchByID(data.branchID);
         this.identificationNumber = data.identificationNumber;
         this.identificationType = data.identificationType;
