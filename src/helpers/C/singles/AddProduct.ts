@@ -1,20 +1,21 @@
 import Product from "../../../entity/Product";
 import readGateByID from "../../R/ByID/ReadGateByID";
 import readProductUnitByID from "../../R/ByID/ReadProductUnitByID";
+import {getConnection} from "typeorm";
 
 export default async function saveProduct(data) {
 
     let product = new Product();
 
-    product.name = data.name;
-    product.status = data.status;
-    product.description = data.description;
-    product.expiry = data.expiry;
-    product.monthsLeftToExpire = data.monthsLeftToExpire;
-    product.unit = await readProductUnitByID(data.unitID)
-    product.isStoredOnPallet = data.isStoredOnPallet;
-    product.palletIsTrackedByRFID = data.palletIsTrackedByRFID;
-    product.dispatchGate = await readGateByID(data.gateID)
+    await product.createItself(data)
+
+    if (await product.isLegit())
+        try {
+            return await
+                getConnection().manager.save(product);
+        } catch (e) {
+            console.log(e)
+        }
 }
 
 let json = {
@@ -25,5 +26,6 @@ let json = {
     isStoredOnPallet: false,
     palletIsTrackedByRFID: "",
     unitID: "",
-    status: "empty"
+    status: "empty",
+    dispatchGateID: "",
 }

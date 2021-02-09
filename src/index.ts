@@ -31,6 +31,7 @@ import saveOrderQue from "./helpers/C/singles/SaveOrderQue";
 import getAddDevices from "./helpers/R/Many/AllDevices";
 import updateDevices from "./helpers/U/ByID/UpdateDevice";
 import getDispatchByBranch from "./helpers/R/ByBranch/GetDispatchByBranch";
+import saveProductUnit from "./entity/SaveProductUnit";
 
 const app = express();
 
@@ -256,6 +257,15 @@ app.post('/add-dispatch/', (req, res) => {
         });
     });
 });
+
+app.post('/save-product-unit/', (req, res) => {
+    saveProductUnit(req.body).then(data => {
+        res.json({
+            productUnit: data
+        });
+    });
+});
+
 
 app.get('/dispatch/:id', (req, res) => {
     getDispatchByBranch(req.params.id).then(data => {

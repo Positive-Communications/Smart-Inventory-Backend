@@ -21,6 +21,8 @@ import ProductTags from "./ProductTags";
 import Store from "./Store";
 import Bays from "./Bays";
 import OrderDetails from "./OrderDetails";
+import readProductUnitByID from "../helpers/R/ByID/ReadProductUnitByID";
+import readGateByID from "../helpers/R/ByID/ReadGateByID";
 
 @Entity()
 export default class Product {
@@ -55,8 +57,7 @@ export default class Product {
     @ManyToOne(type => ProductUnit, unit => unit.product)
     unit: ProductUnit;
 
-    @OneToMany(type => Gate, gate => gate.dispatchedProducts)
-    @JoinTable()
+    @ManyToOne(type => Gate, gate => gate.dispatchedProducts)
     dispatchGate: Gate;
 
 
@@ -80,7 +81,7 @@ export default class Product {
     @ManyToOne(type => Sections, section => section.currentProducts)
     currentSection: Sections;
 
-    @ManyToMany(type=> Bays, bay=>bay.product)
+    @ManyToMany(type => Bays, bay => bay.product)
     bay: Bays[]
 
     @ManyToOne(type => Store, store => store.product)
@@ -90,8 +91,26 @@ export default class Product {
     @JoinTable()
     manualEntries: ManualEntry[];
 
-    @OneToMany(type=>OrderDetails, details=>details.product)
+    @OneToMany(type => OrderDetails, details => details.product)
     @JoinTable()
-    orderDetails: OrderDetails
+    orderDetails: OrderDetails[];
+
+
+    async createItself(data) {
+        this.name = data.name;
+        this.status = data.status;
+        this.description = data.description;
+        this.expiry = data.expiry;
+        this.hasErrors = data.hasErrors;
+        this.monthsLeftToExpire = data.monthsLeftToExpire;
+        this.unit = await readProductUnitByID(data.unitID)
+        this.isStoredOnPallet = data.isStoredOnPallet;
+        this.palletIsTrackedByRFID = data.palletIsTrackedByRFID;
+        this.dispatchGate = await readGateByID(data.gateID)
+    }
+
+    async isLegit() {
+        return true;
+    }
 
 }
