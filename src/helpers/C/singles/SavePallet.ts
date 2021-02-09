@@ -1,5 +1,5 @@
-import Pallet from "../../entity/Pallet";
-import readProductByID from "../R/ByID/ReadProductByID";
+import Pallet from "../../../entity/Pallet";
+import readProductByID from "../../R/ByID/ReadProductByID";
 import {getConnection} from "typeorm";
 
 export default async function savePallet(data) {

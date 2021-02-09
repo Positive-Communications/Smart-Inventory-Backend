@@ -1,4 +1,4 @@
-import CarrierType from "../../entity/CarrierType";
+import CarrierType from "../../../entity/CarrierType";
 import {getConnection} from "typeorm";
 
 export default async function saveCarrierTypes(data) {

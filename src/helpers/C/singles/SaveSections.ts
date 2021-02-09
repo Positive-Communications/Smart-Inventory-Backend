@@ -1,6 +1,6 @@
-import Sections from "../../entity/Sections";
-import readBranchByID from "../R/ByID/ReadBranchByID";
-import readPresetByID from "../R/ByID/ReadPresetByID";
+import Sections from "../../../entity/Sections";
+import readBranchByID from "../../R/ByID/ReadBranchByID";
+import readPresetByID from "../../R/ByID/ReadPresetByID";
 import {getConnection} from "typeorm";
 
 export default async function saveSections(data) {

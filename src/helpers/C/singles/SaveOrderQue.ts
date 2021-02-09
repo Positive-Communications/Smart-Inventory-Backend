@@ -1,5 +1,5 @@
-import OrderQue from "../../entity/OrderQue";
-import readBranchByID from "../R/ByID/ReadBranchByID";
+import OrderQue from "../../../entity/OrderQue";
+import readBranchByID from "../../R/ByID/ReadBranchByID";
 import {getConnection} from "typeorm";
 
 export default async function saveOrderQue(data) {

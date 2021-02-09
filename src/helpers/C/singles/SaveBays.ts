@@ -1,6 +1,6 @@
 import {getConnection} from "typeorm";
-import Store from "../../entity/Store";
-import Bays from "../../entity/Bays";
+import Store from "../../../entity/Store";
+import Bays from "../../../entity/Bays";
 
 
 export default async function saveBays(data) {

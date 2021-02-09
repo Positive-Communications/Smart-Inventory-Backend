@@ -1,4 +1,4 @@
-import Company from "../../entity/Company";
+import Company from "../../../entity/Company";
 import {getConnection} from "typeorm";
 
 export default async function saveCompany(data) {

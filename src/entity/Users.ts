@@ -1,7 +1,7 @@
 import
 {
-    Column, Entity, JoinColumn,
-    ManyToOne, OneToOne,
+    Column, Entity, JoinColumn, JoinTable,
+    ManyToOne, OneToMany, OneToOne,
     PrimaryGeneratedColumn
 }
     from "typeorm";
@@ -10,6 +10,9 @@ import * as bcrypt from "bcryptjs";
 import UserPrivileges from "./UserPrivileges";
 import Branch from "./Branch";
 import Carrier from "./Carrier";
+import PackingTags from "./PackingTags";
+import readBranchByID from "../helpers/R/ByID/ReadBranchByID";
+import Orders from "./Orders";
 
 @Entity()
 export default class Users {
@@ -65,10 +68,37 @@ export default class Users {
     @OneToOne(type => Carrier, carrier => carrier.user)
     carrier: Carrier;
 
+    @OneToOne(type => PackingTags, parking => parking.driver)
+    parkingTags: PackingTags;
+
+    @OneToMany(type => Orders, orders => orders.checkedBy)
+    @JoinTable()
+    checkedOrders: Orders[];
+
+
+    async createItself(data) {
+        this.branch = await readBranchByID(data.branchID);
+        this.identificationNumber = data.identificationNumber;
+        this.identificationType = data.identificationType;
+        this.userPicture = data.userPicture;
+        this.userName = data.userName;
+        this.password = data.password;
+        this.identificationPhoto = data.identificationPhoto;
+        this.designation = data.designation;
+        this.isCarrier = data.isCarrier;
+        this.departmentWorkArea = data.departmentWorkArea;
+        this.phone = data.phone;
+        this.mobile = data.mobile;
+        this.email = data.email;
+        this.joined = data.joined;
+        this.hashPassword();
+    }
+
 
     hashPassword() {
         this.password = bcrypt.hashSync(this.password, 8);
     }
+
 
     checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
         return bcrypt.compareSync(unencryptedPassword, this.password);

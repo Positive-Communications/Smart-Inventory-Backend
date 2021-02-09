@@ -1,6 +1,6 @@
-import Product from "../../entity/Product";
-import readGateByID from "../R/ByID/ReadGateByID";
-import readProductUnitByID from "../R/ByID/ReadProductUnitByID";
+import Product from "../../../entity/Product";
+import readGateByID from "../../R/ByID/ReadGateByID";
+import readProductUnitByID from "../../R/ByID/ReadProductUnitByID";
 
 export default async function saveProduct(data) {
 

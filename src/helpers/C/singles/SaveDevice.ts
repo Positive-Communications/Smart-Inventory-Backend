@@ -1,9 +1,9 @@
-import Device from "../../entity/Device";
+import Device from "../../../entity/Device";
 
 import {getConnection} from "typeorm";
-import readBayByID from "../R/ByID/ReadBayByID";
-import readSectionByID from "../R/ByID/ReadSectionByID";
-import readBranchByID from "../R/ByID/ReadBranchByID";
+import readBayByID from "../../R/ByID/ReadBayByID";
+import readSectionByID from "../../R/ByID/ReadSectionByID";
+import readBranchByID from "../../R/ByID/ReadBranchByID";
 
 export default async function saveDevice(data) {
 

@@ -1,6 +1,6 @@
-import Presets from "../../entity/Presets";
-import readSectionByID from "../R/ByID/ReadSectionByID";
-import readProductByID from "../R/ByID/ReadProductByID";
+import Presets from "../../../entity/Presets";
+import readSectionByID from "../../R/ByID/ReadSectionByID";
+import readProductByID from "../../R/ByID/ReadProductByID";
 import {getConnection} from "typeorm";
 
 export default async function savePresets(data) {

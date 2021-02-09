@@ -1,7 +1,7 @@
 import {getConnection} from "typeorm";
-import Company from "../../entity/Company";
-import Branch from "../../entity/Branch";
-import readCompanyByID from "../R/ByID/ReadCompanyByID";
+import Company from "../../../entity/Company";
+import Branch from "../../../entity/Branch";
+import readCompanyByID from "../../R/ByID/ReadCompanyByID";
 
 export default async function saveBranches(data) {
 

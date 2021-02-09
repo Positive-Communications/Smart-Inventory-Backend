@@ -9,6 +9,9 @@ import Users from "./Users";
 import CarrierType from "./CarrierType";
 import OrderQue from "./OrderQue";
 import Device from "./Device";
+import VisitorAccessTags from "./VisitorAccessTags";
+import AccessCard from "./AccessCard";
+import Orders from "./Orders";
 
 @Entity()
 export default class Branch {
@@ -37,15 +40,19 @@ export default class Branch {
     @Column()
     isActive: boolean;
 
-    @OneToOne(type => OrderQue, orderQue=>orderQue.branch)
+    @OneToOne(type => OrderQue, orderQue => orderQue.branch)
     orderQue: OrderQue
 
     @OneToMany(type => Gate, gate => gate.branch)
     @JoinTable()
-    gates: Gate[]
+    gates: Gate[];
 
     @ManyToOne(type => Company, company => company.branches)
-    company: Company
+    company: Company;
+
+    @OneToMany(type => VisitorAccessTags, visitor => visitor.branch)
+    @JoinTable()
+    visitors: VisitorAccessTags[];
 
     @OneToMany(type => Sections, section => section.branch)
     @JoinTable()
@@ -63,13 +70,27 @@ export default class Branch {
     @JoinTable()
     users: Users[];
 
-    @OneToMany(type=>CarrierType, type=>type.branch)
+    @OneToMany(type => CarrierType, type => type.branch)
     @JoinTable()
     carrierTypes: CarrierType[]
 
-    @OneToMany(type=>Device, device=> device.branch)
+    @OneToMany(type => Device, device => device.branch)
     @JoinTable()
     devices: Device[];
+
+    @OneToMany(type => AccessCard, cards => cards.branch)
+    @JoinTable()
+    staffAccessCards: AccessCard[];
+
+    @OneToMany(type => Orders, orders => orders.issuedBy)
+    @JoinTable()
+    issueOrders: Orders[]
+
+    @OneToMany(type=>Orders, order=>order.collectedFrom)
+    @JoinTable()
+    ordersToCollect: Orders[];
+
+
 
 }
 

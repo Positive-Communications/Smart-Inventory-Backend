@@ -20,6 +20,7 @@ import Presets from "./Presets";
 import ProductTags from "./ProductTags";
 import Store from "./Store";
 import Bays from "./Bays";
+import OrderDetails from "./OrderDetails";
 
 @Entity()
 export default class Product {
@@ -88,5 +89,9 @@ export default class Product {
     @OneToMany(type => ManualEntry, manualEntry => manualEntry.product)
     @JoinTable()
     manualEntries: ManualEntry[];
+
+    @OneToMany(type=>OrderDetails, details=>details.product)
+    @JoinTable()
+    orderDetails: OrderDetails
 
 }

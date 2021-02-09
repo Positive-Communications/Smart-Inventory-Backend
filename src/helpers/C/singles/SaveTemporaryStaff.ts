@@ -1,5 +1,5 @@
-import TemporaryStaff from "../../entity/TemporaryStaff";
-import readGateByID from "../R/ByID/ReadGateByID";
+import TemporaryStaff from "../../../entity/TemporaryStaff";
+import readGateByID from "../../R/ByID/ReadGateByID";
 import {getConnection} from "typeorm";
 
 export default async function saveTemporaryStaff(data) {

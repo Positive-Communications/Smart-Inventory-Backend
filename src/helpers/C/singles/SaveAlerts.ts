@@ -1,6 +1,6 @@
-import Alerts from "../../entity/Alerts";
+import Alerts from "../../../entity/Alerts";
 import {getConnection} from "typeorm";
-import Sections from "../../entity/Sections";
+import Sections from "../../../entity/Sections";
 
 export default async function saveAlert(_alert, _section){
     let section = await getConnection()

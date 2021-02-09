@@ -1,14 +1,13 @@
-import UserPrivileges from "../../entity/UserPrivileges";
+import UserPrivileges from "../../../entity/UserPrivileges";
 import {getConnection} from "typeorm";
-import Users from "../../entity/Users";
-import readUserByID from "../R/ByID/ReadUserByID";
+import Users from "../../../entity/Users";
+import readUserByID from "../../R/ByID/ReadUserByID";
 
 export default async function saveUserPrivileges(userId, user) {
 
     let userPrivilege = new UserPrivileges();
 
-    userPrivilege.user = await readUserByID(userId)
-    ;
+    userPrivilege.user = await readUserByID(userId);
     userPrivilege.isAdmin = user.isAdmin;
     userPrivilege.addOrEditUsers = user.addOrEditUsers;
     userPrivilege.canViewOrderAmount = user.canViewOrderAmount;

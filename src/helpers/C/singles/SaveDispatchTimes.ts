@@ -1,6 +1,6 @@
 import {getConnection} from "typeorm";
-import readBranchByID from "../R/ByID/ReadBranchByID";
-import DispatchTimes from "../../entity/DispatchTimes";
+import readBranchByID from "../../R/ByID/ReadBranchByID";
+import DispatchTimes from "../../../entity/DispatchTimes";
 
 export default async function saveDispatchTimes(data) {
 

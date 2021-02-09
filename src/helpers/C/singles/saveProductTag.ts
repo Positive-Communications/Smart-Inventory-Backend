@@ -1,5 +1,5 @@
-import ProductTags from "../../entity/ProductTags";
-import readProductByID from "../R/ByID/ReadProductByID";
+import ProductTags from "../../../entity/ProductTags";
+import readProductByID from "../../R/ByID/ReadProductByID";
 import {getConnection} from "typeorm";
 
 export default async function saveProductTag(data) {

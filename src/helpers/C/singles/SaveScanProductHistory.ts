@@ -1,7 +1,7 @@
-import ScanProductHistory from "../../entity/ScanProductHistory";
-import readGateByID from "../R/ByID/ReadGateByID";
-import readDeviceByID from "../R/ByID/ReadDeviceByID";
-import readProductByID from "../R/ByID/ReadProductByID";
+import ScanProductHistory from "../../../entity/ScanProductHistory";
+import readGateByID from "../../R/ByID/ReadGateByID";
+import readDeviceByID from "../../R/ByID/ReadDeviceByID";
+import readProductByID from "../../R/ByID/ReadProductByID";
 import {getConnection} from "typeorm";
 
 export default async function saveScanProductHistory(data) {

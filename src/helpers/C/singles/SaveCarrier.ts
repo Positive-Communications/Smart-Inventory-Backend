@@ -1,7 +1,7 @@
-import Carrier from "../../entity/Carrier";
+import Carrier from "../../../entity/Carrier";
 import {getConnection} from "typeorm";
-import CarrierType from "../../entity/CarrierType";
-import Users from "../../entity/Users";
+import CarrierType from "../../../entity/CarrierType";
+import Users from "../../../entity/Users";
 
 export default async function saveCarrier(data) {
     let type = await getConnection()
