@@ -3,7 +3,16 @@ import Company from "../../../entity/Company";
 
 export default async function readCompanyByID(companyID) {
 
-    return await
-        getConnection()
-            .manager.findOne(Company, parseInt(companyID));
+    try {
+
+        return await
+            getConnection()
+                .createQueryBuilder()
+                .select('company')
+                .from(Company, 'company')
+                .where('company.id =:id', {id: parseInt(companyID)})
+                .getOne();
+    } catch (e) {
+        console.log(e);
+    }
 }
