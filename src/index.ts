@@ -21,7 +21,6 @@ import AddGate from "./helpers/C/singles/AddGate";
 import saveSections from "./helpers/C/singles/SaveSections";
 import saveBranches from "./helpers/C/singles/saveBranches";
 import getBranchInfo from "./helpers/R/Custom/BranchInfo";
-import readAllBraches from "./helpers/R/Many/readAllBranches";
 import saveDevice from "./helpers/C/singles/SaveDevice";
 import saveProductTag from "./helpers/C/singles/saveProductTag";
 import saveProduct from "./helpers/C/singles/AddProduct";
@@ -41,6 +40,8 @@ import Company from "./entity/Company";
 import Branch from "./entity/Branch";
 
 const app = express();
+
+const prod = false;
 
 const socketPort = 2022;
 const server = http.createServer(app);
@@ -67,7 +68,7 @@ createConnection({
     database: "fsscpyai",
     logging: false,
     entities: [
-        "entity/*.js"
+        "./entity/*.js"
     ]
 }).then(async connection => {
 
@@ -408,7 +409,7 @@ io.on('connection', client => {
 });
 
 
-server.listen(process.env.PORT, () => {
+server.listen(prod ? process.env.PORT : socketPort, () => {
     console.log('Application startup successful.... :100 \n' +
         ' Application Listening on port ' + socketPort + '... : 100');
 });
