@@ -408,7 +408,7 @@ io.on('connection', client => {
 });
 
 
-server.listen(socketPort, () => {
+server.listen(process.env.PORT, () => {
     console.log('Application startup successful.... :100 \n' +
         ' Application Listening on port ' + socketPort + '... : 100');
 });
