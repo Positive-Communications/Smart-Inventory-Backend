@@ -37,6 +37,8 @@ import readCompanyByID from "./helpers/R/ByID/ReadCompanyByID";
 import readUserByID from "./helpers/R/ByID/ReadUserByID";
 import updateBranch from "./helpers/U/ByID/UpdateBranch";
 import readAllDevices from "./helpers/R/Many/AllDevices";
+import Company from "./entity/Company";
+import Branch from "./entity/Branch";
 
 const app = express();
 
@@ -56,7 +58,18 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-createConnection().then(async connection => {
+createConnection({
+    type: "postgres",
+    host: "ziggy.db.elephantsql.com",
+    port: 5432,
+    username: "fsscpyai",
+    password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
+    database: "fsscpyai",
+    logging: false,
+    entities: [
+        "entity/*.js"
+    ]
+}).then(async connection => {
 
     console.log('Database ready... :103');
 
@@ -394,9 +407,8 @@ io.on('connection', client => {
 
 });
 
-// console.log()
 
-server.listen(process.env.PORT, () => {
+server.listen(socketPort, () => {
     console.log('Application startup successful.... :100 \n' +
         ' Application Listening on port ' + socketPort + '... : 100');
 });
