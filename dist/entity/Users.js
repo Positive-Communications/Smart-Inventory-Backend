@@ -1,0 +1,182 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var typeorm_1 = require("typeorm");
+var bcrypt = require("bcryptjs");
+var UserPrivileges_1 = require("./UserPrivileges");
+var Branch_1 = require("./Branch");
+var Carrier_1 = require("./Carrier");
+var PackingTags_1 = require("./PackingTags");
+var ReadBranchByID_1 = require("../helpers/R/ByID/ReadBranchByID");
+var Orders_1 = require("./Orders");
+var SaveUserPrivileges_1 = require("../helpers/C/singles/SaveUserPrivileges");
+var Users = /** @class */ (function () {
+    function Users() {
+    }
+    Users.prototype.createItself = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _a = this;
+                        return [4 /*yield*/, SaveUserPrivileges_1.default(data.privileges)];
+                    case 1:
+                        _a.privileges = _c.sent();
+                        _b = this;
+                        return [4 /*yield*/, ReadBranchByID_1.default(data.branchID)];
+                    case 2:
+                        _b.branch = _c.sent();
+                        this.identificationNumber = data.identificationNumber;
+                        this.identificationType = data.identificationType;
+                        this.userPicture = data.userPicture;
+                        this.userName = data.userName;
+                        this.password = data.password;
+                        this.identificationPhoto = data.identificationPhoto;
+                        this.designation = data.designation;
+                        this.isCarrier = data.isCarrier;
+                        this.departmentWorkArea = data.departmentWorkArea;
+                        this.phone = data.phone;
+                        this.mobile = data.mobile;
+                        this.email = data.email;
+                        this.joined = data.joined;
+                        this.hashPassword();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Users.prototype.hashPassword = function () {
+        this.password = bcrypt.hashSync(this.password, 8);
+    };
+    Users.prototype.checkIfUnencryptedPasswordIsValid = function (unencryptedPassword) {
+        return bcrypt.compareSync(unencryptedPassword, this.password);
+    };
+    __decorate([
+        typeorm_1.PrimaryGeneratedColumn(),
+        __metadata("design:type", Number)
+    ], Users.prototype, "id", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Users.prototype, "userPicture", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Users.prototype, "userName", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Users.prototype, "password", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Users.prototype, "identificationType", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Users.prototype, "identificationNumber", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Users.prototype, "identificationPhoto", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Users.prototype, "designation", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", Boolean)
+    ], Users.prototype, "isCarrier", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Users.prototype, "departmentWorkArea", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Users.prototype, "phone", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Users.prototype, "mobile", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Users.prototype, "email", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Users.prototype, "joined", void 0);
+    __decorate([
+        typeorm_1.ManyToOne(function (type) { return Branch_1.default; }, function (branch) { return branch.users; }),
+        __metadata("design:type", Branch_1.default)
+    ], Users.prototype, "branch", void 0);
+    __decorate([
+        typeorm_1.OneToOne(function (type) { return UserPrivileges_1.default; }, function (privilege) { return privilege.user; }),
+        typeorm_1.JoinColumn(),
+        __metadata("design:type", UserPrivileges_1.default)
+    ], Users.prototype, "privileges", void 0);
+    __decorate([
+        typeorm_1.OneToOne(function (type) { return Carrier_1.default; }, function (carrier) { return carrier.user; }),
+        __metadata("design:type", Carrier_1.default)
+    ], Users.prototype, "carrier", void 0);
+    __decorate([
+        typeorm_1.OneToOne(function (type) { return PackingTags_1.default; }, function (parking) { return parking.driver; }),
+        __metadata("design:type", PackingTags_1.default)
+    ], Users.prototype, "parkingTags", void 0);
+    __decorate([
+        typeorm_1.OneToMany(function (type) { return Orders_1.default; }, function (orders) { return orders.checkedBy; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
+    ], Users.prototype, "checkedOrders", void 0);
+    Users = __decorate([
+        typeorm_1.Entity()
+    ], Users);
+    return Users;
+}());
+exports.default = Users;
+//# sourceMappingURL=Users.js.map

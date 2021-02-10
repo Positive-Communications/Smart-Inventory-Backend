@@ -246,6 +246,20 @@ app.post('/save-carrier-type/', (req, res) => {
 * */
 
 
+app.post('/save-gate/', (req, res) => {
+    AddGate(req.body).then(data => {
+        res.json({
+            res: data
+        });
+    });
+});
+
+/*
+* Sections
+*
+* */
+
+
 app.post('/save-section/', (req, res) => {
     saveSections(req.body).then(data => {
         res.json({
@@ -255,13 +269,7 @@ app.post('/save-section/', (req, res) => {
 });
 
 
-app.post('/save-gate/', (req, res) => {
-    AddGate(req.body).then(data => {
-        res.json({
-            res: data
-        });
-    });
-});
+
 
 app.post('/save-preset/', (req, res) => {
     savePresets(req.body).then(data => {
