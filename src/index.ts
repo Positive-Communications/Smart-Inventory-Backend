@@ -155,7 +155,6 @@ app.post('/add-dispatch/:branchID', (req, res) => {
 * */
 
 
-
 app.post('/save-user/:branchID/', ((req, res) => {
     addUsers(req.body).then(data => {
         res.json({
@@ -172,7 +171,6 @@ app.patch('/update-user/', (req, res) => {
         });
     });
 });
-
 
 
 /*
@@ -217,7 +215,6 @@ app.post('/save-carrier//', (req, res) => {
         });
     });
 });
-
 
 
 app.post('/save-carrier-type/', (req, res) => {
@@ -293,7 +290,6 @@ app.post('/save-product/', (req, res) => {
         });
     });
 });
-
 
 
 app.post('/save-manual-entry/', (req, res) => {
@@ -399,7 +395,7 @@ io.on('connection', client => {
 });
 
 
-server.listen( process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
     console.log('Application startup successful.... :100 \n' +
         ' Application Listening on port ' + socketPort + '... : 100');
 });
