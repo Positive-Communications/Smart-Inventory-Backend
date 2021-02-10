@@ -57,18 +57,20 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-createConnection({
-    type: "postgres",
-    host: "ziggy.db.elephantsql.com",
-    port: 5432,
-    username: "fsscpyai",
-    password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
-    database: "fsscpyai",
-    logging: false,
-    entities: [
-        __dirname + "/entity/**/*.js"
-    ]
-}).then(async connection => {
+createConnection(
+//     {
+//     type: "postgres",
+//     host: "ziggy.db.elephantsql.com",
+//     port: 5432,
+//     username: "fsscpyai",
+//     password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
+//     database: "fsscpyai",
+//     logging: false,
+//     entities: [
+//         __dirname + "/entity/**/*.js"
+//     ]
+// }
+).then(async connection => {
 
     console.log('Database ready... :103');
 
