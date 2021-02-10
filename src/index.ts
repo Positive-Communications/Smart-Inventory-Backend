@@ -39,7 +39,7 @@ import readAllDevices from "./helpers/R/Many/AllDevices";
 
 const app = express();
 
-const prod = false;
+const prod = true;
 
 const socketPort = 2022;
 const server = http.createServer(app);
