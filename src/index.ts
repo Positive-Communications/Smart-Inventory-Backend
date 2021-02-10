@@ -39,7 +39,7 @@ import readAllDevices from "./helpers/R/Many/AllDevices";
 
 const app = express();
 
-const prod = true;
+const prod = false;
 
 const socketPort = 2022;
 const server = http.createServer(app);
@@ -67,7 +67,7 @@ createConnection(
     database: "fsscpyai",
     logging: false,
     entities: [
-        __dirname + "/entity/**/*.ts"
+        __dirname + "/entity/**/*.js"
     ]
 }
 ).then(async connection => {
