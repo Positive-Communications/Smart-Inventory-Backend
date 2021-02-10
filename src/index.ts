@@ -75,13 +75,13 @@ app.get('/', ((req, res) => {
 * */
 
 
-app.post('/save-company/', ((req, res) => {
+app.post('/save-company/', (req, res) => {
     saveCompany(req.body).then(data => {
         res.json({
             company: data
         });
     });
-}));
+});
 
 app.get('/company/:id/', (req, res) => {
     readCompanyByID(req.params.id).then(data => {

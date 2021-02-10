@@ -9,7 +9,7 @@ export default async function saveCompany(data) {
     company.headOffice = data.headOffice;
     company.email = data.email;
     company.streetRoad = data.streetRoad;
-    company.primaryNumber = data.primaryNumber;
+    company.primaryNumber = data.primaryNiumber;
     company.secondaryNumber = data.secondaryNumber;
 
     try{
