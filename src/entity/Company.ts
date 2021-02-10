@@ -1,9 +1,9 @@
 import {Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {stat} from "fs";
 import branch from "./Branch";
 
 @Entity()
 export default class Company{
+
     @PrimaryGeneratedColumn()
     id: number;
 
