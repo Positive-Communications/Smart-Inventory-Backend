@@ -21,7 +21,7 @@ import AddGate from "./helpers/C/singles/AddGate";
 import saveSections from "./helpers/C/singles/SaveSections";
 import saveBranches from "./helpers/C/singles/saveBranches";
 import getBranchInfo from "./helpers/R/Custom/BranchInfo";
-import getAllBranches from "./helpers/R/Many/AllBranches";
+import readAllBraches from "./helpers/R/Many/readAllBranches";
 import saveDevice from "./helpers/C/singles/SaveDevice";
 import saveProductTag from "./helpers/C/singles/saveProductTag";
 import saveProduct from "./helpers/C/singles/AddProduct";
@@ -33,6 +33,10 @@ import updateDevices from "./helpers/U/ByID/UpdateDevice";
 import getDispatchByBranch from "./helpers/R/ByBranch/GetDispatchByBranch";
 import saveProductUnit from "./entity/SaveProductUnit";
 import getAllCarrierTypes from "./helpers/R/Many/CarrierTypes";
+import readCompanyByID from "./helpers/R/ByID/ReadCompanyByID";
+import readUserByID from "./helpers/R/ByID/ReadUserByID";
+import updateBranch from "./helpers/U/ByID/UpdateBranch";
+import readAllDevices from "./helpers/R/Many/AllDevices";
 
 const app = express();
 
@@ -66,13 +70,32 @@ app.get('/', ((req, res) => {
 }));
 
 
+/*
+* Company
+* */
+
+
 app.post('/save-company/', ((req, res) => {
     saveCompany(req.body).then(data => {
         res.json({
-            data: data
+            company: data
         });
     });
 }));
+
+app.get('/company/:id/', (req, res) => {
+    readCompanyByID(req.params.id).then(data => {
+        res.json({
+            company: data
+        });
+    });
+});
+
+
+/*
+* Branch
+* */
+
 
 app.post('/save-branch/', (req, res) => {
     saveBranches(req.body).then(data => {
@@ -82,16 +105,6 @@ app.post('/save-branch/', (req, res) => {
     });
 });
 
-
-app.post('/save-device/', (req, res) => {
-    saveDevice(req.body).then(data => {
-        res.json({
-            device: data
-        });
-    });
-});
-
-
 app.get('/branch/:id', (req, res) => {
     getBranchInfo(req.params.id).then(data => {
         res.json({
@@ -100,14 +113,112 @@ app.get('/branch/:id', (req, res) => {
     });
 });
 
-app.get('/branches/:id', (req, res) => {
-    console.log(req.params.id)
-    getAllBranches(req.params.id).then(data => {
+app.get('/all-branches/:id', (req, res) => {
+    readUserByID(req.params.id).then(data => {
         res.json({
             branches: data
         });
     });
 });
+
+app.patch('/update-branch/:id', (req, res) => {
+    updateBranch(req.body).then(data => {
+        res.json({
+            branch: data
+        });
+    });
+});
+
+
+/*
+* Dispatch Times
+* */
+
+app.get('/dispatch/:branchID', (req, res) => {
+    getDispatchByBranch(req.params.branchID).then(data => {
+        res.json({
+            dispatch: data
+        });
+    });
+});
+
+app.post('/add-dispatch/:branchID', (req, res) => {
+    saveDispatchTimes(req.body).then(data => {
+        res.json({
+            productDispatch: data
+        });
+    });
+});
+
+/*
+* User
+* */
+
+
+
+app.post('/save-user/:branchID/', ((req, res) => {
+    addUsers(req.body).then(data => {
+        res.json({
+            user: data
+        });
+    });
+}));
+
+
+app.patch('/update-user/', (req, res) => {
+    updateUser(req.body).then(data => {
+        res.json({
+            user: data
+        });
+    });
+});
+
+
+
+/*
+* Device
+* */
+
+
+app.post('/save-device/:branchID', (req, res) => {
+    saveDevice(req.body).then(data => {
+        res.json({
+            device: data
+        });
+    });
+});
+
+app.patch('/update-device/:id', (req, res) => {
+    updateDevices(req.body, req.params.id).then(data => {
+        res.json({
+            device: data
+        });
+    });
+});
+
+app.get('/all-devices/:branchID', (req, res) => {
+    readAllDevices(req.params.branchID).then(data => {
+        res.json({
+            devices: data
+        });
+    });
+});
+
+
+/*
+* Carriers
+* */
+
+
+app.post('/save-carrier//', (req, res) => {
+    saveCarrier(req.body).then(data => {
+        res.json({
+            carrier: data
+        });
+    });
+});
+
+
 
 app.post('/save-carrier-type/', (req, res) => {
     saveCarrierTypes(req.body).then(msg => {
@@ -118,13 +229,11 @@ app.post('/save-carrier-type/', (req, res) => {
 });
 
 
-app.post('/save-user/:id/', ((req, res) => {
-    addUsers(req.body).then(data => {
-        res.json({
-            user: data
-        });
-    });
-}));
+/*
+* Gates
+*
+* */
+
 
 app.post('/save-section/', (req, res) => {
     saveSections(req.body).then(data => {
@@ -186,14 +295,6 @@ app.post('/save-product/', (req, res) => {
 });
 
 
-app.post('/save-carriers/', (req, res) => {
-    saveCarrier(req.body.data).then(data => {
-        res.json({
-            carrier: data
-        });
-    });
-});
-
 
 app.post('/save-manual-entry/', (req, res) => {
     addManualEntry(req.body).then(data => {
@@ -203,22 +304,6 @@ app.post('/save-manual-entry/', (req, res) => {
     });
 });
 
-app.patch('/update-user/', (req, res) => {
-    updateUser(req.body).then(data => {
-        res.json({
-            user: data
-        });
-    });
-});
-
-
-app.get('/branches/:id/', (req, res) => {
-    getAllBranches(req.params.id).then(data => {
-        res.json({
-            branches: data
-        });
-    });
-});
 
 app.post('/orderQue/', (req, res) => {
     saveOrderQue(req.body).then(data => {
@@ -245,13 +330,6 @@ app.patch('/device/:id/', (req, res) => {
     });
 });
 
-app.post('/add-dispatch/', (req, res) => {
-    saveDispatchTimes(req.body).then(data => {
-        res.json({
-            productDispatch: data
-        });
-    });
-});
 
 app.post('/save-product-unit/', (req, res) => {
     saveProductUnit(req.body).then(data => {
@@ -262,16 +340,8 @@ app.post('/save-product-unit/', (req, res) => {
 });
 
 
-app.get('/dispatch/:id', (req, res) => {
-    getDispatchByBranch(req.params.id).then(data => {
-        res.json({
-            dispatch: data
-        });
-    });
-});
-
 app.get('/all-carrier-types/', (req, res) => {
-    getAllCarrierTypes().then(data=>{
+    getAllCarrierTypes().then(data => {
         res.json({
             carrierTypes: data
         });

@@ -1,0 +1,23 @@
+{
+  "type": "postgres",
+  "host": "ziggy.db.elephantsql.com",
+  "port": 5432,
+  "username": "fsscpyai",
+  "password": "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
+  "database": "fsscpyai",
+  "logging": false,
+  "entities": [
+    "src/entity/**/*.ts"
+  ],
+  "migrations": [
+    "src/migration/**/*.ts"
+  ],
+  "subscribers": [
+    "src/subscriber/**/*.ts"
+  ],
+  "cli": {
+    "entitiesDir": "src/entity",
+    "migrationsDir": "src/migration",
+    "subscribersDir": "src/subscriber"
+  }
+}

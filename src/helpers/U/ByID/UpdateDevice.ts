@@ -1,9 +1,8 @@
 import {getConnection} from "typeorm";
 import Device from "../../../entity/Device";
 
-export default async function updateDevices(data, id) {
+async function updateDevices(data, id) {
     try {
-        console.log(data);
         return await
             getConnection()
                 .createQueryBuilder()
@@ -28,6 +27,8 @@ export default async function updateDevices(data, id) {
         console.log(e);
     }
 }
+
+export default updateDevices;
 
 
 let json = {

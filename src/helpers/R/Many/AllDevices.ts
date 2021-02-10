@@ -1,7 +1,8 @@
 import {getConnection, getRepository} from "typeorm";
 import Device from "../../../entity/Device";
 
-export default async function getAddDevices(branchID) {
+async function readAllDevices(branchID) {
+
     return await
         getConnection()
             .createQueryBuilder()
@@ -10,3 +11,5 @@ export default async function getAddDevices(branchID) {
             .where('device.branch.id =:id', {id: parseInt(branchID)})
             .getMany();
 }
+
+export default readAllDevices;

@@ -1,7 +1,8 @@
 import {getConnection} from "typeorm";
 import DispatchTimes from "../../../entity/DispatchTimes";
 
-export default async function getDispatchByBranch(branchID) {
+async function getDispatchByBranch(branchID) {
+
     return await
         getConnection()
             .createQueryBuilder()
@@ -10,3 +11,5 @@ export default async function getDispatchByBranch(branchID) {
             .where('dispatch.branch.id =:id', {id: parseInt(branchID)})
             .getOne();
 }
+
+export default getDispatchByBranch;
