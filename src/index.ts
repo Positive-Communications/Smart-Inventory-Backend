@@ -36,12 +36,10 @@ import readCompanyByID from "./helpers/R/ByID/ReadCompanyByID";
 import readUserByID from "./helpers/R/ByID/ReadUserByID";
 import updateBranch from "./helpers/U/ByID/UpdateBranch";
 import readAllDevices from "./helpers/R/Many/AllDevices";
-import Company from "./entity/Company";
-import Branch from "./entity/Branch";
 
 const app = express();
 
-const prod = false;
+const prod = true;
 
 const socketPort = 2022;
 const server = http.createServer(app);
@@ -68,7 +66,7 @@ createConnection({
     database: "fsscpyai",
     logging: false,
     entities: [
-        "./entity/*.js"
+        __dirname + "/entity/**/*.js"
     ]
 }).then(async connection => {
 
