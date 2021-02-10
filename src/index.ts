@@ -77,6 +77,7 @@ app.get('/', ((req, res) => {
 
 app.post('/save-company/', (req, res) => {
     saveCompany(req.body).then(data => {
+        console.log(data);
         res.json({
             company: data
         });
