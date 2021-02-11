@@ -40,6 +40,7 @@ import readAllGates from "./helpers/R/Many/ReadAllGates";
 import readAllProducts from "./helpers/R/Many/AllProducts";
 import readAllUsers from "./helpers/R/Many/ReadAllUsers";
 import readAllBranches from "./helpers/R/Many/readAllBranches";
+import readAllBays from "./helpers/R/Many/ReadAllBays";
 
 const app = express();
 
@@ -405,6 +406,14 @@ app.post('/save-bay/:id/', (req, res) => {
     saveBays(req).then(data => {
         res.json({
             res: data
+        });
+    });
+});
+
+app.get('/all-bays/', (req, res) => {
+    readAllBays().then(data => {
+        res.json({
+            bays: data
         });
     });
 });
