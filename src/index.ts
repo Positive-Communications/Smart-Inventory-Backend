@@ -43,6 +43,7 @@ import readAllBranches from "./helpers/R/Many/readAllBranches";
 import readAllBays from "./helpers/R/Many/ReadAllBays";
 import readAllSections from "./helpers/R/Many/ReadAllSections";
 import readAllProductUnits from "./helpers/R/Many/ReadAllProductUnit";
+import savePallet from "./helpers/C/singles/SavePallet";
 
 const app = express();
 
@@ -394,7 +395,7 @@ app.get('/all-products/', (req, res) => {
 });
 
 app.post('/save-product-unit/', (req, res) => {
-    saveProductUnit(req.body).then(data=>{
+    saveProductUnit(req.body).then(data => {
         res.json({
             unit: data
         });
@@ -403,9 +404,17 @@ app.post('/save-product-unit/', (req, res) => {
 
 
 app.get('/all-product-units/', (req, res) => {
-    readAllProductUnits().then(data=>{
+    readAllProductUnits().then(data => {
         res.json({
             productUnits: data
+        });
+    });
+});
+
+app.post('/save-pallet/', (req, res) => {
+    savePallet(req.body).then(data => {
+        res.json({
+            pallet: data
         });
     });
 });
