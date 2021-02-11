@@ -403,7 +403,7 @@ app.post('/save-manual-entry/', (req, res) => {
 * */
 
 app.post('/save-bay/:id/', (req, res) => {
-    saveBays(req).then(data => {
+    saveBays(req.body).then(data => {
         res.json({
             res: data
         });

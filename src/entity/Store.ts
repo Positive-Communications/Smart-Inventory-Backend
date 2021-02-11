@@ -5,6 +5,7 @@ import Product from "./Product";
 
 @Entity()
 export default class Store {
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -18,16 +19,24 @@ export default class Store {
     @Column()
     number: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     map: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     storageType: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     isActive: boolean;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     hasErrors: boolean;
 
     @OneToMany(type => Product, product => product.storedIn)
