@@ -4,5 +4,5 @@ import Branch from "../../../entity/Branch";
 export default async function readAllBranches(companyID) {
 
     return await
-        getConnection().manager.find(Branch)
+        getConnection().manager.find(Branch);
 }

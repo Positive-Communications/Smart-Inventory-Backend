@@ -9,7 +9,6 @@ import {
     createConnection,
 } from "typeorm";
 
-import saveUserPrivileges from "./helpers/C/singles/SaveUserPrivileges";
 import addUsers from "./helpers/C/singles/AddUsers";
 import saveCarrier from "./helpers/C/singles/SaveCarrier";
 import saveCompany from "./helpers/C/singles/saveCompany";
@@ -36,6 +35,11 @@ import readCompanyByID from "./helpers/R/ByID/ReadCompanyByID";
 import readUserByID from "./helpers/R/ByID/ReadUserByID";
 import updateBranch from "./helpers/U/ByID/UpdateBranch";
 import readAllDevices from "./helpers/R/Many/AllDevices";
+import getAllCarriers from "./helpers/R/Many/GetAllCarriers";
+import readAllGates from "./helpers/R/Many/ReadAllGates";
+import readAllProducts from "./helpers/R/Many/AllProducts";
+import readAllUsers from "./helpers/R/Many/ReadAllUsers";
+import readAllBranches from "./helpers/R/Many/readAllBranches";
 
 const app = express();
 
@@ -58,18 +62,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 createConnection(
-    {
-    type: "postgres",
-    host: "ziggy.db.elephantsql.com",
-    port: 5432,
-    username: "fsscpyai",
-    password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
-    database: "fsscpyai",
-    logging: false,
-    entities: [
-        __dirname + "/entity/**/*.js"
-    ]
-}
+//     {
+//     type: "postgres",
+//     host: "ziggy.db.elephantsql.com",
+//     port: 5432,
+//     username: "fsscpyai",
+//     password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
+//     database: "fsscpyai",
+//     logging: false,
+//     entities: [
+//         __dirname + "/entity/**/*.js"
+//     ]
+// }
 ).then(async connection => {
 
     console.log('Database ready... :103');
@@ -127,8 +131,8 @@ app.get('/branch/:id', (req, res) => {
     });
 });
 
-app.get('/all-branches/:id', (req, res) => {
-    readUserByID(req.params.id).then(data => {
+app.get('/all-branches/:id/', (req, res) => {
+    readAllBranches(req.params.id).then(data => {
         res.json({
             branches: data
         });
@@ -177,6 +181,14 @@ app.post('/save-user/:branchID/', ((req, res) => {
     });
 }));
 
+app.get('/all-users/', (req, res) => {
+    readAllUsers().then(data => {
+        res.json({
+            users: data
+        });
+    });
+});
+
 
 app.patch('/update-user/', (req, res) => {
     updateUser(req.body).then(data => {
@@ -222,7 +234,7 @@ app.get('/all-devices/:branchID', (req, res) => {
 * */
 
 
-app.post('/save-carrier//', (req, res) => {
+app.post('/save-carrier/', (req, res) => {
     saveCarrier(req.body).then(data => {
         res.json({
             carrier: data
@@ -235,6 +247,24 @@ app.post('/save-carrier-type/', (req, res) => {
     saveCarrierTypes(req.body).then(msg => {
         res.json({
             carrierType: msg
+        });
+    });
+});
+
+
+app.get('/all-carrier-types/', (req, res) => {
+    getAllCarrierTypes().then(data => {
+        res.json({
+            carrierTypes: data
+        });
+    });
+});
+
+
+app.get('/all-carriers/', (req, res) => {
+    getAllCarriers().then(data => {
+        res.json({
+            carriers: data
         });
     });
 });
@@ -254,6 +284,19 @@ app.post('/save-gate/', (req, res) => {
     });
 });
 
+
+app.get('/all-gates/', (req, res) => {
+    readAllGates().then(data => {
+        res.json({
+            gates: data
+        });
+    });
+});
+
+// app.get('/gate/:id', (req, res) => {
+//
+// });
+
 /*
 * Sections
 *
@@ -269,8 +312,6 @@ app.post('/save-section/', (req, res) => {
 });
 
 
-
-
 app.post('/save-preset/', (req, res) => {
     savePresets(req.body).then(data => {
         res.json({
@@ -280,47 +321,20 @@ app.post('/save-preset/', (req, res) => {
 
 });
 
-app.post('/save-dispatch-times/', ((req, res) => {
-    saveDispatchTimes(req.body).then(data => {
-        res.json({
-            res: data
-        });
-    });
-}));
 
-app.post('/save-bay/:id/', (req, res) => {
-    saveBays(req).then(data => {
+app.get('/all-presets/', (req, res) => {
+    readAllGates().then(data => {
         res.json({
-            res: data
-        });
-    });
-});
-
-app.post('/save-product-tag/', (req, res) => {
-    saveProductTag(req.body).then(data => {
-        res.json({
-            productTag: data
-        });
-    });
+            presets: data
+        })
+    })
 });
 
 
-app.post('/save-product/', (req, res) => {
-    saveProduct(req.body).then(data => {
-        res.json({
-            product: data
-        });
-    });
-});
-
-
-app.post('/save-manual-entry/', (req, res) => {
-    addManualEntry(req.body).then(data => {
-        res.json({
-            manualEntry: data
-        });
-    });
-});
+/*
+* DispatchTimes
+*
+* */
 
 
 app.post('/orderQue/', (req, res) => {
@@ -348,23 +362,53 @@ app.patch('/device/:id/', (req, res) => {
     });
 });
 
+/*
+* Products
+* */
 
-app.post('/save-product-unit/', (req, res) => {
-    saveProductUnit(req.body).then(data => {
+app.post('/save-product/', (req, res) => {
+    saveProduct(req.body).then(data => {
         res.json({
-            productUnit: data
+            product: data
+        });
+    });
+});
+
+app.get('/all-products/', (req, res) => {
+    readAllProducts().then(data => {
+        res.json({
+            products: data
         });
     });
 });
 
 
-app.get('/all-carrier-types/', (req, res) => {
-    getAllCarrierTypes().then(data => {
+/*
+* ManualEntry
+* */
+
+
+app.post('/save-manual-entry/', (req, res) => {
+    addManualEntry(req.body).then(data => {
         res.json({
-            carrierTypes: data
+            manualEntry: data
         });
     });
 });
+
+
+/*
+* Storage Bays
+* */
+
+app.post('/save-bay/:id/', (req, res) => {
+    saveBays(req).then(data => {
+        res.json({
+            res: data
+        });
+    });
+});
+
 
 io.on('connection', client => {
     io.emit('msg', 'Connection Successful!');
