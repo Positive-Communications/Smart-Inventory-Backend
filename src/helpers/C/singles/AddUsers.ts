@@ -1,15 +1,11 @@
 import Users from "../../../entity/Users";
 import {getConnection} from "typeorm";
-import Branch from "../../../entity/Branch";
-import {json} from "express";
-import saveUserPrivileges from "./SaveUserPrivileges";
 
-export default async function addUsers(data) {
+const addUsers = async data => {
 
     let user = new Users();
 
-    await user.createItself(data);
-    user.privileges = await saveUserPrivileges(data.privileges);
+    await user.createItSelf(data);
 
     try {
 
@@ -20,6 +16,8 @@ export default async function addUsers(data) {
         console.log(e)
     }
 }
+
+export default addUsers;
 
 let config = {
     branchID: "",

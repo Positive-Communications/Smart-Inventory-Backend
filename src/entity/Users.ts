@@ -76,7 +76,12 @@ export default class Users {
     @JoinTable()
     checkedOrders: Orders[];
 
-    async createItself(data) {
+
+    hashPassword() {
+        this.password = bcrypt.hashSync(this.password, 8);
+    }
+
+    async createItSelf(data) {
 
         this.privileges = await saveUserPrivileges(data.privileges)
         this.branch = await readBranchByID(data.branchID);
@@ -94,11 +99,6 @@ export default class Users {
         this.email = data.email;
         this.joined = data.joined;
         this.hashPassword();
-    }
-
-
-    hashPassword() {
-        this.password = bcrypt.hashSync(this.password, 8);
     }
 
 
