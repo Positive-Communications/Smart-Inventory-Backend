@@ -12,7 +12,7 @@ export default async function saveSections(data) {
     section.capacity = data.capacity;
     section.hasErrors = data.hasErrors;
     section.branch = await readBranchByID(data.branchID);
-    section.presets = await readPresetByID(data.presetId);
+    // section.presets = await readPresetByID(data.presetId);
 
     try {
 
