@@ -54,7 +54,6 @@ var SaveSections_1 = require("./helpers/C/singles/SaveSections");
 var saveBranches_1 = require("./helpers/C/singles/saveBranches");
 var BranchInfo_1 = require("./helpers/R/Custom/BranchInfo");
 var SaveDevice_1 = require("./helpers/C/singles/SaveDevice");
-var saveProductTag_1 = require("./helpers/C/singles/saveProductTag");
 var AddProduct_1 = require("./helpers/C/singles/AddProduct");
 var AddManualEntry_1 = require("./helpers/C/singles/AddManualEntry");
 var UpdateUser_1 = require("./helpers/U/ByID/UpdateUser");
@@ -62,15 +61,18 @@ var SaveOrderQue_1 = require("./helpers/C/singles/SaveOrderQue");
 var AllDevices_1 = require("./helpers/R/Many/AllDevices");
 var UpdateDevice_1 = require("./helpers/U/ByID/UpdateDevice");
 var GetDispatchByBranch_1 = require("./helpers/R/ByBranch/GetDispatchByBranch");
-var SaveProductUnit_1 = require("./entity/SaveProductUnit");
 var CarrierTypes_1 = require("./helpers/R/Many/CarrierTypes");
 var ReadCompanyByID_1 = require("./helpers/R/ByID/ReadCompanyByID");
-var ReadUserByID_1 = require("./helpers/R/ByID/ReadUserByID");
 var UpdateBranch_1 = require("./helpers/U/ByID/UpdateBranch");
 var AllDevices_2 = require("./helpers/R/Many/AllDevices");
+var GetAllCarriers_1 = require("./helpers/R/Many/GetAllCarriers");
+var ReadAllGates_1 = require("./helpers/R/Many/ReadAllGates");
+var AllProducts_1 = require("./helpers/R/Many/AllProducts");
+var ReadAllUsers_1 = require("./helpers/R/Many/ReadAllUsers");
+var readAllBranches_1 = require("./helpers/R/Many/readAllBranches");
 var app = express();
 var prod = false;
-var socketPort = 2022;
+var socketPort = 2026;
 var server = http.createServer(app);
 var io = require('socket.io')(server, {
     cors: {
@@ -82,18 +84,20 @@ var EventSource = require('eventsource');
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-typeorm_1.createConnection({
-    type: "postgres",
-    host: "ziggy.db.elephantsql.com",
-    port: 5432,
-    username: "fsscpyai",
-    password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
-    database: "fsscpyai",
-    logging: false,
-    entities: [
-        __dirname + "/entity/**/*.js"
-    ]
-}).then(function (connection) { return __awaiter(_this, void 0, void 0, function () {
+typeorm_1.createConnection(
+//     {
+//     type: "postgres",
+//     host: "ziggy.db.elephantsql.com",
+//     port: 5432,
+//     username: "fsscpyai",
+//     password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
+//     database: "fsscpyai",
+//     logging: false,
+//     entities: [
+//         __dirname + "/entity/**/*.js"
+//     ]
+// }
+).then(function (connection) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         console.log('Database ready... :103');
         return [2 /*return*/];
@@ -138,8 +142,8 @@ app.get('/branch/:id', function (req, res) {
         });
     });
 });
-app.get('/all-branches/:id', function (req, res) {
-    ReadUserByID_1.default(req.params.id).then(function (data) {
+app.get('/all-branches/', function (req, res) {
+    readAllBranches_1.default(7).then(function (data) {
         res.json({
             branches: data
         });
@@ -179,6 +183,13 @@ app.post('/save-user/:branchID/', (function (req, res) {
         });
     });
 }));
+app.get('/all-users/', function (req, res) {
+    ReadAllUsers_1.default().then(function (data) {
+        res.json({
+            users: data
+        });
+    });
+});
 app.patch('/update-user/', function (req, res) {
     UpdateUser_1.default(req.body).then(function (data) {
         res.json({
@@ -213,7 +224,7 @@ app.get('/all-devices/:branchID', function (req, res) {
 /*
 * Carriers
 * */
-app.post('/save-carrier//', function (req, res) {
+app.post('/save-carrier/', function (req, res) {
     SaveCarrier_1.default(req.body).then(function (data) {
         res.json({
             carrier: data
@@ -227,21 +238,49 @@ app.post('/save-carrier-type/', function (req, res) {
         });
     });
 });
+app.get('/all-carrier-types/', function (req, res) {
+    CarrierTypes_1.default().then(function (data) {
+        res.json({
+            carrierTypes: data
+        });
+    });
+});
+app.get('/all-carriers/', function (req, res) {
+    GetAllCarriers_1.default().then(function (data) {
+        res.json({
+            carriers: data
+        });
+    });
+});
 /*
 * Gates
+*
+* */
+app.post('/save-gate/', function (req, res) {
+    AddGate_1.default(req.body).then(function (data) {
+        res.json({
+            res: data
+        });
+    });
+});
+app.get('/all-gates/', function (req, res) {
+    ReadAllGates_1.default().then(function (data) {
+        res.json({
+            gates: data
+        });
+    });
+});
+// app.get('/gate/:id', (req, res) => {
+//
+// });
+/*
+* Sections
 *
 * */
 app.post('/save-section/', function (req, res) {
     SaveSections_1.default(req.body).then(function (data) {
         res.json({
             data: data
-        });
-    });
-});
-app.post('/save-gate/', function (req, res) {
-    AddGate_1.default(req.body).then(function (data) {
-        res.json({
-            res: data
         });
     });
 });
@@ -252,41 +291,17 @@ app.post('/save-preset/', function (req, res) {
         });
     });
 });
-app.post('/save-dispatch-times/', (function (req, res) {
-    SaveDispatchTimes_1.default(req.body).then(function (data) {
+app.get('/all-presets/', function (req, res) {
+    ReadAllGates_1.default().then(function (data) {
         res.json({
-            res: data
-        });
-    });
-}));
-app.post('/save-bay/:id/', function (req, res) {
-    SaveBays_1.default(req).then(function (data) {
-        res.json({
-            res: data
+            presets: data
         });
     });
 });
-app.post('/save-product-tag/', function (req, res) {
-    saveProductTag_1.default(req.body).then(function (data) {
-        res.json({
-            productTag: data
-        });
-    });
-});
-app.post('/save-product/', function (req, res) {
-    AddProduct_1.default(req.body).then(function (data) {
-        res.json({
-            product: data
-        });
-    });
-});
-app.post('/save-manual-entry/', function (req, res) {
-    AddManualEntry_1.default(req.body).then(function (data) {
-        res.json({
-            manualEntry: data
-        });
-    });
-});
+/*
+* DispatchTimes
+*
+* */
 app.post('/orderQue/', function (req, res) {
     SaveOrderQue_1.default(req.body).then(function (data) {
         res.json({
@@ -308,17 +323,40 @@ app.patch('/device/:id/', function (req, res) {
         });
     });
 });
-app.post('/save-product-unit/', function (req, res) {
-    SaveProductUnit_1.default(req.body).then(function (data) {
+/*
+* Products
+* */
+app.post('/save-product/', function (req, res) {
+    AddProduct_1.default(req.body).then(function (data) {
         res.json({
-            productUnit: data
+            product: data
         });
     });
 });
-app.get('/all-carrier-types/', function (req, res) {
-    CarrierTypes_1.default().then(function (data) {
+app.get('/all-products/', function (req, res) {
+    AllProducts_1.default().then(function (data) {
         res.json({
-            carrierTypes: data
+            products: data
+        });
+    });
+});
+/*
+* ManualEntry
+* */
+app.post('/save-manual-entry/', function (req, res) {
+    AddManualEntry_1.default(req.body).then(function (data) {
+        res.json({
+            manualEntry: data
+        });
+    });
+});
+/*
+* Storage Bays
+* */
+app.post('/save-bay/:id/', function (req, res) {
+    SaveBays_1.default(req).then(function (data) {
+        res.json({
+            res: data
         });
     });
 });

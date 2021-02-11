@@ -37,14 +37,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var Product_1 = require("../../../entity/Product");
-var readAllProducts = function () { return __awaiter(_this, void 0, void 0, function () {
+var Users_1 = require("../../../entity/Users");
+var readAllUsers = function () { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getConnection().manager.find(Product_1.default)];
+            case 0: return [4 /*yield*/, typeorm_1.getConnection().manager.find(Users_1.default)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
-exports.default = readAllProducts;
-//# sourceMappingURL=AllProducts.js.map
+exports.default = readAllUsers;
+//# sourceMappingURL=ReadAllUsers.js.map

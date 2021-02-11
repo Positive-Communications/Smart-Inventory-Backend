@@ -43,9 +43,9 @@ import readAllBranches from "./helpers/R/Many/readAllBranches";
 
 const app = express();
 
-const prod = true;
+const prod = false;
 
-const socketPort = 2022;
+const socketPort = 2026;
 const server = http.createServer(app);
 
 const io = require('socket.io')(server, {
@@ -62,18 +62,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 createConnection(
-//     {
-//     type: "postgres",
-//     host: "ziggy.db.elephantsql.com",
-//     port: 5432,
-//     username: "fsscpyai",
-//     password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
-//     database: "fsscpyai",
-//     logging: false,
-//     entities: [
-//         __dirname + "/entity/**/*.js"
-//     ]
-// }
+    {
+    type: "postgres",
+    host: "ziggy.db.elephantsql.com",
+    port: 5432,
+    username: "fsscpyai",
+    password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
+    database: "fsscpyai",
+    logging: false,
+    entities: [
+        __dirname + "/entity/**/*.js"
+    ]
+}
 ).then(async connection => {
 
     console.log('Database ready... :103');
@@ -131,8 +131,8 @@ app.get('/branch/:id', (req, res) => {
     });
 });
 
-app.get('/all-branches/:id/', (req, res) => {
-    readAllBranches(req.params.id).then(data => {
+app.get('/all-branches/', (req, res) => {
+    readAllBranches(7).then(data => {
         res.json({
             branches: data
         });
