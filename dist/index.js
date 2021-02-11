@@ -84,20 +84,18 @@ var EventSource = require('eventsource');
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-typeorm_1.createConnection(
-//     {
-//     type: "postgres",
-//     host: "ziggy.db.elephantsql.com",
-//     port: 5432,
-//     username: "fsscpyai",
-//     password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
-//     database: "fsscpyai",
-//     logging: false,
-//     entities: [
-//         __dirname + "/entity/**/*.js"
-//     ]
-// }
-).then(function (connection) { return __awaiter(_this, void 0, void 0, function () {
+typeorm_1.createConnection({
+    type: "postgres",
+    host: "ziggy.db.elephantsql.com",
+    port: 5432,
+    username: "fsscpyai",
+    password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
+    database: "fsscpyai",
+    logging: false,
+    entities: [
+        __dirname + "/entity/**/*.js"
+    ]
+}).then(function (connection) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         console.log('Database ready... :103');
         return [2 /*return*/];
