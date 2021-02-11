@@ -10,7 +10,7 @@ export default async function saveProductUnit(data) {
     productUnit.numberOfProducts = data.numberOfProducts;
     productUnit.isTrackedByRFID = data.isTrackedByRFID;
     productUnit.useUnitAsDefault = data.useUnitAsDefault;
-    productUnit.product = await readProductByID(data.productID);
+    // productUnit.product = await readProductByID(data.productID);
 
     try {
 
@@ -29,5 +29,5 @@ let json = {
     numberOfProducts: "",
     isTrackedByRFID: false,
     useUnitAsDefault: false,
-    productID: ""
+    // productID: ""
 }
