@@ -42,6 +42,7 @@ import readAllUsers from "./helpers/R/Many/ReadAllUsers";
 import readAllBranches from "./helpers/R/Many/readAllBranches";
 import readAllBays from "./helpers/R/Many/ReadAllBays";
 import readAllSections from "./helpers/R/Many/ReadAllSections";
+import readAllProductUnits from "./helpers/R/Many/ReadAllProductUnit";
 
 const app = express();
 
@@ -388,6 +389,23 @@ app.get('/all-products/', (req, res) => {
     readAllProducts().then(data => {
         res.json({
             products: data
+        });
+    });
+});
+
+app.post('/save-product-unit/', (req, res) => {
+    saveProductUnit(req.body).then(data=>{
+        res.json({
+            unit: data
+        });
+    });
+});
+
+
+app.get('/all-product-units/', (req, res) => {
+    readAllProductUnits().then(data=>{
+        res.json({
+            productUnits: data
         });
     });
 });

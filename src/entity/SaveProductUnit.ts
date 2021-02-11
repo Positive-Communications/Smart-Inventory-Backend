@@ -1,5 +1,4 @@
 import ProductUnit from "./ProductUnit";
-import readProductByID from "../helpers/R/ByID/ReadProductByID";
 import {getConnection} from "typeorm";
 
 export default async function saveProductUnit(data) {
@@ -29,5 +28,4 @@ let json = {
     numberOfProducts: "",
     isTrackedByRFID: false,
     useUnitAsDefault: false,
-    // productID: ""
 }
