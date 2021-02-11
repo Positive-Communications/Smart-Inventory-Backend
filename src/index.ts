@@ -43,7 +43,7 @@ import readAllBranches from "./helpers/R/Many/readAllBranches";
 
 const app = express();
 
-const prod = false;
+const prod = true;
 
 const socketPort = 2026;
 const server = http.createServer(app);
