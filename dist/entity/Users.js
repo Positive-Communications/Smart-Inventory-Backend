@@ -56,7 +56,10 @@ var SaveUserPrivileges_1 = require("../helpers/C/singles/SaveUserPrivileges");
 var Users = /** @class */ (function () {
     function Users() {
     }
-    Users.prototype.createItself = function (data) {
+    Users.prototype.hashPassword = function () {
+        this.password = bcrypt.hashSync(this.password, 8);
+    };
+    Users.prototype.createItSelf = function (data) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, _b;
             return __generator(this, function (_c) {
@@ -88,9 +91,6 @@ var Users = /** @class */ (function () {
                 }
             });
         });
-    };
-    Users.prototype.hashPassword = function () {
-        this.password = bcrypt.hashSync(this.password, 8);
     };
     Users.prototype.checkIfUnencryptedPasswordIsValid = function (unencryptedPassword) {
         return bcrypt.compareSync(unencryptedPassword, this.password);

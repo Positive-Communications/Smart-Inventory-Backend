@@ -140,8 +140,8 @@ app.get('/branch/:id', function (req, res) {
         });
     });
 });
-app.get('/all-branches/', function (req, res) {
-    readAllBranches_1.default(7).then(function (data) {
+app.get('/all-branches/:id/', function (req, res) {
+    readAllBranches_1.default(req.body.id).then(function (data) {
         res.json({
             branches: data
         });
