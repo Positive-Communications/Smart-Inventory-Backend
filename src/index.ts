@@ -63,17 +63,17 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 createConnection(
     {
-    type: "postgres",
-    host: "ziggy.db.elephantsql.com",
-    port: 5432,
-    username: "fsscpyai",
-    password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
-    database: "fsscpyai",
-    logging: false,
-    entities: [
-        __dirname + "/entity/**/*.js"
-    ]
-}
+        type: "postgres",
+        host: "ziggy.db.elephantsql.com",
+        port: 5432,
+        username: "fsscpyai",
+        password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
+        database: "fsscpyai",
+        logging: false,
+        entities: [
+            __dirname + "/entity/**/*.js"
+        ]
+    }
 ).then(async connection => {
 
     console.log('Database ready... :103');
@@ -131,8 +131,8 @@ app.get('/branch/:id', (req, res) => {
     });
 });
 
-app.get('/all-branches/', (req, res) => {
-    readAllBranches(7).then(data => {
+app.get('/all-branches/:id/', (req, res) => {
+    readAllBranches(req.body.id).then(data => {
         res.json({
             branches: data
         });
