@@ -41,6 +41,7 @@ import readAllProducts from "./helpers/R/Many/AllProducts";
 import readAllUsers from "./helpers/R/Many/ReadAllUsers";
 import readAllBranches from "./helpers/R/Many/readAllBranches";
 import readAllBays from "./helpers/R/Many/ReadAllBays";
+import readAllSections from "./helpers/R/Many/ReadAllSections";
 
 const app = express();
 
@@ -329,6 +330,14 @@ app.get('/all-presets/', (req, res) => {
             presets: data
         })
     })
+});
+
+app.get('/all-sections/', (req, res) => {
+    readAllSections().then(data => {
+        res.json({
+            sections: data
+        });
+    });
 });
 
 
