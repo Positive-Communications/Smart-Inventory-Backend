@@ -37,13 +37,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Sections_1 = require("../../../entity/Sections");
 var ReadBranchByID_1 = require("../../R/ByID/ReadBranchByID");
-var ReadPresetByID_1 = require("../../R/ByID/ReadPresetByID");
 var typeorm_1 = require("typeorm");
 function saveSections(data) {
     return __awaiter(this, void 0, void 0, function () {
-        var section, _a, _b, e_1;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var section, _a, e_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     section = new Sections_1.default();
                     section.role = data.role;
@@ -53,21 +52,17 @@ function saveSections(data) {
                     _a = section;
                     return [4 /*yield*/, ReadBranchByID_1.default(data.branchID)];
                 case 1:
-                    _a.branch = _c.sent();
-                    _b = section;
-                    return [4 /*yield*/, ReadPresetByID_1.default(data.presetId)];
+                    _a.branch = _b.sent();
+                    _b.label = 2;
                 case 2:
-                    _b.presets = _c.sent();
-                    _c.label = 3;
-                case 3:
-                    _c.trys.push([3, 5, , 6]);
+                    _b.trys.push([2, 4, , 5]);
                     return [4 /*yield*/, typeorm_1.getConnection().manager.save(section)];
-                case 4: return [2 /*return*/, _c.sent()];
-                case 5:
-                    e_1 = _c.sent();
+                case 3: return [2 /*return*/, _b.sent()];
+                case 4:
+                    e_1 = _b.sent();
                     console.log(e_1);
-                    return [3 /*break*/, 6];
-                case 6: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });

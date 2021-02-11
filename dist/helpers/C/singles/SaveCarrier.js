@@ -63,10 +63,10 @@ function saveCarrier(data) {
 }
 exports.default = saveCarrier;
 var json = {
-    No: "",
+    number: "",
     type: "",
     user: "",
-    isFixedUse: true,
+    isFixed: true,
     status: ""
 };
 //# sourceMappingURL=SaveCarrier.js.map

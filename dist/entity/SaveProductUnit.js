@@ -36,33 +36,28 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var ProductUnit_1 = require("./ProductUnit");
-var ReadProductByID_1 = require("../helpers/R/ByID/ReadProductByID");
 var typeorm_1 = require("typeorm");
 function saveProductUnit(data) {
     return __awaiter(this, void 0, void 0, function () {
-        var productUnit, _a, e_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var productUnit, e_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
                     productUnit = new ProductUnit_1.default();
                     productUnit.unit = data.unit;
                     productUnit.numberOfProducts = data.numberOfProducts;
                     productUnit.isTrackedByRFID = data.isTrackedByRFID;
                     productUnit.useUnitAsDefault = data.useUnitAsDefault;
-                    _a = productUnit;
-                    return [4 /*yield*/, ReadProductByID_1.default(data.productID)];
+                    _a.label = 1;
                 case 1:
-                    _a.product = _b.sent();
-                    _b.label = 2;
-                case 2:
-                    _b.trys.push([2, 4, , 5]);
+                    _a.trys.push([1, 3, , 4]);
                     return [4 /*yield*/, typeorm_1.getConnection().manager.save(productUnit)];
-                case 3: return [2 /*return*/, _b.sent()];
-                case 4:
-                    e_1 = _b.sent();
+                case 2: return [2 /*return*/, _a.sent()];
+                case 3:
+                    e_1 = _a.sent();
                     console.log(e_1);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     });
@@ -73,6 +68,5 @@ var json = {
     numberOfProducts: "",
     isTrackedByRFID: false,
     useUnitAsDefault: false,
-    productID: ""
 };
 //# sourceMappingURL=SaveProductUnit.js.map

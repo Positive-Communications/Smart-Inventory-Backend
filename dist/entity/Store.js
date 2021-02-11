@@ -34,19 +34,27 @@ var Store = /** @class */ (function () {
         __metadata("design:type", String)
     ], Store.prototype, "number", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", String)
     ], Store.prototype, "map", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", String)
     ], Store.prototype, "storageType", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", Boolean)
     ], Store.prototype, "isActive", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", Boolean)
     ], Store.prototype, "hasErrors", void 0);
     __decorate([

@@ -4,7 +4,8 @@ import Product from "../../../entity/Product";
 const readAllProducts = async () => {
 
     return await
-        getConnection().manager.find(Product);
+        getConnection().manager.find(Product, {relations: ['unit']});
 }
 
 export default readAllProducts;
+

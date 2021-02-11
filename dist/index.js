@@ -61,6 +61,7 @@ var SaveOrderQue_1 = require("./helpers/C/singles/SaveOrderQue");
 var AllDevices_1 = require("./helpers/R/Many/AllDevices");
 var UpdateDevice_1 = require("./helpers/U/ByID/UpdateDevice");
 var GetDispatchByBranch_1 = require("./helpers/R/ByBranch/GetDispatchByBranch");
+var SaveProductUnit_1 = require("./entity/SaveProductUnit");
 var CarrierTypes_1 = require("./helpers/R/Many/CarrierTypes");
 var ReadCompanyByID_1 = require("./helpers/R/ByID/ReadCompanyByID");
 var UpdateBranch_1 = require("./helpers/U/ByID/UpdateBranch");
@@ -70,6 +71,9 @@ var ReadAllGates_1 = require("./helpers/R/Many/ReadAllGates");
 var AllProducts_1 = require("./helpers/R/Many/AllProducts");
 var ReadAllUsers_1 = require("./helpers/R/Many/ReadAllUsers");
 var readAllBranches_1 = require("./helpers/R/Many/readAllBranches");
+var ReadAllBays_1 = require("./helpers/R/Many/ReadAllBays");
+var ReadAllSections_1 = require("./helpers/R/Many/ReadAllSections");
+var ReadAllProductUnit_1 = require("./helpers/R/Many/ReadAllProductUnit");
 var app = express();
 var prod = false;
 var socketPort = 2026;
@@ -296,6 +300,13 @@ app.get('/all-presets/', function (req, res) {
         });
     });
 });
+app.get('/all-sections/', function (req, res) {
+    ReadAllSections_1.default().then(function (data) {
+        res.json({
+            sections: data
+        });
+    });
+});
 /*
 * DispatchTimes
 *
@@ -338,6 +349,20 @@ app.get('/all-products/', function (req, res) {
         });
     });
 });
+app.post('/save-product-unit/', function (req, res) {
+    SaveProductUnit_1.default(req.body).then(function (data) {
+        res.json({
+            unit: data
+        });
+    });
+});
+app.get('/all-product-units/', function (req, res) {
+    ReadAllProductUnit_1.default().then(function (data) {
+        res.json({
+            productUnits: data
+        });
+    });
+});
 /*
 * ManualEntry
 * */
@@ -352,9 +377,16 @@ app.post('/save-manual-entry/', function (req, res) {
 * Storage Bays
 * */
 app.post('/save-bay/:id/', function (req, res) {
-    SaveBays_1.default(req).then(function (data) {
+    SaveBays_1.default(req.body).then(function (data) {
         res.json({
             res: data
+        });
+    });
+});
+app.get('/all-bays/', function (req, res) {
+    ReadAllBays_1.default().then(function (data) {
+        res.json({
+            bays: data
         });
     });
 });

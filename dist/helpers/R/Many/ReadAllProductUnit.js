@@ -34,42 +34,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var Bays_1 = require("../../../entity/Bays");
-function saveBays(data) {
-    return __awaiter(this, void 0, void 0, function () {
-        var bay, e_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    bay = new Bays_1.default();
-                    bay.name = data.name;
-                    bay.role = data.role;
-                    bay.isActive = data.isActive;
-                    // bay.store = store;
-                    bay.storageType = data.storageType;
-                    bay.hasErrors = data.hasErrors;
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, typeorm_1.getConnection().manager.save(bay)];
-                case 2: return [2 /*return*/, _a.sent()];
-                case 3:
-                    e_1 = _a.sent();
-                    console.log(e_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
-            }
-        });
+var ProductUnit_1 = require("../../../entity/ProductUnit");
+var readAllProductUnits = function () { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getConnection().manager.find(ProductUnit_1.default)];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
     });
-}
-exports.default = saveBays;
-var json = {
-    name: "",
-    role: "",
-    isActive: "",
-    storageType: "",
-    hasErrors: ""
-};
-//# sourceMappingURL=SaveBays.js.map
+}); };
+exports.default = readAllProductUnits;
+//# sourceMappingURL=ReadAllProductUnit.js.map

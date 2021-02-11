@@ -18,9 +18,9 @@ export default async function saveCarrier(data) {
 }
 
 let json = {
-    No: "",
+    number: "",
     type: "", //typeID,
     user: "", //userID,
-    isFixedUse: true,
+    isFixed: true,
     status: ""
 }
