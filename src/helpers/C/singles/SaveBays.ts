@@ -13,6 +13,7 @@ export default async function saveBays(data) {
     bay.isActive = data.isActive;
     // bay.store = store;
     bay.storageType = data.storageType;
+    bay.hasErrors = data.hasErrors;
 
     try {
 
@@ -27,5 +28,6 @@ let json = {
     name: "",
     role: "",
     isActive: "",
-    storageType: ""
+    storageType: "",
+    hasErrors: ""
 }
