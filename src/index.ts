@@ -46,6 +46,7 @@ import readAllProductUnits from "./helpers/R/Many/ReadAllProductUnit";
 import savePallet from "./helpers/C/singles/SavePallet";
 import frisk from "./Auth/middleware";
 import login from "./Auth/login";
+import saveSuperUser from "./Auth/saveSupserUser";
 
 const app = express();
 
@@ -93,9 +94,9 @@ app.get('/', (req, res) => {
     });
 });
 
+app.get('/super-user/', saveSuperUser)
 
 app.post('/login/', login);
-
 
 /*
 * Company
