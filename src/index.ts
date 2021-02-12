@@ -44,10 +44,12 @@ import readAllBays from "./helpers/R/Many/ReadAllBays";
 import readAllSections from "./helpers/R/Many/ReadAllSections";
 import readAllProductUnits from "./helpers/R/Many/ReadAllProductUnit";
 import savePallet from "./helpers/C/singles/SavePallet";
+import frisk from "./Auth/middleware";
+import login from "./Auth/login";
 
 const app = express();
 
-const prod = true;
+const prod = false;
 
 const socketPort = 2026;
 const server = http.createServer(app);
@@ -66,18 +68,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 createConnection(
-    {
-        type: "postgres",
-        host: "ziggy.db.elephantsql.com",
-        port: 5432,
-        username: "fsscpyai",
-        password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
-        database: "fsscpyai",
-        logging: false,
-        entities: [
-            __dirname + "/entity/**/*.js"
-        ]
-    }
+    // {
+    //     type: "postgres",
+    //     host: "ziggy.db.elephantsql.com",
+    //     port: 5432,
+    //     username: "fsscpyai",
+    //     password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
+    //     database: "fsscpyai",
+    //     logging: false,
+    //     entities: [
+    //         __dirname + "/entity/**/*.js"
+    //     ]
+    // }
 ).then(async connection => {
 
     console.log('Database ready... :103');
@@ -85,11 +87,14 @@ createConnection(
 }).catch(error => console.log(error));
 
 
-app.get('/', ((req, res) => {
+app.get('/', (req, res) => {
     res.json({
         Text: 'The application started successfully... :100'
     });
-}));
+});
+
+
+app.post('/login/', login);
 
 
 /*
@@ -97,7 +102,7 @@ app.get('/', ((req, res) => {
 * */
 
 
-app.post('/save-company/', (req, res) => {
+app.post('/save-company/', frisk, (req, res) => {
     saveCompany(req.body).then(data => {
         res.json({
             company: data
@@ -105,7 +110,7 @@ app.post('/save-company/', (req, res) => {
     });
 });
 
-app.get('/company/:id/', (req, res) => {
+app.get('/company/:id/', frisk, (req, res) => {
     readCompanyByID(req.params.id).then(data => {
         res.json({
             company: data
@@ -119,7 +124,7 @@ app.get('/company/:id/', (req, res) => {
 * */
 
 
-app.post('/save-branch/', (req, res) => {
+app.post('/save-branch/', frisk, (req, res) => {
     saveBranches(req.body).then(data => {
         res.json({
             branch: data
@@ -127,7 +132,7 @@ app.post('/save-branch/', (req, res) => {
     });
 });
 
-app.get('/branch/:id', (req, res) => {
+app.get('/branch/:id/', frisk, (req, res) => {
     getBranchInfo(req.params.id).then(data => {
         res.json({
             branch: data
@@ -135,7 +140,7 @@ app.get('/branch/:id', (req, res) => {
     });
 });
 
-app.get('/all-branches/:id/', (req, res) => {
+app.get('/all-branches/:id/', frisk, (req, res) => {
     readAllBranches(req.body.id).then(data => {
         res.json({
             branches: data
@@ -143,7 +148,7 @@ app.get('/all-branches/:id/', (req, res) => {
     });
 });
 
-app.patch('/update-branch/:id', (req, res) => {
+app.patch('/update-branch/:id/', frisk, (req, res) => {
     updateBranch(req.body).then(data => {
         res.json({
             branch: data
@@ -156,7 +161,7 @@ app.patch('/update-branch/:id', (req, res) => {
 * Dispatch Times
 * */
 
-app.get('/dispatch/:branchID', (req, res) => {
+app.get('/dispatch/:branchID', frisk, (req, res) => {
     getDispatchByBranch(req.params.branchID).then(data => {
         res.json({
             dispatch: data
@@ -164,7 +169,7 @@ app.get('/dispatch/:branchID', (req, res) => {
     });
 });
 
-app.post('/add-dispatch/:branchID', (req, res) => {
+app.post('/add-dispatch/:branchID/', frisk, (req, res) => {
     saveDispatchTimes(req.body).then(data => {
         res.json({
             productDispatch: data
@@ -177,7 +182,7 @@ app.post('/add-dispatch/:branchID', (req, res) => {
 * */
 
 
-app.post('/save-user/:branchID/', ((req, res) => {
+app.post('/save-user/:branchID/', frisk, ((req, res) => {
     addUsers(req.body).then(data => {
         res.json({
             user: data
@@ -185,7 +190,7 @@ app.post('/save-user/:branchID/', ((req, res) => {
     });
 }));
 
-app.get('/all-users/', (req, res) => {
+app.get('/all-users/', frisk, (req, res) => {
     readAllUsers().then(data => {
         res.json({
             users: data
@@ -194,7 +199,7 @@ app.get('/all-users/', (req, res) => {
 });
 
 
-app.patch('/update-user/', (req, res) => {
+app.patch('/update-user/', frisk, (req, res) => {
     updateUser(req.body).then(data => {
         res.json({
             user: data
@@ -208,7 +213,7 @@ app.patch('/update-user/', (req, res) => {
 * */
 
 
-app.post('/save-device/:branchID', (req, res) => {
+app.post('/save-device/:branchID', frisk, (req, res) => {
     saveDevice(req.body).then(data => {
         res.json({
             device: data
@@ -216,7 +221,7 @@ app.post('/save-device/:branchID', (req, res) => {
     });
 });
 
-app.patch('/update-device/:id', (req, res) => {
+app.patch('/update-device/:id', frisk, (req, res) => {
     updateDevices(req.body, req.params.id).then(data => {
         res.json({
             device: data
@@ -224,7 +229,7 @@ app.patch('/update-device/:id', (req, res) => {
     });
 });
 
-app.get('/all-devices/:branchID', (req, res) => {
+app.get('/all-devices/:branchID/', frisk, (req, res) => {
     readAllDevices(req.params.branchID).then(data => {
         res.json({
             devices: data
@@ -238,7 +243,7 @@ app.get('/all-devices/:branchID', (req, res) => {
 * */
 
 
-app.post('/save-carrier/', (req, res) => {
+app.post('/save-carrier/', frisk, (req, res) => {
     saveCarrier(req.body).then(data => {
         res.json({
             carrier: data
@@ -247,7 +252,7 @@ app.post('/save-carrier/', (req, res) => {
 });
 
 
-app.post('/save-carrier-type/', (req, res) => {
+app.post('/save-carrier-type/', frisk, (req, res) => {
     saveCarrierTypes(req.body).then(msg => {
         res.json({
             carrierType: msg
@@ -256,7 +261,7 @@ app.post('/save-carrier-type/', (req, res) => {
 });
 
 
-app.get('/all-carrier-types/', (req, res) => {
+app.get('/all-carrier-types/', frisk, (req, res) => {
     getAllCarrierTypes().then(data => {
         res.json({
             carrierTypes: data
@@ -265,7 +270,7 @@ app.get('/all-carrier-types/', (req, res) => {
 });
 
 
-app.get('/all-carriers/', (req, res) => {
+app.get('/all-carriers/', frisk, (req, res) => {
     getAllCarriers().then(data => {
         res.json({
             carriers: data
@@ -280,7 +285,7 @@ app.get('/all-carriers/', (req, res) => {
 * */
 
 
-app.post('/save-gate/', (req, res) => {
+app.post('/save-gate/', frisk, (req, res) => {
     AddGate(req.body).then(data => {
         res.json({
             res: data
@@ -289,7 +294,7 @@ app.post('/save-gate/', (req, res) => {
 });
 
 
-app.get('/all-gates/', (req, res) => {
+app.get('/all-gates/', frisk, (req, res) => {
     readAllGates().then(data => {
         res.json({
             gates: data
@@ -307,7 +312,7 @@ app.get('/all-gates/', (req, res) => {
 * */
 
 
-app.post('/save-section/', (req, res) => {
+app.post('/save-section/', frisk, (req, res) => {
     saveSections(req.body).then(data => {
         res.json({
             data: data
@@ -316,7 +321,7 @@ app.post('/save-section/', (req, res) => {
 });
 
 
-app.post('/save-preset/', (req, res) => {
+app.post('/save-preset/', frisk, (req, res) => {
     savePresets(req.body).then(data => {
         res.json({
             res: data
@@ -326,7 +331,7 @@ app.post('/save-preset/', (req, res) => {
 });
 
 
-app.get('/all-presets/', (req, res) => {
+app.get('/all-presets/', frisk, (req, res) => {
     readAllGates().then(data => {
         res.json({
             presets: data
@@ -334,7 +339,7 @@ app.get('/all-presets/', (req, res) => {
     })
 });
 
-app.get('/all-sections/', (req, res) => {
+app.get('/all-sections/', frisk, (req, res) => {
     readAllSections().then(data => {
         res.json({
             sections: data
@@ -349,7 +354,7 @@ app.get('/all-sections/', (req, res) => {
 * */
 
 
-app.post('/orderQue/', (req, res) => {
+app.post('/orderQue/', frisk, (req, res) => {
     saveOrderQue(req.body).then(data => {
         res.json({
             orderQue: data
@@ -357,7 +362,7 @@ app.post('/orderQue/', (req, res) => {
     });
 });
 
-app.get('/devices/:id/', (req, res) => {
+app.get('/devices/:id/', frisk, (req, res) => {
     getAddDevices(req.params.id).then(data => {
         res.json({
             devices: data
@@ -366,7 +371,7 @@ app.get('/devices/:id/', (req, res) => {
 });
 
 
-app.patch('/device/:id/', (req, res) => {
+app.patch('/device/:id/', frisk, (req, res) => {
     updateDevices(req.body, req.params.id).then(data => {
         res.json({
             device: data
@@ -378,7 +383,7 @@ app.patch('/device/:id/', (req, res) => {
 * Products
 * */
 
-app.post('/save-product/', (req, res) => {
+app.post('/save-product/', frisk, (req, res) => {
     saveProduct(req.body).then(data => {
         res.json({
             product: data
@@ -386,7 +391,7 @@ app.post('/save-product/', (req, res) => {
     });
 });
 
-app.get('/all-products/', (req, res) => {
+app.get('/all-products/', frisk, (req, res) => {
     readAllProducts().then(data => {
         res.json({
             products: data
@@ -394,7 +399,7 @@ app.get('/all-products/', (req, res) => {
     });
 });
 
-app.post('/save-product-unit/', (req, res) => {
+app.post('/save-product-unit/', frisk, (req, res) => {
     saveProductUnit(req.body).then(data => {
         res.json({
             unit: data
@@ -403,7 +408,7 @@ app.post('/save-product-unit/', (req, res) => {
 });
 
 
-app.get('/all-product-units/', (req, res) => {
+app.get('/all-product-units/', frisk, (req, res) => {
     readAllProductUnits().then(data => {
         res.json({
             productUnits: data
@@ -411,7 +416,7 @@ app.get('/all-product-units/', (req, res) => {
     });
 });
 
-app.post('/save-pallet/', (req, res) => {
+app.post('/save-pallet/', frisk, (req, res) => {
     savePallet(req.body).then(data => {
         res.json({
             pallet: data
@@ -425,7 +430,7 @@ app.post('/save-pallet/', (req, res) => {
 * */
 
 
-app.post('/save-manual-entry/', (req, res) => {
+app.post('/save-manual-entry/', frisk, (req, res) => {
     addManualEntry(req.body).then(data => {
         res.json({
             manualEntry: data
@@ -438,7 +443,7 @@ app.post('/save-manual-entry/', (req, res) => {
 * Storage Bays
 * */
 
-app.post('/save-bay/:id/', (req, res) => {
+app.post('/save-bay/:id/', frisk, (req, res) => {
     saveBays(req.body).then(data => {
         res.json({
             res: data
@@ -446,13 +451,7 @@ app.post('/save-bay/:id/', (req, res) => {
     });
 });
 
-app.get('/all-bays/', (req, res) => {
-    readAllBays().then(data => {
-        res.json({
-            bays: data
-        });
-    });
-});
+app.get('/all-bays/', frisk, readAllBays);
 
 
 io.on('connection', client => {
