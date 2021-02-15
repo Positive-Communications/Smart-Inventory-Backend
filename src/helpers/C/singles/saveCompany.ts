@@ -7,14 +7,18 @@ export default async function saveCompany(data) {
 
     company.name = data.name;
     company.headOffice = data.headOffice;
+    company.city = data.city;
+    company.info = data.info; 
     company.email = data.email;
     company.streetRoad = data.streetRoad;
     company.primaryNumber = data.primaryNumber;
     company.secondaryNumber = data.secondaryNumber;
+    
 
     try{
+
         return await
-            getConnection().manager.save(company)
+            getConnection().manager.save(company);
     }catch (e) {
         console.log(e)
     }
@@ -27,5 +31,7 @@ let config = {
     email:"",
     streetRoad: "",
     primaryNumber:"",
-    secondaryNumber:""
+    secondaryNumber:"",
+    city: "",
+    info: "",
 }

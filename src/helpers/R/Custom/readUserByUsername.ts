@@ -9,6 +9,7 @@ const readUserByUsername = async (username) => {
             .select('user')
             .from(Users, 'user')
             .where('user.userName =:user', {user: username})
+            .leftJoinAndSelect('user.isSuper', 'superAmdmn')
             .getOne();
 }
 

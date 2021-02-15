@@ -1,14 +1,11 @@
 import Pallet from "../../../entity/Pallet";
-import readProductByID from "../../R/ByID/ReadProductByID";
 import {getConnection} from "typeorm";
 
 export default async function savePallet(data) {
 
     let pallet = new Pallet();
-
-    pallet.product = await readProductByID(data.productID);
-    pallet.count = data.count;
-    pallet.type = data.type;
+    
+    await pallet.createItself(data);
 
     try {
 
@@ -22,7 +19,7 @@ export default async function savePallet(data) {
 }
 
 let json = {
-    productID: "",
+    unit: {},
     count: "",
-    type: "",
+    palletType: "",
 }

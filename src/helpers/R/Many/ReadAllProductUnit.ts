@@ -1,10 +1,10 @@
 import {getConnection} from "typeorm";
-import ProductUnit from "../../../entity/ProductUnit";
+import Unit from "../../../entity/Units";
 
 const readAllProductUnits = async () => {
 
     return await
-        getConnection().manager.find(ProductUnit);
+        getConnection().manager.find(Unit);
 }
 
 export default readAllProductUnits;

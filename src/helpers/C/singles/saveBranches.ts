@@ -1,5 +1,4 @@
 import {getConnection} from "typeorm";
-import Company from "../../../entity/Company";
 import Branch from "../../../entity/Branch";
 import readCompanyByID from "../../R/ByID/ReadCompanyByID";
 
@@ -17,6 +16,7 @@ export default async function saveBranches(data) {
     branch.streetRoad = data.streetRoad;
 
     try {
+
         return await
             getConnection().manager.save(branch)
     } catch (e) {
@@ -31,6 +31,6 @@ let config = {
     isActive: false,
     phone: "",
     email: "",
-    companyID: "", //as ID,,,
+    companyID: "", 
     streetRoad: "",
 }

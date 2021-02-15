@@ -155,9 +155,8 @@ export default class Gate {
     @JoinTable()
     visitorExit: VisitorAccessTags[]
 
-    @OneToMany(() => Product, product => product.dispatchGate)
-    @JoinTable()
-    dispatchedProducts: Product[];
+    @ManyToOne(() => Product, product => product.dispatchGate)
+    dispatchedProducts: Product;
 
     @OneToMany(() => ScanProductHistory, history => history.gate)
     @JoinTable()

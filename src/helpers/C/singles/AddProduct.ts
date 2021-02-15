@@ -1,6 +1,4 @@
 import Product from "../../../entity/Product";
-import readGateByID from "../../R/ByID/ReadGateByID";
-import readProductUnitByID from "../../R/ByID/ReadProductUnitByID";
 import {getConnection} from "typeorm";
 
 export default async function saveProduct(data) {
@@ -25,8 +23,22 @@ let json = {
     monthsLeftToExpire: "",
     isStoredOnPallet: false,
     palletIsTrackedByRFID: true,
-    unitID: "",
     gateID: "",
     status: "",
-    hasErrors: false
+    hasErrors: false,
+    units: [
+        {
+            unit: {},
+            count: "",
+            isTracked: "",
+            default: "",
+        }
+    ],
+    pallets: [
+        {
+            unit: {},
+            count: "",
+            palletType: "",
+        }
+    ], gates:[]
 }

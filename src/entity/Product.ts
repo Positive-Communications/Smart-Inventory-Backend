@@ -23,6 +23,9 @@ import Bays from "./Bays";
 import OrderDetails from "./OrderDetails";
 import readProductUnitByID from "../helpers/R/ByID/ReadProductUnitByID";
 import readGateByID from "../helpers/R/ByID/ReadGateByID";
+import saveMultipleProductUnits from "../helpers/C/Multiple/SaveMultipleProductUnits";
+import saveMultiplePallets from "../helpers/C/Multiple/SaveMultiplePallets";
+import assignGateToProduct from "../helpers/C/Multiple/AssignGateToProduct";
 
 @Entity()
 export default class Product {
@@ -36,7 +39,9 @@ export default class Product {
     @Column()
     description: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     status: string;
 
     @Column()
@@ -48,17 +53,23 @@ export default class Product {
     @Column()
     hasErrors: false;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     isStoredOnPallet: boolean;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     palletIsTrackedByRFID: boolean;
 
-    @ManyToOne(type => ProductUnit, unit => unit.product)
-    unit: ProductUnit;
+    @OneToMany(type => ProductUnit, unit => unit.product)
+    @JoinTable()
+    units: ProductUnit[];
 
-    @ManyToOne(type => Gate, gate => gate.dispatchedProducts)
-    dispatchGate: Gate;
+    @OneToMany(type => Gate, gate => gate.dispatchedProducts)
+    @JoinTable()
+    dispatchGate: Gate[];
 
 
     @OneToOne(type => ProductTags, tag => tag.product)
@@ -104,10 +115,11 @@ export default class Product {
         this.expiry = data.expiry;
         this.monthsLeftToExpire = data.monthsLeftToExpire;
         this.hasErrors = data.hasErrors;
-        this.unit = await readProductUnitByID(data.unitID)
-        this.dispatchGate = await readGateByID(data.gateID)
+        this.units = await saveMultipleProductUnits(data.units)
+        this.dispatchGate = await assignGateToProduct(data.gates)
         this.isStoredOnPallet = data.isStoredOnPallet;
         this.palletIsTrackedByRFID = data.palletIsTrackedByRFID;
+        this.pallet = await saveMultiplePallets(data.pallets)
     }
 
     async isLegit() {
@@ -115,3 +127,4 @@ export default class Product {
     }
 
 }
+

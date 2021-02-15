@@ -5,11 +5,7 @@ export default async function saveProductUnit(data) {
 
     let productUnit = new ProductUnit();
 
-    productUnit.unit = data.unit;
-    productUnit.numberOfProducts = data.numberOfProducts;
-    productUnit.isTrackedByRFID = data.isTrackedByRFID;
-    productUnit.useUnitAsDefault = data.useUnitAsDefault;
-    // productUnit.product = await readProductByID(data.productID);
+    await productUnit.createItself(data);
 
     try {
 
@@ -24,7 +20,7 @@ export default async function saveProductUnit(data) {
 }
 
 let json = {
-    unit: "",
+    unit: " ",
     numberOfProducts: "",
     isTrackedByRFID: false,
     useUnitAsDefault: false,

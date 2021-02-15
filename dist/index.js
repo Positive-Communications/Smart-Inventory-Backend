@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -34,7 +35,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 var http = require("http");
@@ -74,6 +74,11 @@ var readAllBranches_1 = require("./helpers/R/Many/readAllBranches");
 var ReadAllBays_1 = require("./helpers/R/Many/ReadAllBays");
 var ReadAllSections_1 = require("./helpers/R/Many/ReadAllSections");
 var ReadAllProductUnit_1 = require("./helpers/R/Many/ReadAllProductUnit");
+var SavePallet_1 = require("./helpers/C/singles/SavePallet");
+var middleware_1 = require("./Auth/middleware");
+var login_1 = require("./Auth/login");
+var saveSupserUser_1 = require("./Auth/saveSupserUser");
+var Handler_1 = require("./handler/Handler");
 var app = express();
 var prod = false;
 var socketPort = 2026;
@@ -88,39 +93,40 @@ var EventSource = require('eventsource');
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-typeorm_1.createConnection({
-    type: "postgres",
-    host: "ziggy.db.elephantsql.com",
-    port: 5432,
-    username: "fsscpyai",
-    password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
-    database: "fsscpyai",
-    logging: false,
-    entities: [
-        __dirname + "/entity/**/*.js"
-    ]
-}).then(function (connection) { return __awaiter(_this, void 0, void 0, function () {
+typeorm_1.createConnection(
+// {
+//     type: "postgres",
+//     host: "ziggy.db.elephantsql.com",
+//     port: 5432,
+//     username: "fsscpyai",
+//     password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
+//     database: "fsscpyai",
+//     logging: false,
+//     entities: [
+//         __dirname + "/entity/**/*.js"
+//     ]
+// }
+).then(function (connection) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         console.log('Database ready... :103');
         return [2 /*return*/];
     });
 }); }).catch(function (error) { return console.log(error); });
-app.get('/', (function (req, res) {
-    res.json({
-        Text: 'The application started successfully... :100'
-    });
-}));
+var handler = new Handler_1.default();
+app.get('/', handler.index);
+app.get('/super-user/', saveSupserUser_1.default);
+app.post('/login/', login_1.default);
 /*
 * Company
 * */
-app.post('/save-company/', function (req, res) {
+app.post('/save-company/', middleware_1.default, function (req, res) {
     saveCompany_1.default(req.body).then(function (data) {
         res.json({
             company: data
         });
     });
 });
-app.get('/company/:id/', function (req, res) {
+app.get('/company/:id/', middleware_1.default, function (req, res) {
     ReadCompanyByID_1.default(req.params.id).then(function (data) {
         res.json({
             company: data
@@ -130,28 +136,28 @@ app.get('/company/:id/', function (req, res) {
 /*
 * Branch
 * */
-app.post('/save-branch/', function (req, res) {
+app.post('/save-branch/', middleware_1.default, function (req, res) {
     saveBranches_1.default(req.body).then(function (data) {
         res.json({
             branch: data
         });
     });
 });
-app.get('/branch/:id', function (req, res) {
+app.get('/branch/:id/', middleware_1.default, function (req, res) {
     BranchInfo_1.default(req.params.id).then(function (data) {
         res.json({
             branch: data
         });
     });
 });
-app.get('/all-branches/:id/', function (req, res) {
+app.get('/all-branches/:id/', middleware_1.default, function (req, res) {
     readAllBranches_1.default(req.body.id).then(function (data) {
         res.json({
             branches: data
         });
     });
 });
-app.patch('/update-branch/:id', function (req, res) {
+app.patch('/update-branch/:id/', middleware_1.default, function (req, res) {
     UpdateBranch_1.default(req.body).then(function (data) {
         res.json({
             branch: data
@@ -161,14 +167,14 @@ app.patch('/update-branch/:id', function (req, res) {
 /*
 * Dispatch Times
 * */
-app.get('/dispatch/:branchID', function (req, res) {
+app.get('/dispatch/:branchID', middleware_1.default, function (req, res) {
     GetDispatchByBranch_1.default(req.params.branchID).then(function (data) {
         res.json({
             dispatch: data
         });
     });
 });
-app.post('/add-dispatch/:branchID', function (req, res) {
+app.post('/add-dispatch/:branchID/', middleware_1.default, function (req, res) {
     SaveDispatchTimes_1.default(req.body).then(function (data) {
         res.json({
             productDispatch: data
@@ -178,21 +184,21 @@ app.post('/add-dispatch/:branchID', function (req, res) {
 /*
 * User
 * */
-app.post('/save-user/:branchID/', (function (req, res) {
+app.post('/save-user/:branchID/', middleware_1.default, (function (req, res) {
     AddUsers_1.default(req.body).then(function (data) {
         res.json({
             user: data
         });
     });
 }));
-app.get('/all-users/', function (req, res) {
+app.get('/all-users/', middleware_1.default, function (req, res) {
     ReadAllUsers_1.default().then(function (data) {
         res.json({
             users: data
         });
     });
 });
-app.patch('/update-user/', function (req, res) {
+app.patch('/update-user/', middleware_1.default, function (req, res) {
     UpdateUser_1.default(req.body).then(function (data) {
         res.json({
             user: data
@@ -202,21 +208,21 @@ app.patch('/update-user/', function (req, res) {
 /*
 * Device
 * */
-app.post('/save-device/:branchID', function (req, res) {
+app.post('/save-device/:branchID', middleware_1.default, function (req, res) {
     SaveDevice_1.default(req.body).then(function (data) {
         res.json({
             device: data
         });
     });
 });
-app.patch('/update-device/:id', function (req, res) {
+app.patch('/update-device/:id', middleware_1.default, function (req, res) {
     UpdateDevice_1.default(req.body, req.params.id).then(function (data) {
         res.json({
             device: data
         });
     });
 });
-app.get('/all-devices/:branchID', function (req, res) {
+app.get('/all-devices/:branchID/', middleware_1.default, function (req, res) {
     AllDevices_2.default(req.params.branchID).then(function (data) {
         res.json({
             devices: data
@@ -226,28 +232,28 @@ app.get('/all-devices/:branchID', function (req, res) {
 /*
 * Carriers
 * */
-app.post('/save-carrier/', function (req, res) {
+app.post('/save-carrier/', middleware_1.default, function (req, res) {
     SaveCarrier_1.default(req.body).then(function (data) {
         res.json({
             carrier: data
         });
     });
 });
-app.post('/save-carrier-type/', function (req, res) {
+app.post('/save-carrier-type/', middleware_1.default, function (req, res) {
     SaveCarrierTypes_1.default(req.body).then(function (msg) {
         res.json({
             carrierType: msg
         });
     });
 });
-app.get('/all-carrier-types/', function (req, res) {
+app.get('/all-carrier-types/', middleware_1.default, function (req, res) {
     CarrierTypes_1.default().then(function (data) {
         res.json({
             carrierTypes: data
         });
     });
 });
-app.get('/all-carriers/', function (req, res) {
+app.get('/all-carriers/', middleware_1.default, function (req, res) {
     GetAllCarriers_1.default().then(function (data) {
         res.json({
             carriers: data
@@ -258,14 +264,14 @@ app.get('/all-carriers/', function (req, res) {
 * Gates
 *
 * */
-app.post('/save-gate/', function (req, res) {
+app.post('/save-gate/', middleware_1.default, function (req, res) {
     AddGate_1.default(req.body).then(function (data) {
         res.json({
             res: data
         });
     });
 });
-app.get('/all-gates/', function (req, res) {
+app.get('/all-gates/', middleware_1.default, function (req, res) {
     ReadAllGates_1.default().then(function (data) {
         res.json({
             gates: data
@@ -279,28 +285,28 @@ app.get('/all-gates/', function (req, res) {
 * Sections
 *
 * */
-app.post('/save-section/', function (req, res) {
+app.post('/save-section/', middleware_1.default, function (req, res) {
     SaveSections_1.default(req.body).then(function (data) {
         res.json({
             data: data
         });
     });
 });
-app.post('/save-preset/', function (req, res) {
+app.post('/save-preset/', middleware_1.default, function (req, res) {
     SavePresets_1.default(req.body).then(function (data) {
         res.json({
             res: data
         });
     });
 });
-app.get('/all-presets/', function (req, res) {
+app.get('/all-presets/', middleware_1.default, function (req, res) {
     ReadAllGates_1.default().then(function (data) {
         res.json({
             presets: data
         });
     });
 });
-app.get('/all-sections/', function (req, res) {
+app.get('/all-sections/', middleware_1.default, function (req, res) {
     ReadAllSections_1.default().then(function (data) {
         res.json({
             sections: data
@@ -311,21 +317,21 @@ app.get('/all-sections/', function (req, res) {
 * DispatchTimes
 *
 * */
-app.post('/orderQue/', function (req, res) {
+app.post('/orderQue/', middleware_1.default, function (req, res) {
     SaveOrderQue_1.default(req.body).then(function (data) {
         res.json({
             orderQue: data
         });
     });
 });
-app.get('/devices/:id/', function (req, res) {
+app.get('/devices/:id/', middleware_1.default, function (req, res) {
     AllDevices_1.default(req.params.id).then(function (data) {
         res.json({
             devices: data
         });
     });
 });
-app.patch('/device/:id/', function (req, res) {
+app.patch('/device/:id/', middleware_1.default, function (req, res) {
     UpdateDevice_1.default(req.body, req.params.id).then(function (data) {
         res.json({
             device: data
@@ -335,38 +341,45 @@ app.patch('/device/:id/', function (req, res) {
 /*
 * Products
 * */
-app.post('/save-product/', function (req, res) {
+app.post('/save-product/', middleware_1.default, function (req, res) {
     AddProduct_1.default(req.body).then(function (data) {
         res.json({
             product: data
         });
     });
 });
-app.get('/all-products/', function (req, res) {
+app.get('/all-products/', middleware_1.default, function (req, res) {
     AllProducts_1.default().then(function (data) {
         res.json({
             products: data
         });
     });
 });
-app.post('/save-product-unit/', function (req, res) {
+app.post('/save-product-unit/', middleware_1.default, function (req, res) {
     SaveProductUnit_1.default(req.body).then(function (data) {
         res.json({
             unit: data
         });
     });
 });
-app.get('/all-product-units/', function (req, res) {
+app.get('/all-product-units/', middleware_1.default, function (req, res) {
     ReadAllProductUnit_1.default().then(function (data) {
         res.json({
             productUnits: data
         });
     });
 });
+app.post('/save-pallet/', middleware_1.default, function (req, res) {
+    SavePallet_1.default(req.body).then(function (data) {
+        res.json({
+            pallet: data
+        });
+    });
+});
 /*
 * ManualEntry
 * */
-app.post('/save-manual-entry/', function (req, res) {
+app.post('/save-manual-entry/', middleware_1.default, function (req, res) {
     AddManualEntry_1.default(req.body).then(function (data) {
         res.json({
             manualEntry: data
@@ -376,20 +389,14 @@ app.post('/save-manual-entry/', function (req, res) {
 /*
 * Storage Bays
 * */
-app.post('/save-bay/:id/', function (req, res) {
+app.post('/save-bay/:id/', middleware_1.default, function (req, res) {
     SaveBays_1.default(req.body).then(function (data) {
         res.json({
             res: data
         });
     });
 });
-app.get('/all-bays/', function (req, res) {
-    ReadAllBays_1.default().then(function (data) {
-        res.json({
-            bays: data
-        });
-    });
-});
+app.get('/all-bays/', middleware_1.default, ReadAllBays_1.default);
 io.on('connection', function (client) {
     io.emit('msg', 'Connection Successful!');
     console.log("Client " + .1 + "' -> Connected successfully. :101");

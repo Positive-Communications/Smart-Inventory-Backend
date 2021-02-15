@@ -9,48 +9,25 @@ import {
     createConnection,
 } from "typeorm";
 
-import addUsers from "./helpers/C/singles/AddUsers";
-import saveCarrier from "./helpers/C/singles/SaveCarrier";
-import saveCompany from "./helpers/C/singles/saveCompany";
-import saveBays from "./helpers/C/singles/SaveBays";
-import saveCarrierTypes from "./helpers/C/singles/SaveCarrierTypes";
-import saveDispatchTimes from "./helpers/C/singles/SaveDispatchTimes";
-import savePresets from "./helpers/C/singles/SavePresets";
-import AddGate from "./helpers/C/singles/AddGate";
-import saveSections from "./helpers/C/singles/SaveSections";
-import saveBranches from "./helpers/C/singles/saveBranches";
-import getBranchInfo from "./helpers/R/Custom/BranchInfo";
-import saveDevice from "./helpers/C/singles/SaveDevice";
-import saveProductTag from "./helpers/C/singles/saveProductTag";
-import saveProduct from "./helpers/C/singles/AddProduct";
-import addManualEntry from "./helpers/C/singles/AddManualEntry";
-import updateUser from "./helpers/U/ByID/UpdateUser";
-import saveOrderQue from "./helpers/C/singles/SaveOrderQue";
-import getAddDevices from "./helpers/R/Many/AllDevices";
-import updateDevices from "./helpers/U/ByID/UpdateDevice";
-import getDispatchByBranch from "./helpers/R/ByBranch/GetDispatchByBranch";
-import saveProductUnit from "./entity/SaveProductUnit";
-import getAllCarrierTypes from "./helpers/R/Many/CarrierTypes";
-import readCompanyByID from "./helpers/R/ByID/ReadCompanyByID";
-import readUserByID from "./helpers/R/ByID/ReadUserByID";
-import updateBranch from "./helpers/U/ByID/UpdateBranch";
-import readAllDevices from "./helpers/R/Many/AllDevices";
-import getAllCarriers from "./helpers/R/Many/GetAllCarriers";
-import readAllGates from "./helpers/R/Many/ReadAllGates";
-import readAllProducts from "./helpers/R/Many/AllProducts";
-import readAllUsers from "./helpers/R/Many/ReadAllUsers";
-import readAllBranches from "./helpers/R/Many/readAllBranches";
 import readAllBays from "./helpers/R/Many/ReadAllBays";
-import readAllSections from "./helpers/R/Many/ReadAllSections";
-import readAllProductUnits from "./helpers/R/Many/ReadAllProductUnit";
-import savePallet from "./helpers/C/singles/SavePallet";
 import frisk from "./Auth/middleware";
-import login from "./Auth/login";
-import saveSuperUser from "./Auth/saveSupserUser";
+import CompanyHandler from "./resource.manager/company.manager";
+import Index from "./resource.manager/default"
+import AuthHandler from "./resource.manager/auth.manager";
+import BranchManager from "./resource.manager/branch.manager";
+import DispatchManager from "./resource.manager/dispatch.manager";
+import UsersManager from "./resource.manager/users.manager";
+import DeviceManager from "./resource.manager/device.manager";
+import CarrierManager from "./resource.manager/carrer.manager";
+import GateManager from "./resource.manager/gate.manager";
+import SectionManager from "./resource.manager/section.manager";
+import OrderQueManager from "./resource.manager/orderque.manager";
+import ProductManager from "./resource.manager/product.manager";
+import StorageBayManager from "./resource.manager/bays.manager";
 
 const app = express();
 
-const prod = true;
+const prod = false;
 
 const socketPort = 2026;
 const server = http.createServer(app);
@@ -62,222 +39,126 @@ const io = require('socket.io')(server, {
     }
 });
 
-const EventSource = require('eventsource');
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 createConnection(
-    {
-        type: "postgres",
-        host: "ziggy.db.elephantsql.com",
-        port: 5432,
-        username: "fsscpyai",
-        password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
-        database: "fsscpyai",
-        logging: false,
-        entities: [
-            __dirname + "/entity/**/*.js"
-        ]
-    }
-).then(async connection => {
+    // {
+    //     type: "postgres",
+    //     host: "ziggy.db.elephantsql.com",
+    //     port: 5432,
+    //     username: "fsscpyai",
+    //     password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
+    //     database: "fsscpyai",
+    //     logging: false,
+    //     entities: [
+    //         __dirname + "/entity/**/*.js"
+    //     ]
+    // }
+).then(async () => {
 
     console.log('Database ready... :103');
 
 }).catch(error => console.log(error));
 
 
-app.get('/', (req, res) => {
-    res.json({
-        Text: 'The application started successfully... :100'
-    });
-});
 
-app.get('/super-user/', saveSuperUser)
 
-app.post('/login/', login);
+
+/*
+* Home
+* */
+
+const index = new Index();
+
+app.get('/', index.home);
+
+/*
+* Auth
+* */
+
+let auth = new AuthHandler();
+
+app.get('/super-user/', auth.createSuperUser);
+app.post('/login/', auth.authenticate);
 
 /*
 * Company
 * */
 
+const companyHandler = new CompanyHandler();
 
-app.post('/save-company/', frisk, (req, res) => {
-    saveCompany(req.body).then(data => {
-        res.json({
-            company: data
-        });
-    });
-});
+app.post('/save-company/', frisk, companyHandler.createCompany);
 
-app.get('/company/:id/', frisk, (req, res) => {
-    readCompanyByID(req.params.id).then(data => {
-        res.json({
-            company: data
-        });
-    });
-});
+app.get('/company/:id/', frisk, companyHandler.getCompanyByID);
 
 
 /*
 * Branch
 * */
 
+const branchManager = new BranchManager();
 
-app.post('/save-branch/', frisk, (req, res) => {
-    saveBranches(req.body).then(data => {
-        res.json({
-            branch: data
-        });
-    });
-});
+app.get('/branch/:id/', frisk, branchManager.summonBranch);
 
-app.get('/branch/:id/', frisk, (req, res) => {
-    getBranchInfo(req.params.id).then(data => {
-        res.json({
-            branch: data
-        });
-    });
-});
+app.get('/all-branches/', frisk, branchManager.getAllBranches);
 
-app.get('/all-branches/:id/', frisk, (req, res) => {
-    readAllBranches(req.body.id).then(data => {
-        res.json({
-            branches: data
-        });
-    });
-});
+app.post('/save-branch/', frisk, branchManager.createBranch);
 
-app.patch('/update-branch/:id/', frisk, (req, res) => {
-    updateBranch(req.body).then(data => {
-        res.json({
-            branch: data
-        });
-    });
-});
-
+app.patch('/update-branch/:id/', frisk, branchManager.updateBranchFile);
 
 /*
 * Dispatch Times
 * */
 
-app.get('/dispatch/:branchID', frisk, (req, res) => {
-    getDispatchByBranch(req.params.branchID).then(data => {
-        res.json({
-            dispatch: data
-        });
-    });
-});
+const dispatchManager = new DispatchManager();
 
-app.post('/add-dispatch/:branchID/', frisk, (req, res) => {
-    saveDispatchTimes(req.body).then(data => {
-        res.json({
-            productDispatch: data
-        });
-    });
-});
+app.get('/dispatch/:branchID', frisk, dispatchManager.checkBranchDispatch);
+
+app.post('/add-dispatch/:branchID/', frisk, dispatchManager.createBranchDispatch);
+
 
 /*
 * User
 * */
 
-
-app.post('/save-user/:branchID/', frisk, ((req, res) => {
-    addUsers(req.body).then(data => {
-        res.json({
-            user: data
-        });
-    });
-}));
-
-app.get('/all-users/', frisk, (req, res) => {
-    readAllUsers().then(data => {
-        res.json({
-            users: data
-        });
-    });
-});
+const usersManager = new UsersManager();
 
 
-app.patch('/update-user/', frisk, (req, res) => {
-    updateUser(req.body).then(data => {
-        res.json({
-            user: data
-        });
-    });
-});
+app.get('/all-users/', frisk, usersManager.summonAllUsers);
+
+app.post('/save-user/:branchID/', frisk, usersManager.registerUser);
+
+app.patch('/update-user/', frisk, usersManager.updateUserDetails);
 
 
 /*
 * Device
 * */
 
+const deviceManager = new DeviceManager();
 
-app.post('/save-device/:branchID', frisk, (req, res) => {
-    saveDevice(req.body).then(data => {
-        res.json({
-            device: data
-        });
-    });
-});
+app.post('/save-device/:branchID', frisk, deviceManager.registerDevice);
 
-app.patch('/update-device/:id', frisk, (req, res) => {
-    updateDevices(req.body, req.params.id).then(data => {
-        res.json({
-            device: data
-        });
-    });
-});
+app.patch('/update-device/:id', frisk, deviceManager.editDevice);
 
-app.get('/all-devices/:branchID/', frisk, (req, res) => {
-    readAllDevices(req.params.branchID).then(data => {
-        res.json({
-            devices: data
-        });
-    });
-});
+app.get('/all-devices/:branchID/', frisk, deviceManager.availAllDevices);
+
 
 
 /*
 * Carriers
 * */
 
+const carrierManager = new CarrierManager();
 
-app.post('/save-carrier/', frisk, (req, res) => {
-    saveCarrier(req.body).then(data => {
-        res.json({
-            carrier: data
-        });
-    });
-});
+app.post('/save-carrier/', frisk, carrierManager.registerCarrier);
+app.post('/save-carrier-type/', frisk, carrierManager.saveCarrierType);
 
-
-app.post('/save-carrier-type/', frisk, (req, res) => {
-    saveCarrierTypes(req.body).then(msg => {
-        res.json({
-            carrierType: msg
-        });
-    });
-});
-
-
-app.get('/all-carrier-types/', frisk, (req, res) => {
-    getAllCarrierTypes().then(data => {
-        res.json({
-            carrierTypes: data
-        });
-    });
-});
-
-
-app.get('/all-carriers/', frisk, (req, res) => {
-    getAllCarriers().then(data => {
-        res.json({
-            carriers: data
-        });
-    });
-});
+app.get('/all-carrier-types/', frisk, carrierManager.getAllCarrierTypes);
+app.get('/all-carriers/', frisk, carrierManager.summonAllCarrierTypes);
 
 
 /*
@@ -285,172 +166,61 @@ app.get('/all-carriers/', frisk, (req, res) => {
 *
 * */
 
+const gateManager = new GateManager();
 
-app.post('/save-gate/', frisk, (req, res) => {
-    AddGate(req.body).then(data => {
-        res.json({
-            res: data
-        });
-    });
-});
+app.post('/save-gate/', frisk, gateManager.registerGate);
 
+app.get('/all-gates/', frisk, gateManager.availAllGates);
 
-app.get('/all-gates/', frisk, (req, res) => {
-    readAllGates().then(data => {
-        res.json({
-            gates: data
-        });
-    });
-});
-
-// app.get('/gate/:id', (req, res) => {
-//
-// });
 
 /*
 * Sections
 *
 * */
 
+const sectionManager = new SectionManager()
 
-app.post('/save-section/', frisk, (req, res) => {
-    saveSections(req.body).then(data => {
-        res.json({
-            data: data
-        });
-    });
-});
+app.post('/save-section/', frisk, sectionManager.registerSection);
+app.post('/save-preset/', frisk, sectionManager.savePreset);
 
-
-app.post('/save-preset/', frisk, (req, res) => {
-    savePresets(req.body).then(data => {
-        res.json({
-            res: data
-        });
-    });
-
-});
-
-
-app.get('/all-presets/', frisk, (req, res) => {
-    readAllGates().then(data => {
-        res.json({
-            presets: data
-        })
-    })
-});
-
-app.get('/all-sections/', frisk, (req, res) => {
-    readAllSections().then(data => {
-        res.json({
-            sections: data
-        });
-    });
-});
+app.get('/all-presets/', frisk, sectionManager.getAllPresets);
+app.get('/all-sections/', frisk, sectionManager.getAllSections);
 
 
 /*
-* DispatchTimes
+* OrderQue
 *
 * */
 
+const orderQueManager = new OrderQueManager()
 
-app.post('/orderQue/', frisk, (req, res) => {
-    saveOrderQue(req.body).then(data => {
-        res.json({
-            orderQue: data
-        });
-    });
-});
+app.post('/orderQue/', frisk, orderQueManager.saveOrderQue);
 
-app.get('/devices/:id/', frisk, (req, res) => {
-    getAddDevices(req.params.id).then(data => {
-        res.json({
-            devices: data
-        });
-    });
-});
-
-
-app.patch('/device/:id/', frisk, (req, res) => {
-    updateDevices(req.body, req.params.id).then(data => {
-        res.json({
-            device: data
-        });
-    });
-});
 
 /*
 * Products
 * */
 
-app.post('/save-product/', frisk, (req, res) => {
-    saveProduct(req.body).then(data => {
-        res.json({
-            product: data
-        });
-    });
-});
+const productManager = new ProductManager()
 
-app.get('/all-products/', frisk, (req, res) => {
-    readAllProducts().then(data => {
-        res.json({
-            products: data
-        });
-    });
-});
+app.get('/all-product-units/', frisk, productManager.getAllUnits);
+app.get('/all-products/', frisk, productManager.getAllProducts);
+app.get('/all-units/', frisk, productManager.getAllUnits)
 
-app.post('/save-product-unit/', frisk, (req, res) => {
-    saveProductUnit(req.body).then(data => {
-        res.json({
-            unit: data
-        });
-    });
-});
+app.post('/save-pallet/', frisk, productManager.addPallet);
+app.post('/save-product/', frisk, productManager.saveProduct);
+app.post('/save-manual-entry/', frisk, productManager.saveManualEntry);
+app.post('/save-unit/', frisk, productManager.saveUnit);
 
-
-app.get('/all-product-units/', frisk, (req, res) => {
-    readAllProductUnits().then(data => {
-        res.json({
-            productUnits: data
-        });
-    });
-});
-
-app.post('/save-pallet/', frisk, (req, res) => {
-    savePallet(req.body).then(data => {
-        res.json({
-            pallet: data
-        });
-    });
-});
-
-
-/*
-* ManualEntry
-* */
-
-
-app.post('/save-manual-entry/', frisk, (req, res) => {
-    addManualEntry(req.body).then(data => {
-        res.json({
-            manualEntry: data
-        });
-    });
-});
 
 
 /*
 * Storage Bays
 * */
 
-app.post('/save-bay/:id/', frisk, (req, res) => {
-    saveBays(req.body).then(data => {
-        res.json({
-            res: data
-        });
-    });
-});
+const storageBayManager = new StorageBayManager();
+
+app.post('/save-bay/:id/', frisk, storageBayManager.createBays);
 
 app.get('/all-bays/', frisk, readAllBays);
 
@@ -499,7 +269,7 @@ io.on('connection', client => {
     //     });
     // })
 
-    client.on('ping', msg => {
+    client.on('ping', () => {
         io.emit('pong', 'I got a ping, here\'s a pong!.')
     })
 

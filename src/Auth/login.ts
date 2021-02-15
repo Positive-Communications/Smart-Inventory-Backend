@@ -8,15 +8,15 @@ const login = async (req, res) => {
     let password = req.body.password;
 
     const user = await readUserByUsername(username);
+    
     if (user)
         if (user.checkIfUnencryptedPasswordIsValid(password)) {
-
-            let token = jwt.sign({username: username}, config.secret, {expiresIn: '24h'});
-
-
+            let token = jwt.sign({username: username},config.secret, {expiresIn: '24h'});
+            
             res.json({
                 success: true,
                 msg: 'Authorized',
+                isSuper: user.isSuper.id,
                 accessToken: token
             });
         } else res.sendStatus(403).json({

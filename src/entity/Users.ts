@@ -14,6 +14,7 @@ import PackingTags from "./PackingTags";
 import readBranchByID from "../helpers/R/ByID/ReadBranchByID";
 import Orders from "./Orders";
 import saveUserPrivileges from "../helpers/C/singles/SaveUserPrivileges";
+import Company from "./Company";
 
 @Entity()
 export default class Users {
@@ -58,6 +59,9 @@ export default class Users {
 
     @Column()
     joined: string;
+
+    @OneToOne(type=>Company, company=>company.superAdmin)
+    isSuper: Company;
 
     @ManyToOne(type => Branch, branch => branch.users)
     branch: Branch;
