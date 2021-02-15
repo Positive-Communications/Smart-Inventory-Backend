@@ -47,11 +47,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 createConnection(
     {
         type: "postgres",
-        host: "ziggy.db.elephantsql.com",
+        host: "ziggy.db.dumbo.db.elephantsql.com.com",
         port: 5432,
-        username: "fsscpyai",
-        password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
-        database: "fsscpyai",
+        username: "lgmbmxih",
+        password: "4pY4VeACxkXo2wgglD48gARdV0vYtTZ9",
+        database: "lgmbmxih",
         logging: false,
         entities: [
             __dirname + "/entity/**/*.js"

@@ -1,10 +1,10 @@
 module.exports =  {
     "type": "postgres",
-    "host": "rogue.db.elephantsql.com",
+    "host": "dumbo.db.elephantsql.com",
     "port": 5432,
-    "username": "lwdvzxpk",
-    "password": "f7Y2R1wDbDzgyQXXgctMwU7olSaU2l2H",
-    "database": "lwdvzxpk",
+    "username": "lgmbmxih",
+    "password": "4pY4VeACxkXo2wgglD48gARdV0vYtTZ9",
+    "database": "lgmbmxih",
     "logging": false,
     "entities": [
         "dist/entity/**/*.js"
