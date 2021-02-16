@@ -16,6 +16,8 @@ class BranchManager {
     }
 
     async getAllBranches(req, res){
+        console.log('arrived successfully....');
+        
         const branches = await readAllBranches();
         res.json({branches:branches});
     }

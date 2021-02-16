@@ -1,13 +1,12 @@
 import { getConnection } from "typeorm";
-import ProductUnit from "../../../entity/ProductUnit";
-import addProductUnit from "../singles/AddProductUnit";
+import saveProductUnit from "../../../entity/SaveProductUnit";
 
 const saveMultipleProductUnits = async(productUnitsArray) => {
 
     let units = [];
-
+    
     for (let unit of productUnitsArray) {
-        let newUnit = await addProductUnit(unit);
+        let newUnit = await saveProductUnit(unit);
         units.push(newUnit);
     }
 

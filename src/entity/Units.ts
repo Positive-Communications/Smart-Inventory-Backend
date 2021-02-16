@@ -13,6 +13,10 @@ class Unit {
     @Column()
     name: string;
 
+    @OneToMany(type=>ProductUnit, pUnit=>pUnit.itemUnit)
+    @JoinTable()
+    itemUnit: ProductUnit[]
+
 
     @OneToMany(type=> ProductUnit, pUnit=>pUnit.unit)
     @JoinTable()

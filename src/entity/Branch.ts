@@ -1,4 +1,4 @@
-import {Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinTable, ManyToOne, OneToOne} from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinTable, ManyToOne, OneToOne, AfterInsert} from 'typeorm';
 import Alerts from "./Alerts";
 import Sections from "./Sections";
 import Company from "./Company";
@@ -12,6 +12,7 @@ import Device from "./Device";
 import VisitorAccessTags from "./VisitorAccessTags";
 import AccessCard from "./AccessCard";
 import Orders from "./Orders";
+import saveDispatchTimes from '../helpers/C/singles/SaveDispatchTimes';
 
 @Entity()
 export default class Branch {
@@ -90,7 +91,38 @@ export default class Branch {
     @JoinTable()
     ordersToCollect: Orders[];
 
+    @AfterInsert()
+    async saveDispatchT(){
+        await saveDispactchTime(this.id)
+    }
 
 
 }
+
+let data = {
+    monday: true,
+    tuesday: true,
+    wednesday: true,
+    thursday: true,
+    friday: false,
+    saturday: false,
+    sunday: false,
+    startTime: "0800",
+    endTime: "1700",
+    saturdayStart: "1300",
+    saturdayEnd: "1700",
+    sundayStart: "1300",
+    sundayEnd: "1700",
+    branchID: "",
+}
+
+const saveDispactchTime = async(id)=>{
+    console.log(id);
+    let d = data;
+    d['branchID'] = id;
+    console.log(d);
+    let res = await saveDispatchTimes(d);
+    console.log(res);
+}
+
 
