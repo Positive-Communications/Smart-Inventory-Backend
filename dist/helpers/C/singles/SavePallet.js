@@ -37,28 +37,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Pallet_1 = require("../../../entity/Pallet");
-var ReadProductByID_1 = require("../../R/ByID/ReadProductByID");
 var typeorm_1 = require("typeorm");
 function savePallet(data) {
     return __awaiter(this, void 0, void 0, function () {
-        var pallet, _a, e_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var pallet, e_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
                     pallet = new Pallet_1.default();
-                    _a = pallet;
-                    return [4 /*yield*/, ReadProductByID_1.default(data.productID)];
+                    return [4 /*yield*/, pallet.createItself(data)];
                 case 1:
-                    _a.product = _b.sent();
-                    pallet.count = data.count;
-                    pallet.type = data.type;
-                    _b.label = 2;
+                    _a.sent();
+                    _a.label = 2;
                 case 2:
-                    _b.trys.push([2, 4, , 5]);
+                    _a.trys.push([2, 4, , 5]);
                     return [4 /*yield*/, typeorm_1.getConnection().manager.save(pallet)];
-                case 3: return [2 /*return*/, _b.sent()];
+                case 3: return [2 /*return*/, _a.sent()];
                 case 4:
-                    e_1 = _b.sent();
+                    e_1 = _a.sent();
                     console.log(e_1);
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
@@ -68,8 +64,8 @@ function savePallet(data) {
 }
 exports.default = savePallet;
 var json = {
-    productID: "",
+    unit: {},
     count: "",
-    type: "",
+    palletType: "",
 };
 //# sourceMappingURL=SavePallet.js.map

@@ -39,27 +39,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Users_1 = require("../entity/Users");
 var typeorm_1 = require("typeorm");
 var superUserConfig_1 = require("./superUserConfig");
-var saveSuperUser = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var data, superUser, e_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+var ReadCompanyByID_1 = require("../helpers/R/ByID/ReadCompanyByID");
+var saveSuperUser = function (name, id) { return __awaiter(void 0, void 0, void 0, function () {
+    var data, superUser, _a, e_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 data = superUserConfig_1.default();
                 superUser = new Users_1.default();
                 return [4 /*yield*/, superUser.createItSelf(data)];
             case 1:
-                _a.sent();
-                superUser.userName = superUser.userName + superUser.id;
-                _a.label = 2;
+                _b.sent();
+                superUser.userName = "admin_" + name;
+                superUser.password = name + "_admin";
+                superUser.hashPassword();
+                _a = superUser;
+                return [4 /*yield*/, ReadCompanyByID_1.default(1)];
             case 2:
-                _a.trys.push([2, 4, , 5]);
+                _a.isSuper = _b.sent();
+                _b.label = 3;
+            case 3:
+                _b.trys.push([3, 5, , 6]);
                 return [4 /*yield*/, typeorm_1.getConnection().manager.save(superUser)];
-            case 3: return [2 /*return*/, _a.sent()];
-            case 4:
-                e_1 = _a.sent();
+            case 4: return [2 /*return*/, _b.sent()];
+            case 5:
+                e_1 = _b.sent();
                 console.log(e_1);
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
     });
 }); };

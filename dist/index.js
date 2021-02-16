@@ -42,45 +42,23 @@ var express = require("express");
 var cors = require("cors");
 var bodyParser = require("body-parser");
 var typeorm_1 = require("typeorm");
-var AddUsers_1 = require("./helpers/C/singles/AddUsers");
-var SaveCarrier_1 = require("./helpers/C/singles/SaveCarrier");
-var saveCompany_1 = require("./helpers/C/singles/saveCompany");
-var SaveBays_1 = require("./helpers/C/singles/SaveBays");
-var SaveCarrierTypes_1 = require("./helpers/C/singles/SaveCarrierTypes");
-var SaveDispatchTimes_1 = require("./helpers/C/singles/SaveDispatchTimes");
-var SavePresets_1 = require("./helpers/C/singles/SavePresets");
-var AddGate_1 = require("./helpers/C/singles/AddGate");
-var SaveSections_1 = require("./helpers/C/singles/SaveSections");
-var saveBranches_1 = require("./helpers/C/singles/saveBranches");
-var BranchInfo_1 = require("./helpers/R/Custom/BranchInfo");
-var SaveDevice_1 = require("./helpers/C/singles/SaveDevice");
-var AddProduct_1 = require("./helpers/C/singles/AddProduct");
-var AddManualEntry_1 = require("./helpers/C/singles/AddManualEntry");
-var UpdateUser_1 = require("./helpers/U/ByID/UpdateUser");
-var SaveOrderQue_1 = require("./helpers/C/singles/SaveOrderQue");
-var AllDevices_1 = require("./helpers/R/Many/AllDevices");
-var UpdateDevice_1 = require("./helpers/U/ByID/UpdateDevice");
-var GetDispatchByBranch_1 = require("./helpers/R/ByBranch/GetDispatchByBranch");
-var SaveProductUnit_1 = require("./entity/SaveProductUnit");
-var CarrierTypes_1 = require("./helpers/R/Many/CarrierTypes");
-var ReadCompanyByID_1 = require("./helpers/R/ByID/ReadCompanyByID");
-var UpdateBranch_1 = require("./helpers/U/ByID/UpdateBranch");
-var AllDevices_2 = require("./helpers/R/Many/AllDevices");
-var GetAllCarriers_1 = require("./helpers/R/Many/GetAllCarriers");
-var ReadAllGates_1 = require("./helpers/R/Many/ReadAllGates");
-var AllProducts_1 = require("./helpers/R/Many/AllProducts");
-var ReadAllUsers_1 = require("./helpers/R/Many/ReadAllUsers");
-var readAllBranches_1 = require("./helpers/R/Many/readAllBranches");
 var ReadAllBays_1 = require("./helpers/R/Many/ReadAllBays");
-var ReadAllSections_1 = require("./helpers/R/Many/ReadAllSections");
-var ReadAllProductUnit_1 = require("./helpers/R/Many/ReadAllProductUnit");
-var SavePallet_1 = require("./helpers/C/singles/SavePallet");
 var middleware_1 = require("./Auth/middleware");
-var login_1 = require("./Auth/login");
-var saveSupserUser_1 = require("./Auth/saveSupserUser");
-var Handler_1 = require("./handler/Handler");
+var company_manager_1 = require("./resource.manager/company.manager");
+var default_1 = require("./resource.manager/default");
+var auth_manager_1 = require("./resource.manager/auth.manager");
+var branch_manager_1 = require("./resource.manager/branch.manager");
+var dispatch_manager_1 = require("./resource.manager/dispatch.manager");
+var users_manager_1 = require("./resource.manager/users.manager");
+var device_manager_1 = require("./resource.manager/device.manager");
+var carrer_manager_1 = require("./resource.manager/carrer.manager");
+var gate_manager_1 = require("./resource.manager/gate.manager");
+var section_manager_1 = require("./resource.manager/section.manager");
+var orderque_manager_1 = require("./resource.manager/orderque.manager");
+var product_manager_1 = require("./resource.manager/product.manager");
+var bays_manager_1 = require("./resource.manager/bays.manager");
 var app = express();
-var prod = false;
+var prod = true;
 var socketPort = 2026;
 var server = http.createServer(app);
 var io = require('socket.io')(server, {
@@ -89,313 +67,119 @@ var io = require('socket.io')(server, {
         methods: ['GET', 'POST']
     }
 });
-var EventSource = require('eventsource');
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 typeorm_1.createConnection(
 // {
 //     type: "postgres",
-//     host: "ziggy.db.elephantsql.com",
+//     host: "ziggy.db.dumbo.db.elephantsql.com.com",
 //     port: 5432,
-//     username: "fsscpyai",
-//     password: "VGTPfbHliRVhP__C_b10pcmqAYGnBItm",
-//     database: "fsscpyai",
+//     username: "lgmbmxih",
+//     password: "4pY4VeACxkXo2wgglD48gARdV0vYtTZ9",
+//     database: "lgmbmxih",
 //     logging: false,
 //     entities: [
 //         __dirname + "/entity/**/*.js"
 //     ]
 // }
-).then(function (connection) { return __awaiter(void 0, void 0, void 0, function () {
+).then(function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         console.log('Database ready... :103');
         return [2 /*return*/];
     });
 }); }).catch(function (error) { return console.log(error); });
-var handler = new Handler_1.default();
-app.get('/', handler.index);
-app.get('/super-user/', saveSupserUser_1.default);
-app.post('/login/', login_1.default);
+/*
+* Home
+* */
+var index = new default_1.default();
+app.get('/', index.home);
+/*
+* Auth
+* */
+var auth = new auth_manager_1.default();
+app.get('/super-user/', auth.createSuperUser);
+app.post('/login/', auth.authenticate);
 /*
 * Company
 * */
-app.post('/save-company/', middleware_1.default, function (req, res) {
-    saveCompany_1.default(req.body).then(function (data) {
-        res.json({
-            company: data
-        });
-    });
-});
-app.get('/company/:id/', middleware_1.default, function (req, res) {
-    ReadCompanyByID_1.default(req.params.id).then(function (data) {
-        res.json({
-            company: data
-        });
-    });
-});
+var companyHandler = new company_manager_1.default();
+app.post('/save-company/', middleware_1.default, companyHandler.createCompany);
+app.get('/company/:id/', middleware_1.default, companyHandler.getCompanyByID);
 /*
 * Branch
 * */
-app.post('/save-branch/', middleware_1.default, function (req, res) {
-    saveBranches_1.default(req.body).then(function (data) {
-        res.json({
-            branch: data
-        });
-    });
-});
-app.get('/branch/:id/', middleware_1.default, function (req, res) {
-    BranchInfo_1.default(req.params.id).then(function (data) {
-        res.json({
-            branch: data
-        });
-    });
-});
-app.get('/all-branches/:id/', middleware_1.default, function (req, res) {
-    readAllBranches_1.default(req.body.id).then(function (data) {
-        res.json({
-            branches: data
-        });
-    });
-});
-app.patch('/update-branch/:id/', middleware_1.default, function (req, res) {
-    UpdateBranch_1.default(req.body).then(function (data) {
-        res.json({
-            branch: data
-        });
-    });
-});
+var branchManager = new branch_manager_1.default();
+app.get('/branch/:id/', middleware_1.default, branchManager.summonBranch);
+app.get('/all-branches/', middleware_1.default, branchManager.getAllBranches);
+app.post('/save-branch/', middleware_1.default, branchManager.createBranch);
+app.patch('/update-branch/:id/', middleware_1.default, branchManager.updateBranchFile);
 /*
 * Dispatch Times
 * */
-app.get('/dispatch/:branchID', middleware_1.default, function (req, res) {
-    GetDispatchByBranch_1.default(req.params.branchID).then(function (data) {
-        res.json({
-            dispatch: data
-        });
-    });
-});
-app.post('/add-dispatch/:branchID/', middleware_1.default, function (req, res) {
-    SaveDispatchTimes_1.default(req.body).then(function (data) {
-        res.json({
-            productDispatch: data
-        });
-    });
-});
+var dispatchManager = new dispatch_manager_1.default();
+app.get('/dispatch/:branchID', middleware_1.default, dispatchManager.checkBranchDispatch);
+app.post('/add-dispatch/:branchID/', middleware_1.default, dispatchManager.createBranchDispatch);
 /*
 * User
 * */
-app.post('/save-user/:branchID/', middleware_1.default, (function (req, res) {
-    AddUsers_1.default(req.body).then(function (data) {
-        res.json({
-            user: data
-        });
-    });
-}));
-app.get('/all-users/', middleware_1.default, function (req, res) {
-    ReadAllUsers_1.default().then(function (data) {
-        res.json({
-            users: data
-        });
-    });
-});
-app.patch('/update-user/', middleware_1.default, function (req, res) {
-    UpdateUser_1.default(req.body).then(function (data) {
-        res.json({
-            user: data
-        });
-    });
-});
+var usersManager = new users_manager_1.default();
+app.get('/all-users/', middleware_1.default, usersManager.summonAllUsers);
+app.post('/save-user/:branchID/', middleware_1.default, usersManager.registerUser);
+app.patch('/update-user/', middleware_1.default, usersManager.updateUserDetails);
 /*
 * Device
 * */
-app.post('/save-device/:branchID', middleware_1.default, function (req, res) {
-    SaveDevice_1.default(req.body).then(function (data) {
-        res.json({
-            device: data
-        });
-    });
-});
-app.patch('/update-device/:id', middleware_1.default, function (req, res) {
-    UpdateDevice_1.default(req.body, req.params.id).then(function (data) {
-        res.json({
-            device: data
-        });
-    });
-});
-app.get('/all-devices/:branchID/', middleware_1.default, function (req, res) {
-    AllDevices_2.default(req.params.branchID).then(function (data) {
-        res.json({
-            devices: data
-        });
-    });
-});
+var deviceManager = new device_manager_1.default();
+app.post('/save-device/:branchID', middleware_1.default, deviceManager.registerDevice);
+app.patch('/update-device/:id', middleware_1.default, deviceManager.editDevice);
+app.get('/all-devices/:branchID/', middleware_1.default, deviceManager.availAllDevices);
 /*
 * Carriers
 * */
-app.post('/save-carrier/', middleware_1.default, function (req, res) {
-    SaveCarrier_1.default(req.body).then(function (data) {
-        res.json({
-            carrier: data
-        });
-    });
-});
-app.post('/save-carrier-type/', middleware_1.default, function (req, res) {
-    SaveCarrierTypes_1.default(req.body).then(function (msg) {
-        res.json({
-            carrierType: msg
-        });
-    });
-});
-app.get('/all-carrier-types/', middleware_1.default, function (req, res) {
-    CarrierTypes_1.default().then(function (data) {
-        res.json({
-            carrierTypes: data
-        });
-    });
-});
-app.get('/all-carriers/', middleware_1.default, function (req, res) {
-    GetAllCarriers_1.default().then(function (data) {
-        res.json({
-            carriers: data
-        });
-    });
-});
+var carrierManager = new carrer_manager_1.default();
+app.post('/save-carrier/', middleware_1.default, carrierManager.registerCarrier);
+app.post('/save-carrier-type/', middleware_1.default, carrierManager.saveCarrierType);
+app.get('/all-carrier-types/', middleware_1.default, carrierManager.getAllCarrierTypes);
+app.get('/all-carriers/', middleware_1.default, carrierManager.summonAllCarrierTypes);
 /*
 * Gates
 *
 * */
-app.post('/save-gate/', middleware_1.default, function (req, res) {
-    AddGate_1.default(req.body).then(function (data) {
-        res.json({
-            res: data
-        });
-    });
-});
-app.get('/all-gates/', middleware_1.default, function (req, res) {
-    ReadAllGates_1.default().then(function (data) {
-        res.json({
-            gates: data
-        });
-    });
-});
-// app.get('/gate/:id', (req, res) => {
-//
-// });
+var gateManager = new gate_manager_1.default();
+app.post('/save-gate/', middleware_1.default, gateManager.registerGate);
+app.get('/all-gates/', middleware_1.default, gateManager.availAllGates);
 /*
 * Sections
 *
 * */
-app.post('/save-section/', middleware_1.default, function (req, res) {
-    SaveSections_1.default(req.body).then(function (data) {
-        res.json({
-            data: data
-        });
-    });
-});
-app.post('/save-preset/', middleware_1.default, function (req, res) {
-    SavePresets_1.default(req.body).then(function (data) {
-        res.json({
-            res: data
-        });
-    });
-});
-app.get('/all-presets/', middleware_1.default, function (req, res) {
-    ReadAllGates_1.default().then(function (data) {
-        res.json({
-            presets: data
-        });
-    });
-});
-app.get('/all-sections/', middleware_1.default, function (req, res) {
-    ReadAllSections_1.default().then(function (data) {
-        res.json({
-            sections: data
-        });
-    });
-});
+var sectionManager = new section_manager_1.default();
+app.post('/save-section/', middleware_1.default, sectionManager.registerSection);
+app.post('/save-preset/', middleware_1.default, sectionManager.savePreset);
+app.get('/all-presets/', middleware_1.default, sectionManager.getAllPresets);
+app.get('/all-sections/', middleware_1.default, sectionManager.getAllSections);
 /*
-* DispatchTimes
+* OrderQue
 *
 * */
-app.post('/orderQue/', middleware_1.default, function (req, res) {
-    SaveOrderQue_1.default(req.body).then(function (data) {
-        res.json({
-            orderQue: data
-        });
-    });
-});
-app.get('/devices/:id/', middleware_1.default, function (req, res) {
-    AllDevices_1.default(req.params.id).then(function (data) {
-        res.json({
-            devices: data
-        });
-    });
-});
-app.patch('/device/:id/', middleware_1.default, function (req, res) {
-    UpdateDevice_1.default(req.body, req.params.id).then(function (data) {
-        res.json({
-            device: data
-        });
-    });
-});
+var orderQueManager = new orderque_manager_1.default();
+app.post('/orderQue/', middleware_1.default, orderQueManager.saveOrderQue);
 /*
 * Products
 * */
-app.post('/save-product/', middleware_1.default, function (req, res) {
-    AddProduct_1.default(req.body).then(function (data) {
-        res.json({
-            product: data
-        });
-    });
-});
-app.get('/all-products/', middleware_1.default, function (req, res) {
-    AllProducts_1.default().then(function (data) {
-        res.json({
-            products: data
-        });
-    });
-});
-app.post('/save-product-unit/', middleware_1.default, function (req, res) {
-    SaveProductUnit_1.default(req.body).then(function (data) {
-        res.json({
-            unit: data
-        });
-    });
-});
-app.get('/all-product-units/', middleware_1.default, function (req, res) {
-    ReadAllProductUnit_1.default().then(function (data) {
-        res.json({
-            productUnits: data
-        });
-    });
-});
-app.post('/save-pallet/', middleware_1.default, function (req, res) {
-    SavePallet_1.default(req.body).then(function (data) {
-        res.json({
-            pallet: data
-        });
-    });
-});
-/*
-* ManualEntry
-* */
-app.post('/save-manual-entry/', middleware_1.default, function (req, res) {
-    AddManualEntry_1.default(req.body).then(function (data) {
-        res.json({
-            manualEntry: data
-        });
-    });
-});
+var productManager = new product_manager_1.default();
+app.get('/all-product-units/', middleware_1.default, productManager.getAllUnits);
+app.get('/all-products/', middleware_1.default, productManager.getAllProducts);
+app.get('/all-units/', middleware_1.default, productManager.getAllUnits);
+app.post('/save-pallet/', middleware_1.default, productManager.addPallet);
+app.post('/save-product/', middleware_1.default, productManager.saveProduct);
+app.post('/save-manual-entry/', middleware_1.default, productManager.saveManualEntry);
+app.post('/save-unit/', middleware_1.default, productManager.saveUnit);
 /*
 * Storage Bays
 * */
-app.post('/save-bay/:id/', middleware_1.default, function (req, res) {
-    SaveBays_1.default(req.body).then(function (data) {
-        res.json({
-            res: data
-        });
-    });
-});
+var storageBayManager = new bays_manager_1.default();
+app.post('/save-bay/:id/', middleware_1.default, storageBayManager.createBays);
 app.get('/all-bays/', middleware_1.default, ReadAllBays_1.default);
 io.on('connection', function (client) {
     io.emit('msg', 'Connection Successful!');
@@ -438,7 +222,7 @@ io.on('connection', function (client) {
     //         console.log(data)
     //     });
     // })
-    client.on('ping', function (msg) {
+    client.on('ping', function () {
         io.emit('pong', 'I got a ping, here\'s a pong!.');
     });
 });

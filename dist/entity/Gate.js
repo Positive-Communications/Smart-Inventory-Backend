@@ -273,9 +273,8 @@ var Gate = /** @class */ (function () {
         __metadata("design:type", Array)
     ], Gate.prototype, "visitorExit", void 0);
     __decorate([
-        typeorm_1.OneToMany(function () { return Product_1.default; }, function (product) { return product.dispatchGate; }),
-        typeorm_1.JoinTable(),
-        __metadata("design:type", Array)
+        typeorm_1.ManyToOne(function () { return Product_1.default; }, function (product) { return product.dispatchGate; }),
+        __metadata("design:type", Product_1.default)
     ], Gate.prototype, "dispatchedProducts", void 0);
     __decorate([
         typeorm_1.OneToMany(function () { return ScanProductHistory_1.default; }, function (history) { return history.gate; }),

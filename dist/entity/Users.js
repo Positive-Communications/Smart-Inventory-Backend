@@ -54,6 +54,7 @@ var PackingTags_1 = require("./PackingTags");
 var ReadBranchByID_1 = require("../helpers/R/ByID/ReadBranchByID");
 var Orders_1 = require("./Orders");
 var SaveUserPrivileges_1 = require("../helpers/C/singles/SaveUserPrivileges");
+var Company_1 = require("./Company");
 var Users = /** @class */ (function () {
     function Users() {
     }
@@ -152,6 +153,10 @@ var Users = /** @class */ (function () {
         typeorm_1.Column(),
         __metadata("design:type", String)
     ], Users.prototype, "joined", void 0);
+    __decorate([
+        typeorm_1.OneToOne(function (type) { return Company_1.default; }, function (company) { return company.superAdmin; }),
+        __metadata("design:type", Company_1.default)
+    ], Users.prototype, "isSuper", void 0);
     __decorate([
         typeorm_1.ManyToOne(function (type) { return Branch_1.default; }, function (branch) { return branch.users; }),
         __metadata("design:type", Branch_1.default)

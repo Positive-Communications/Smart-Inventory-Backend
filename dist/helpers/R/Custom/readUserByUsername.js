@@ -46,6 +46,7 @@ var readUserByUsername = function (username) { return __awaiter(void 0, void 0, 
                     .select('user')
                     .from(Users_1.default, 'user')
                     .where('user.userName =:user', { user: username })
+                    .leftJoinAndSelect('user.isSuper', 'superAmdmn')
                     .getOne()];
             case 1: return [2 /*return*/, _a.sent()];
         }

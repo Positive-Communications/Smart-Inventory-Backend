@@ -55,6 +55,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                         res.json({
                             success: true,
                             msg: 'Authorized',
+                            isSuper: user.isSuper.id,
                             accessToken: token
                         });
                     }

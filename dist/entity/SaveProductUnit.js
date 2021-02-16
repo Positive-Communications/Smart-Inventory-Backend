@@ -45,27 +45,26 @@ function saveProductUnit(data) {
             switch (_a.label) {
                 case 0:
                     productUnit = new ProductUnit_1.default();
-                    productUnit.unit = data.unit;
-                    productUnit.numberOfProducts = data.numberOfProducts;
-                    productUnit.isTrackedByRFID = data.isTrackedByRFID;
-                    productUnit.useUnitAsDefault = data.useUnitAsDefault;
-                    _a.label = 1;
+                    return [4 /*yield*/, productUnit.createItself(data)];
                 case 1:
-                    _a.trys.push([1, 3, , 4]);
+                    _a.sent();
+                    _a.label = 2;
+                case 2:
+                    _a.trys.push([2, 4, , 5]);
                     return [4 /*yield*/, typeorm_1.getConnection().manager.save(productUnit)];
-                case 2: return [2 /*return*/, _a.sent()];
-                case 3:
+                case 3: return [2 /*return*/, _a.sent()];
+                case 4:
                     e_1 = _a.sent();
                     console.log(e_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });
 }
 exports.default = saveProductUnit;
 var json = {
-    unit: "",
+    unit: " ",
     numberOfProducts: "",
     isTrackedByRFID: false,
     useUnitAsDefault: false,

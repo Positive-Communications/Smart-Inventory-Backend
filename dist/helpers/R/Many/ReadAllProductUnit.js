@@ -37,11 +37,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var ProductUnit_1 = require("../../../entity/ProductUnit");
+var Units_1 = require("../../../entity/Units");
 var readAllProductUnits = function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getConnection().manager.find(ProductUnit_1.default)];
+            case 0: return [4 /*yield*/, typeorm_1.getConnection().manager.find(Units_1.default)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });

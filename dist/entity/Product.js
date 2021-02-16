@@ -57,16 +57,17 @@ var ProductTags_1 = require("./ProductTags");
 var Store_1 = require("./Store");
 var Bays_1 = require("./Bays");
 var OrderDetails_1 = require("./OrderDetails");
-var ReadProductUnitByID_1 = require("../helpers/R/ByID/ReadProductUnitByID");
-var ReadGateByID_1 = require("../helpers/R/ByID/ReadGateByID");
+var SaveMultipleProductUnits_1 = require("../helpers/C/Multiple/SaveMultipleProductUnits");
+var SaveMultiplePallets_1 = require("../helpers/C/Multiple/SaveMultiplePallets");
+var AssignGateToProduct_1 = require("../helpers/C/Multiple/AssignGateToProduct");
 var Product = /** @class */ (function () {
     function Product() {
     }
     Product.prototype.createItself = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         this.name = data.name;
                         this.description = data.description;
@@ -75,15 +76,19 @@ var Product = /** @class */ (function () {
                         this.monthsLeftToExpire = data.monthsLeftToExpire;
                         this.hasErrors = data.hasErrors;
                         _a = this;
-                        return [4 /*yield*/, ReadProductUnitByID_1.default(data.unitID)];
+                        return [4 /*yield*/, SaveMultipleProductUnits_1.default(data.units)];
                     case 1:
-                        _a.unit = _c.sent();
+                        _a.units = _d.sent();
                         _b = this;
-                        return [4 /*yield*/, ReadGateByID_1.default(data.gateID)];
+                        return [4 /*yield*/, AssignGateToProduct_1.default(data.gates)];
                     case 2:
-                        _b.dispatchGate = _c.sent();
+                        _b.dispatchGate = _d.sent();
                         this.isStoredOnPallet = data.isStoredOnPallet;
                         this.palletIsTrackedByRFID = data.palletIsTrackedByRFID;
+                        _c = this;
+                        return [4 /*yield*/, SaveMultiplePallets_1.default(data.pallets)];
+                    case 3:
+                        _c.pallet = _d.sent();
                         return [2 /*return*/];
                 }
             });
@@ -109,7 +114,9 @@ var Product = /** @class */ (function () {
         __metadata("design:type", String)
     ], Product.prototype, "description", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", String)
     ], Product.prototype, "status", void 0);
     __decorate([
@@ -125,20 +132,26 @@ var Product = /** @class */ (function () {
         __metadata("design:type", Boolean)
     ], Product.prototype, "hasErrors", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", Boolean)
     ], Product.prototype, "isStoredOnPallet", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", Boolean)
     ], Product.prototype, "palletIsTrackedByRFID", void 0);
     __decorate([
-        typeorm_1.ManyToOne(function (type) { return ProductUnit_1.default; }, function (unit) { return unit.product; }),
-        __metadata("design:type", ProductUnit_1.default)
-    ], Product.prototype, "unit", void 0);
+        typeorm_1.OneToMany(function (type) { return ProductUnit_1.default; }, function (unit) { return unit.product; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
+    ], Product.prototype, "units", void 0);
     __decorate([
-        typeorm_1.ManyToOne(function (type) { return Gate_1.default; }, function (gate) { return gate.dispatchedProducts; }),
-        __metadata("design:type", Gate_1.default)
+        typeorm_1.OneToMany(function (type) { return Gate_1.default; }, function (gate) { return gate.dispatchedProducts; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
     ], Product.prototype, "dispatchGate", void 0);
     __decorate([
         typeorm_1.OneToOne(function (type) { return ProductTags_1.default; }, function (tag) { return tag.product; }),

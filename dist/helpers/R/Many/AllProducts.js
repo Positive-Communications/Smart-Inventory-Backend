@@ -42,7 +42,7 @@ var readAllProducts = function () { return __awaiter(void 0, void 0, void 0, fun
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, typeorm_1.getConnection()
-                    .manager.find(Product_1.default, { relations: ['unit', 'pallet'] })];
+                    .manager.find(Product_1.default, { relations: ['units', 'pallet'] })];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });

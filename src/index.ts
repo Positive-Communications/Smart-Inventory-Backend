@@ -27,7 +27,7 @@ import StorageBayManager from "./resource.manager/bays.manager";
 
 const app = express();
 
-const prod = true;
+const prod = false;
 
 const socketPort = 2026;
 const server = http.createServer(app);
@@ -45,18 +45,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 createConnection(
-    {
-        type: "postgres",
-        host: "ziggy.db.dumbo.db.elephantsql.com.com",
-        port: 5432,
-        username: "lgmbmxih",
-        password: "4pY4VeACxkXo2wgglD48gARdV0vYtTZ9",
-        database: "lgmbmxih",
-        logging: false,
-        entities: [
-            __dirname + "/entity/**/*.js"
-        ]
-    }
+    // {
+    //     type: "postgres",
+    //     host: "ziggy.db.dumbo.db.elephantsql.com.com",
+    //     port: 5432,
+    //     username: "lgmbmxih",
+    //     password: "4pY4VeACxkXo2wgglD48gARdV0vYtTZ9",
+    //     database: "lgmbmxih",
+    //     logging: false,
+    //     entities: [
+    //         __dirname + "/entity/**/*.js"
+    //     ]
+    // }
 ).then(async () => {
 
     console.log('Database ready... :103');
@@ -90,7 +90,7 @@ app.post('/login/', auth.authenticate);
 
 const companyHandler = new CompanyHandler();
 
-app.post('/save-company/', frisk, companyHandler.createCompany);
+app.post('/save-company/', companyHandler.createCompany);
 
 app.get('/company/:id/', frisk, companyHandler.getCompanyByID);
 

@@ -73,9 +73,23 @@ var json = {
     monthsLeftToExpire: "",
     isStoredOnPallet: false,
     palletIsTrackedByRFID: true,
-    unitID: "",
     gateID: "",
     status: "",
-    hasErrors: false
+    hasErrors: false,
+    units: [
+        {
+            unit: {},
+            count: "",
+            isTracked: "",
+            default: "",
+        }
+    ],
+    pallets: [
+        {
+            unit: {},
+            count: "",
+            palletType: "",
+        }
+    ], gates: []
 };
 //# sourceMappingURL=AddProduct.js.map

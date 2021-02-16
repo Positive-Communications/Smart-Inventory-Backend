@@ -47,6 +47,8 @@ function saveCompany(data) {
                     company = new Company_1.default();
                     company.name = data.name;
                     company.headOffice = data.headOffice;
+                    company.city = data.city;
+                    company.info = data.info;
                     company.email = data.email;
                     company.streetRoad = data.streetRoad;
                     company.primaryNumber = data.primaryNumber;
@@ -72,6 +74,8 @@ var config = {
     email: "",
     streetRoad: "",
     primaryNumber: "",
-    secondaryNumber: ""
+    secondaryNumber: "",
+    city: "",
+    info: "",
 };
 //# sourceMappingURL=saveCompany.js.map

@@ -47,13 +47,12 @@ function updateBranch(data) {
                         .update(Branch_1.default)
                         .where('id =:id', { id: parseInt(data.branchID) })
                         .set({
-                        code: "",
-                        info: "",
-                        city: "",
-                        isActive: false,
-                        phone: "",
-                        email: "",
-                        streetRoad: "",
+                        city: data.city,
+                        info: data.info,
+                        isActive: true,
+                        streetRoad: data.streetRoad,
+                        phone: data.phone,
+                        email: data.email,
                     })
                         .execute()];
                 case 1: return [2 /*return*/, _a.sent()];
