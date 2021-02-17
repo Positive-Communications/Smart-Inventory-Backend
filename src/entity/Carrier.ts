@@ -38,7 +38,7 @@ export default class Carrier {
         this.type = await readCarrierTypeByID(data.type);
         this.user = await readUserByID(data.user);
         this.isFixedUse = data.isFixed;
-        this.status = data.status;
+        this.status = "empty";
     }
 
 }

@@ -7,22 +7,7 @@ export default async function updateGate(data) {
         getConnection()
             .createQueryBuilder()
             .update(Gate)
-            .set({
-                name: "",
-                role:"",
-                hasErrors:false,
-                isaActive:true,
-                allowEmpty:false,
-                verifyNotTrackedByRFID: false,
-                checkContinuouslyForUnauthorized: false,
-                doNotAllowRemoved: false,
-                useForDispatchOrReceiving: false,
-                allowDispatchForAllOrders: false,
-                showProductCountError: false,
-                allowEmptyPallets: false,
-                getToDetermineItemPosition: false,
-                verifyCarrierIsEmpty: false,
-            })
+            .set(data)
             .where('id =:id', {id: parseInt(data.gateID)})
             .execute();
 }

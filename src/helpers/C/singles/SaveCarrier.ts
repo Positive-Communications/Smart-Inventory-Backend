@@ -6,6 +6,7 @@ export default async function saveCarrier(data) {
     let carrier = new Carrier()
 
     await carrier.createItSelf(data);
+    
 
     try {
 

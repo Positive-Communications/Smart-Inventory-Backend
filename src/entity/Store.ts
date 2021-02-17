@@ -14,7 +14,7 @@ export default class Store {
 
     @OneToMany(() => Bays, bay => bay.store)
     @JoinTable()
-    bays: Bays[]
+    bays: Bays[];
 
     @Column()
     number: string;
@@ -42,5 +42,9 @@ export default class Store {
     @OneToMany(type => Product, product => product.storedIn)
     @JoinTable()
     product: Product[];
+
+    async createItself (name){
+        this.number = name;
+    }
 
 }

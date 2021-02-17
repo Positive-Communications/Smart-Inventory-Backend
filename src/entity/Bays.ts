@@ -9,7 +9,6 @@ import {
     OneToOne,
     PrimaryGeneratedColumn
 } from "typeorm";
-import Sections from "./Sections";
 import Store from "./Store";
 import Product from "./Product";
 import Gate from "./Gate";
@@ -27,18 +26,21 @@ export default class Bays {
     @Column()
     role: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     hasErrors: boolean;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     isActive: boolean;
 
     @Column()
     storageType: string;
 
-    @ManyToMany(type => Product, product => product.bay)
-    @JoinTable()
-    product: Product[]
+    @ManyToOne(type => Product, product => product.bay)
+    product: Product;
 
     @ManyToMany(type => Gate, gate => gate.bays)
     gates: Gate[];
@@ -48,5 +50,5 @@ export default class Bays {
 
     @OneToMany(type => Device, device => device.bays)
     @JoinTable()
-    devices: Device[]
+    devices: Device[];
 }

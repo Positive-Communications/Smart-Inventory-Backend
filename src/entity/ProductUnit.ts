@@ -1,6 +1,5 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import Product from "./Product";
-import OrderQue from "./OrderQue";
 import OrderDetails from "./OrderDetails";
 import Unit from "./Units";
 import readUnitByID from "../helpers/R/ByID/ReadUnitByID";

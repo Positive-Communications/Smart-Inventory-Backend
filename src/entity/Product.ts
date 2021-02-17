@@ -21,8 +21,6 @@ import ProductTags from "./ProductTags";
 import Store from "./Store";
 import Bays from "./Bays";
 import OrderDetails from "./OrderDetails";
-import readProductUnitByID from "../helpers/R/ByID/ReadProductUnitByID";
-import readGateByID from "../helpers/R/ByID/ReadGateByID";
 import saveMultipleProductUnits from "../helpers/C/Multiple/SaveMultipleProductUnits";
 import saveMultiplePallets from "../helpers/C/Multiple/SaveMultiplePallets";
 import assignGateToProduct from "../helpers/C/Multiple/AssignGateToProduct";
@@ -92,7 +90,8 @@ export default class Product {
     @ManyToOne(type => Sections, section => section.currentProducts)
     currentSection: Sections;
 
-    @ManyToMany(type => Bays, bay => bay.product)
+    @OneToMany(type => Bays, bay => bay.product)
+    @JoinTable()
     bay: Bays[]
 
     @ManyToOne(type => Store, store => store.product)

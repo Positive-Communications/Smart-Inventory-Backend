@@ -1,6 +1,6 @@
-import Gate from "../entity/Gate";
 import AddGate from "../helpers/C/singles/AddGate";
 import readAllGates from "../helpers/R/Many/ReadAllGates";
+import updateGate from "../helpers/U/ByID/UpdateGate";
 
 class GateManager{
 
@@ -12,6 +12,11 @@ class GateManager{
     async availAllGates(req, res){
         const gates = await readAllGates()
         res.json({gates: gates});
+    }
+
+    async updateGate(req, res){
+        const gate = await updateGate(req.body);
+        res.json({gate: gate});
     }
 
 }

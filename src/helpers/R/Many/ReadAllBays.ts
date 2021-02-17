@@ -4,7 +4,7 @@ import frisk from "../../../Auth/middleware";
 
 const readAllBays = async (req, res) => {
 
-    const bays = await getConnection().manager.find(Bays);
+    const bays = await getConnection().manager.find(Bays, {relations:['store', 'product']});
 
     res.json({bays: bays});
 }

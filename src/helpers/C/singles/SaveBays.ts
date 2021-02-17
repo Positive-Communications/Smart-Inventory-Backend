@@ -1,19 +1,26 @@
 import {getConnection} from "typeorm";
-import Store from "../../../entity/Store";
 import Bays from "../../../entity/Bays";
+import readProductByID from "../../R/ByID/ReadProductByID";
+import getOrCreateStore from "../Custom/GetOrCreateStore";
 
 
 export default async function saveBays(data) {
 
-    // const store = await getConnection().manager.findOneOrFail(Store, data.storeID);
+    console.log(data);
+    
 
     let bay = new Bays();
-    bay.name = data.name;
+
+    bay.name = data.nameNumber;
     bay.role = data.role;
     bay.isActive = data.isActive;
-    // bay.store = store;
+    bay.store = await getOrCreateStore(data.store);
     bay.storageType = data.storageType;
     bay.hasErrors = data.hasErrors;
+    bay.product = await readProductByID(data.product.id)
+
+    console.log(data.product.id);
+    
 
     try {
 
@@ -29,5 +36,6 @@ let json = {
     role: "",
     isActive: "",
     storageType: "",
-    hasErrors: ""
+    hasErrors: "",
+    store: ''
 }

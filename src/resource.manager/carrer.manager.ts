@@ -6,7 +6,7 @@ import getAllCarriers from "../helpers/R/Many/GetAllCarriers";
 class CarrierManager{
 
     async registerCarrier(req, res){
-        const carrier = saveCarrier(req.body);
+        const carrier = await saveCarrier(req.body);
         res.json({carrier: carrier});
     }
 

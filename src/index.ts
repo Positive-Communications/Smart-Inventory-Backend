@@ -172,6 +172,8 @@ app.post('/save-gate/', frisk, gateManager.registerGate);
 
 app.get('/all-gates/', frisk, gateManager.availAllGates);
 
+app.patch('/update-gate/', frisk, gateManager.updateGate)
+
 
 /*
 * Sections
@@ -226,8 +228,12 @@ app.get('/all-bays/', frisk, readAllBays);
 
 
 io.on('connection', client => {
-    io.emit('msg', 'Connection Successful!');
+    io.emit('msg', 'Connecption Successful!');
     console.log(`Client ${.1}' -> Connected successfully. :101`)
+
+    io.on('tag', msg=>{
+        io.emit('user', 'I received the tag. I will be a user');
+    })
 
 
     // let Tags = [];
