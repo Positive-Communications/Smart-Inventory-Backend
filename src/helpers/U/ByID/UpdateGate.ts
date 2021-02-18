@@ -1,14 +1,14 @@
 import {getConnection} from "typeorm";
 import Gate from "../../../entity/Gate";
 
-export default async function updateGate(data) {
+export default async function updateGate(data, id) {
 
     return await
         getConnection()
             .createQueryBuilder()
             .update(Gate)
             .set(data)
-            .where('id =:id', {id: parseInt(data.gateID)})
+            .where('id =:id', {id: parseInt(id)})
             .execute();
 }
 

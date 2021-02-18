@@ -1,15 +1,14 @@
 import Presets from "../../../entity/Presets";
-import readSectionByID from "../../R/ByID/ReadSectionByID";
 import readProductByID from "../../R/ByID/ReadProductByID";
 import {getConnection} from "typeorm";
+import getOrCreateSection from "../Custom/GetOrCreateSection";
 
 export default async function savePresets(data) {
 
     let preset = new Presets();
 
-    preset.section = await readSectionByID(data.sectionID);
+    preset.section = await getOrCreateSection(data.section);
     preset.presetName = data.presetName;
-    preset.product = await readProductByID(data.productID);
 
     try {
 
@@ -24,7 +23,6 @@ export default async function savePresets(data) {
 }
 
 let json = {
-    sectionID: "",
+    section: "",
     presetName: "",
-    productID: ""
 }

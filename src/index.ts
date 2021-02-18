@@ -172,7 +172,7 @@ app.post('/save-gate/', frisk, gateManager.registerGate);
 
 app.get('/all-gates/', frisk, gateManager.availAllGates);
 
-app.patch('/update-gate/', frisk, gateManager.updateGate)
+app.patch('/update-gate/:id/', frisk, gateManager.updateGate)
 
 
 /*
@@ -225,6 +225,8 @@ const storageBayManager = new StorageBayManager();
 app.post('/save-bay/:id/', frisk, storageBayManager.createBays);
 
 app.get('/all-bays/', frisk, readAllBays);
+
+app.get('/all-stores/', frisk, storageBayManager.getAllStores)
 
 
 io.on('connection', client => {

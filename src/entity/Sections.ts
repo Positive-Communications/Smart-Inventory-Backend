@@ -17,23 +17,30 @@ export default class Sections {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     role: string;
 
     @Column()
     name: string;
 
-    @Column()
+    @Column({
+        default: 0
+    })
     capacity: number;
 
-    @Column()
+    @Column({
+        default: false
+    })
     hasErrors: boolean;
 
     @ManyToOne(type => Branch, branch => branch.sections)
     branch: Branch
 
-    @OneToOne(type => Presets, preset => preset.section)
-    presets: Presets;
+    @OneToMany(type => Presets, preset => preset.section)
+    @JoinTable()
+    presets: Presets[];
 
     @OneToMany(type => Product, product => product.currentSection)
     @JoinTable()

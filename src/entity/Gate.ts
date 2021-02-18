@@ -1,4 +1,4 @@
-import {Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import Sections from "./Sections";
 import TemporaryStaff from "./TemporaryStaff";
 import VisitorAccessTags from "./VisitorAccessTags";
@@ -9,6 +9,7 @@ import Branch from "./Branch";
 import Bays from "./Bays";
 import PackingTags from "./PackingTags";
 import readBranchByID from "../helpers/R/ByID/ReadBranchByID";
+import Store from "./Store";
 
 
 @Entity()
@@ -55,6 +56,21 @@ export default class Gate {
 
     @Column()
     ant4Power: string;
+
+    @Column({
+        default: false
+    })
+    isForPackaging: boolean;
+
+    @Column({
+        default: false
+    })
+    isForStorage: boolean;
+
+    @Column({
+        default: false
+    })
+    isForDispatch: boolean;
 
     @Column()
     role: string;
@@ -175,6 +191,9 @@ export default class Gate {
 
     @ManyToOne(type => VisitorAccessTags, visitor => visitor.accessGates)
     visitors: VisitorAccessTags[]
+
+    @ManyToOne(type => Store, store => store.gates)
+    stores: Store
 
     async createItself(data) {
 

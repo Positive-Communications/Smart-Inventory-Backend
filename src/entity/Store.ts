@@ -1,6 +1,7 @@
 import {Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import Bays from "./Bays";
 import Branch from "./Branch";
+import Gate from "./Gate";
 import Product from "./Product";
 
 @Entity()
@@ -42,6 +43,10 @@ export default class Store {
     @OneToMany(type => Product, product => product.storedIn)
     @JoinTable()
     product: Product[];
+
+    @OneToMany(type=>Gate, gate=> gate.stores)
+    @JoinTable()
+    gates: Gate[];
 
     async createItself (name){
         this.number = name;

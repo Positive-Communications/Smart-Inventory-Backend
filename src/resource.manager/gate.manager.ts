@@ -15,7 +15,7 @@ class GateManager{
     }
 
     async updateGate(req, res){
-        const gate = await updateGate(req.body);
+        const gate = await updateGate(req.body, req.params.id);
         res.json({gate: gate});
     }
 

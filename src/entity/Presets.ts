@@ -1,11 +1,8 @@
 import {
-    AfterInsert,
     Column,
     Entity,
     JoinColumn,
-    JoinTable,
     ManyToOne,
-    OneToMany,
     OneToOne,
     PrimaryGeneratedColumn
 } from "typeorm";
@@ -18,8 +15,7 @@ export default class Presets {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @OneToOne(type => Sections, section => section.presets)
-    @JoinColumn()
+    @ManyToOne(type => Sections, section => section.presets)
     section: Sections;
 
     @Column()
@@ -32,4 +28,8 @@ export default class Presets {
     // saveCounters() {
     //
     // }
+}
+
+const saveOrCreateSection = ()=>{
+
 }

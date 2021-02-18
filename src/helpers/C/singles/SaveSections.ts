@@ -7,16 +7,11 @@ export default async function saveSections(data) {
 
     let section = new Sections();
 
-    section.role = data.role;
-    section.name = data.name;
-    section.capacity = data.capacity;
-    section.hasErrors = data.hasErrors;
-    section.branch = await readBranchByID(data.branchID);
-    // section.presets = await readPresetByID(data.presetId);
+    section.name = data;
 
     try {
 
-        return await
+    return await
             getConnection().manager.save(section);
 
     } catch (e) {
@@ -25,10 +20,5 @@ export default async function saveSections(data) {
 }
 
 let json = {
-    role: "",
     name: "",
-    capacity: "",
-    hasErrors: false,
-    branchID: "",
-    presetID: ""
 }
