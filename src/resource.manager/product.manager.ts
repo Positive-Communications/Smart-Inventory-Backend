@@ -1,46 +1,83 @@
+import { getConnection } from "typeorm";
+import Alerts from "../entity/Alerts";
 import saveProductUnit from "../entity/SaveProductUnit";
+import constructScanHistory from "../helpers/C/Custom/ConstructScanHistory";
+import proccessScan from "../helpers/C/Multiple/SaveAlerts";
+import addHistory from "../helpers/C/singles/AddHistory";
 import addManualEntry from "../helpers/C/singles/AddManualEntry";
 import saveProduct from "../helpers/C/singles/AddProduct";
 import addUnit from "../helpers/C/singles/AddUnit";
 import savePallet from "../helpers/C/singles/SavePallet";
+import readGateByID from "../helpers/R/ByID/ReadGateByID";
+import getProductsBySection from "../helpers/R/Custom/ReadHistoryBySection";
+import readTagByEPC from "../helpers/R/Custom/tagByEpc";
 import readAllProducts from "../helpers/R/Many/AllProducts";
 import readAllProductUnits from "../helpers/R/Many/ReadAllProductUnit";
 
 class ProductManager {
 
-    async saveProduct(req, res){
+    async saveProduct(req, res) {
         const product = await saveProduct(req.body);
-        res.json({product:product});
+        res.json({ product: product });
     }
 
-    async getAllProducts(req, res){
+    async getAllProducts(req, res) {
         const products = await readAllProducts();
-        res.json({products: products});
+        res.json({ products: products });
     }
 
-    async saveProductUnit(req, res){
+    async saveProductUnit(req, res) {
         const unit = await saveProductUnit(req.body);
-        res.json({unit: unit});
+        res.json({ unit: unit });
     }
 
-    async getAllUnits(req, res){
+    async getAllUnits(req, res) {
         const units = await readAllProductUnits();
-        res.json({units: units});
+        res.json({ units: units });
     }
 
-    async saveUnit(req, res){
+    async saveUnit(req, res) {
         const unit = await addUnit(req.body);
-        res.json({unit: unit});
+        res.json({ unit: unit });
     }
 
-    async addPallet(req, res){
+    async addPallet(req, res) {
         const pallet = await savePallet(req.body);
-        res.json({pallet: pallet});
+        res.json({ pallet: pallet });
     }
 
-    async saveManualEntry(req, res){
-        const manualEntry =  await addManualEntry(req.body)
+    async saveManualEntry(req, res) {
+        const manualEntry = await addManualEntry(req.body);
+    res.json({ manualEntry: manualEntry });
     }
+
+    async saveProductHistory(req, res) {
+        const history = await constructScanHistory(req.body);
+        res.json({ history: history });
+    }
+
+    async saveAlert(data: { reason: string; severity: string; type: string; }, history: number) {
+        const alert = new Alerts();
+        try {
+            return await
+                getConnection().manager.save(await alert.createItself(data, history))
+        } catch (err) { }
+
+    }
+
+    async getProductsBySection(req, res) {
+        const products = await getProductsBySection(req.params.id);
+        res.json({ products: products });
+    }
+
+
+    async proccessScan(req, res) {
+        let tag = await readTagByEPC(req.body.epc);
+        let gate = await readGateByID(req.body.gateID);
+        let diagnosis = await proccessScan(tag, gate);
+        res.json({history: diagnosis})
+    }
+
 }
 
 export default ProductManager;

@@ -24,7 +24,9 @@ export default class Users {
     @Column()
     userPicture: string;
 
-    @Column()
+    @Column({
+        unique: true
+    })
     userName: string;
 
     @Column()

@@ -1,7 +1,7 @@
 import {
     Column, PrimaryGeneratedColumn,
     Entity, OneToMany, JoinTable,
-    ManyToOne, OneToOne
+    ManyToOne
 } from "typeorm";
 
 import Alerts from "./Alerts";
@@ -34,6 +34,9 @@ export default class Sections {
         default: false
     })
     hasErrors: boolean;
+
+    @Column({default: true})
+    isActive: true;
 
     @ManyToOne(type => Branch, branch => branch.sections)
     branch: Branch

@@ -1,7 +1,8 @@
 import {getConnection} from "typeorm";
 import Gate from "../../../entity/Gate";
+import PresetMeta from "../../../entity/PresetMeta";
 
-export default async function updateGate(data, id) {
+export default async function updateGate(data, id) {    
 
     return await
         getConnection()
@@ -10,6 +11,7 @@ export default async function updateGate(data, id) {
             .set(data)
             .where('id =:id', {id: parseInt(id)})
             .execute();
+
 }
 
 

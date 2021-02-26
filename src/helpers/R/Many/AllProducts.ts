@@ -5,7 +5,7 @@ const readAllProducts = async () => {
 
     return await
         getConnection()
-            .manager.find(Product, {relations: ['units', 'units.unit', 'units.itemUnit', 'pallet', ]});
+            .manager.find(Product, {relations: ['units', 'units.unit', 'units.itemUnit', 'pallet', 'tag', 'pallet.tag' ]});
 }
 
 export default readAllProducts;

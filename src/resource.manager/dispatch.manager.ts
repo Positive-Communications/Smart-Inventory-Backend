@@ -12,6 +12,7 @@ class DispatchManager{
         let dispatch = await saveDispatchTimes(req.body)
         res.json({dispatch:dispatch})
     }
+
 }
 
 export default DispatchManager;

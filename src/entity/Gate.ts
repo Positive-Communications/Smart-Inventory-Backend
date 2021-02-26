@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { AfterInsert, Column, Entity, getConnection, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import Sections from "./Sections";
 import TemporaryStaff from "./TemporaryStaff";
 import VisitorAccessTags from "./VisitorAccessTags";
@@ -10,6 +10,7 @@ import Bays from "./Bays";
 import PackingTags from "./PackingTags";
 import readBranchByID from "../helpers/R/ByID/ReadBranchByID";
 import Store from "./Store";
+import PresetMeta from "./PresetMeta";
 
 
 @Entity()
@@ -56,6 +57,12 @@ export default class Gate {
 
     @Column()
     ant4Power: string;
+
+
+    @Column({
+        default: true
+    })
+    isActive: boolean;
 
     @Column({
         default: false
@@ -145,13 +152,17 @@ export default class Gate {
     })
     verifyCarrierIsEmpty: boolean;
 
-    @ManyToOne(type => PackingTags, parking => parking.accessGates)
+    @OneToOne(() => PresetMeta, meta => meta.gate)
+    @JoinColumn()
+    presetMeta: PresetMeta
+
+    @ManyToOne(() => PackingTags, parking => parking.accessGates)
     parkingAccess: PackingTags;
 
-    @ManyToOne(type => Branch, branch => branch.gates)
+    @ManyToOne(() => Branch, branch => branch.gates)
     branch: Branch;
 
-    @OneToMany(type => VisitorAccessTags, visitor => visitor.entryGate)
+    @OneToMany(() => VisitorAccessTags, visitor => visitor.entryGate)
     @JoinTable()
     visitorEntries: VisitorAccessTags[];
 
@@ -167,7 +178,7 @@ export default class Gate {
     @JoinTable()
     visitorAccess: VisitorAccessTags[];
 
-    @OneToMany(type => VisitorAccessTags, visitor => visitor.exitGate)
+    @OneToMany(() => VisitorAccessTags, visitor => visitor.exitGate)
     @JoinTable()
     visitorExit: VisitorAccessTags[]
 
@@ -185,14 +196,14 @@ export default class Gate {
     @ManyToMany(() => Sections, section => section.gates)
     sections: Sections[];
 
-    @ManyToMany(type => Bays, bays => bays.gates)
+    @ManyToMany(() => Bays, bays => bays.gates)
     @JoinTable()
     bays: Bays[];
 
-    @ManyToOne(type => VisitorAccessTags, visitor => visitor.accessGates)
+    @ManyToOne(() => VisitorAccessTags, visitor => visitor.accessGates)
     visitors: VisitorAccessTags[]
 
-    @ManyToOne(type => Store, store => store.gates)
+    @ManyToOne(() => Store, store => store.gates)
     stores: Store
 
     async createItself(data) {
@@ -217,4 +228,17 @@ export default class Gate {
     async isLegit() {
         return true;
     }
+
+    @AfterInsert()
+    async createPresetMetadata() {
+       await  addPresetMeta(this.id)
+    }
+
+}
+
+
+
+const addPresetMeta = async (id: number) => {
+    console.log("Adding Meta to gate cmes here");
+    
 }

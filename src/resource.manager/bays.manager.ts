@@ -5,8 +5,8 @@ import readAllStores from "../helpers/R/Many/ReadAllStores";
 class StorageBayManager{
     
     async createBays(req, res){
-        const bays = await saveBays(req.body);
-        res.json({bays: bays});
+        const bay = await saveBays(req.body);
+        res.json({bay: bay});
     }
 
     async getAllStores(req, res){

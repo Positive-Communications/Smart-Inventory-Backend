@@ -11,6 +11,8 @@ import {
 
 import readAllBays from "./helpers/R/Many/ReadAllBays";
 import frisk from "./Auth/middleware";
+
+
 import CompanyHandler from "./resource.manager/company.manager";
 import Index from "./resource.manager/default"
 import AuthHandler from "./resource.manager/auth.manager";
@@ -24,12 +26,13 @@ import SectionManager from "./resource.manager/section.manager";
 import OrderQueManager from "./resource.manager/orderque.manager";
 import ProductManager from "./resource.manager/product.manager";
 import StorageBayManager from "./resource.manager/bays.manager";
+import TagsManager from "./resource.manager/tags.manager";
 
 const app = express();
 
 const prod = false;
 
-const socketPort = 2026;
+const socketPort = 2000;
 const server = http.createServer(app);
 
 const io = require('socket.io')(server, {
@@ -171,8 +174,15 @@ const gateManager = new GateManager();
 app.post('/save-gate/', frisk, gateManager.registerGate);
 
 app.get('/all-gates/', frisk, gateManager.availAllGates);
+app.get('/all-products-history/:id', frisk, gateManager.readHistoryByGate)
+
+
 
 app.patch('/update-gate/:id/', frisk, gateManager.updateGate)
+
+app.delete('/gate/:id/', frisk, gateManager.deleteGate)
+
+// app.get('/gate/:id/', gateManager.readGate)
 
 
 /*
@@ -184,9 +194,31 @@ const sectionManager = new SectionManager()
 
 app.post('/save-section/', frisk, sectionManager.registerSection);
 app.post('/save-preset/', frisk, sectionManager.savePreset);
+app.post('/save-preset-meta', frisk, sectionManager.savePresetMeta);
+
+app.patch('/update-preset-meta/:id', frisk, sectionManager.updatePresetMeta);
 
 app.get('/all-presets/', frisk, sectionManager.getAllPresets);
 app.get('/all-sections/', frisk, sectionManager.getAllSections);
+
+
+
+/*
+* Tags
+*
+* */
+
+
+const tagsManager = new TagsManager();
+
+
+app.post('/new-tags/', frisk, tagsManager.saveNewTags);
+
+app.get('/tag/:epc', frisk, tagsManager.getTagByEPC);
+app.get('/all-unassigned-tags/', frisk, tagsManager.getAllUnasignedTags);
+
+
+
 
 
 /*
@@ -209,10 +241,18 @@ app.get('/all-product-units/', frisk, productManager.getAllUnits);
 app.get('/all-products/', frisk, productManager.getAllProducts);
 app.get('/all-units/', frisk, productManager.getAllUnits)
 
+app.get('/section/:id/products/', frisk, productManager.getProductsBySection)
+
+app.post('/scan/', frisk, productManager.proccessScan)
+
 app.post('/save-pallet/', frisk, productManager.addPallet);
 app.post('/save-product/', frisk, productManager.saveProduct);
 app.post('/save-manual-entry/', frisk, productManager.saveManualEntry);
 app.post('/save-unit/', frisk, productManager.saveUnit);
+
+app.post('/save-history/', frisk, productManager.saveProductHistory);
+
+
 
 
 
@@ -233,9 +273,14 @@ io.on('connection', client => {
     io.emit('msg', 'Connecption Successful!');
     console.log(`Client ${.1}' -> Connected successfully. :101`)
 
-    io.on('tag', msg=>{
+    io.on('tag', msg => {
         io.emit('user', 'I received the tag. I will be a user');
     })
+
+
+    // setTimeout(()=>{
+    //     console.log('Me');
+    // }, 2000)
 
 
     // let Tags = [];

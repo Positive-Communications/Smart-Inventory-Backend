@@ -7,6 +7,7 @@ const login = async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
 
+
     const user = await readUserByUsername(username);
     
     if (user)

@@ -1,5 +1,5 @@
 import {getConnection} from "typeorm";
-import ProductTags from "../../../entity/ProductTags";
+import ProductTags from "../../../entity/Tags";
 
 export default async function readProductTagById(productTagID) {
 

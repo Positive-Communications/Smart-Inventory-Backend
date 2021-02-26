@@ -1,8 +1,9 @@
+import addPresetMeta from "../helpers/C/singles/AddPresetMeta";
 import savePresets from "../helpers/C/singles/SavePresets";
 import saveSections from "../helpers/C/singles/SaveSections";
-import readSectionByID from "../helpers/R/ByID/ReadSectionByID";
 import readAllPresets from "../helpers/R/Many/ReadAllPresets";
 import readAllSections from "../helpers/R/Many/ReadAllSections";
+import updatePresetByGate from "../helpers/U/ByID/UpdatePresetMetaByGateID";
 
 class SectionManager{
 
@@ -26,6 +27,18 @@ class SectionManager{
         const sections = await readAllSections();
         res.json({sections: sections})
     }
+
+    async savePresetMeta(req, res){
+        const presetMeta = await addPresetMeta(req.body);
+        res.json({presetMeta: presetMeta});
+    }
+
+    async updatePresetMeta(req, res){
+        const presetMeta = await updatePresetByGate(req.params.id,req.body);
+        console.log(presetMeta);
+
+    }
+
 }
 
 export default SectionManager;

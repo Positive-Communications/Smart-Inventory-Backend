@@ -3,14 +3,18 @@ import {getConnection} from "typeorm";
 
 export default async function saveProduct(data) {
 
+ 
     let product = new Product();
 
     await product.createItself(data)
 
     if (await product.isLegit())
+
         try {
+
             return await
                 getConnection().manager.save(product);
+                
         } catch (e) {
             console.log(e)
         }

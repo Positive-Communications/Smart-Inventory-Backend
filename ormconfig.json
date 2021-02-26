@@ -4,7 +4,7 @@
    "port": 5432,
    "username": "postgres",
    "password": "  ",
-   "database": "africa",
+   "database": "brayo",
    "logging": false,
    "entities": [
       "src/entity/**/*.ts"

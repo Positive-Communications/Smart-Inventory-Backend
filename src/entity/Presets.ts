@@ -1,17 +1,18 @@
 import {
     Column,
     Entity,
-    JoinColumn,
+    JoinTable,
     ManyToOne,
-    OneToOne,
+    OneToMany,
     PrimaryGeneratedColumn
 } from "typeorm";
 import Sections from "./Sections";
-import Product from "./Product";
+import PresetMeta from "./PresetMeta";
 
 
 @Entity()
 export default class Presets {
+    
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -21,15 +22,12 @@ export default class Presets {
     @Column()
     presetName: string;
 
-    @OneToOne(type => Product, product => product.preset)
-    product: Product;
+    @OneToMany(type => PresetMeta, meta => meta.preset)
+    @JoinTable()
+    meta: PresetMeta[];
 
-    // @AfterInsert()
-    // saveCounters() {
-    //
-    // }
 }
 
-const saveOrCreateSection = ()=>{
+const saveOrCreateSection = () => {
 
 }

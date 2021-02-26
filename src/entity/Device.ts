@@ -56,9 +56,6 @@ export default class Device {
     @ManyToOne(type => Bays, bays=>bays.devices )
     bays: Bays;
 
-    @OneToMany(type => ScanProductHistory, history => history.device)
-    @JoinTable()
-    history: ScanProductHistory
 
     @OneToMany(type => Alerts, alert => alert.device)
     @JoinTable()

@@ -10,7 +10,8 @@ const assignGateToProduct = async (gateArray) => {
         let IDs = Object.keys(gateArray[0]);
         constructed = await customMultipleGatees(IDs);
     }
-
+    console.log(constructed);
+    
     return constructed;
 }
 

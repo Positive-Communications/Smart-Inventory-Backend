@@ -1,9 +1,7 @@
 import Sections from "../../../entity/Sections";
-import readBranchByID from "../../R/ByID/ReadBranchByID";
-import readPresetByID from "../../R/ByID/ReadPresetByID";
 import {getConnection} from "typeorm";
 
-export default async function saveSections(data) {
+export default async function saveSections(data: string) {
 
     let section = new Sections();
 
@@ -19,6 +17,16 @@ export default async function saveSections(data) {
     }
 }
 
-let json = {
-    name: "",
+
+
+let config = {
+    expiry: "2021-01-",
+    palletType: "Wood",
+    presetID: 4,
+    productID: 1,
+    palletID: 1,
+    palletIsTrackedByRFID: true,
+    units: 1,
+    trackRFIDTagType: "isProductTagOnly",
+    gateID : ""
 }

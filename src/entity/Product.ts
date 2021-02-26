@@ -1,6 +1,8 @@
 import {
+    AfterInsert,
     Column,
     Entity,
+    getConnection,
     JoinColumn,
     JoinTable,
     ManyToMany,
@@ -16,14 +18,17 @@ import Gate from "./Gate";
 import ScanProductHistory from "./ScanProductHistory";
 import Sections from "./Sections";
 import ManualEntry from "./ManualEntry";
-import Presets from "./Presets";
-import ProductTags from "./ProductTags";
+import ProductTags from "./Tags";
 import Store from "./Store";
 import Bays from "./Bays";
 import OrderDetails from "./OrderDetails";
 import saveMultipleProductUnits from "../helpers/C/Multiple/SaveMultipleProductUnits";
 import saveMultiplePallets from "../helpers/C/Multiple/SaveMultiplePallets";
 import assignGateToProduct from "../helpers/C/Multiple/AssignGateToProduct";
+import PresetMeta from "./PresetMeta";
+import assignRandomTag from "../helpers/U/Custom/AssignRandomTag";
+import Tags from "./Tags";
+import Alerts from "./Alerts";
 
 @Entity()
 export default class Product {
@@ -61,6 +66,10 @@ export default class Product {
     })
     palletIsTrackedByRFID: boolean;
 
+    @OneToMany(type=>Alerts, alert=>alert.product)
+    @JoinTable()
+    alerts: Alerts[];
+
     @OneToMany(type => ProductUnit, unit => unit.product)
     @JoinTable()
     units: ProductUnit[];
@@ -72,20 +81,17 @@ export default class Product {
 
     @OneToOne(type => ProductTags, tag => tag.product)
     @JoinColumn()
-    tag: ProductTags
+    tag: ProductTags;
 
 
-    @OneToOne(type => Presets, preset => preset.product)
+    @OneToMany(type => PresetMeta, meta => meta.product)
     @JoinColumn()
-    preset: Presets
+    meta: PresetMeta;
 
     @OneToMany(type => Pallet, pallet => pallet.product)
     @JoinTable()
     pallet: Pallet[];
 
-    @OneToMany(type => ScanProductHistory, scanHistory => scanHistory.product)
-    @JoinTable()
-    scanHistory: ScanProductHistory;
 
     @ManyToOne(type => Sections, section => section.currentProducts)
     currentSection: Sections;
@@ -115,15 +121,34 @@ export default class Product {
         this.monthsLeftToExpire = data.monthsLeftToExpire;
         this.hasErrors = data.hasErrors;
         this.units = await saveMultipleProductUnits(data.units)
-        this.dispatchGate = await assignGateToProduct(data.gates)
+        this.dispatchGate = await assignGateToProduct(data.gates);
         this.isStoredOnPallet = data.isStoredOnPallet;
-        this.palletIsTrackedByRFID = data.palletIsTrackedByRFID;
-        this.pallet = await saveMultiplePallets(data.pallets)
+        this.palletIsTrackedByRFID = data.palleptIsTrackedByRFID;
+        this.pallet = await saveMultiplePallets(data.pallets);
+        this.tag = await assignRandomTag();
     }
 
     async isLegit() {
         return true;
     }
 
+
+    @AfterInsert()
+    updateTagInfo = async () => {
+        await updateAssignedTag(this.tag)        
+    }
+
+}
+
+const updateAssignedTag = async (tag: ProductTags) => {
+    let ptag = await getConnection()
+        .createQueryBuilder()
+        .update(Tags)
+        .where('id =:id', { id: tag.id })
+        .set({
+            isProductTag: true,
+            isAssigned: true,
+        })
+        .execute();
 }
 

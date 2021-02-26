@@ -1,4 +1,4 @@
-import ProductTags from "../../../entity/ProductTags";
+import ProductTags from "../../../entity/Tags";
 import readProductByID from "../../R/ByID/ReadProductByID";
 import {getConnection} from "typeorm";
 

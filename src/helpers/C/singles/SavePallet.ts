@@ -13,7 +13,8 @@ export default async function savePallet(data) {
             getConnection().manager.save(pallet);
 
     } catch (e) {
-        console.log(e)
+        
+        console.log(e);
     }
 
 }
