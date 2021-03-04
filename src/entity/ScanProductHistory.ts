@@ -1,6 +1,9 @@
-import { AfterInsert, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { AfterInsert, AfterUpdate, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import readCarrierById from "../helpers/R/ByID/ReadCarrierByID";
 import readGateByID from "../helpers/R/ByID/ReadGateByID";
+import assignProductToTag from "../helpers/R/Custom/ReadProductByPreset";
 import readTagByEPC from "../helpers/R/Custom/tagByEpc";
+import updateTagByID from "../helpers/U/ByID/UpdateTagByID";
 import Alerts from "./Alerts";
 import Carrier from "./Carrier";
 import Gate from "./Gate";
@@ -21,6 +24,9 @@ export default class ScanProductHistory {
     })
     isReadByHandHeld: boolean;
 
+    // @ManyToOne(type=>Product, product=>produt.history)
+    // @
+
     @ManyToOne(() => Gate, gate => gate.scanHistory)
     gate: Gate;
 
@@ -38,9 +44,19 @@ export default class ScanProductHistory {
     alerts: Alerts[];
 
 
-    async createItself(data: { gateID: number; tagEpc: string; }) {
+    async createItself(data: { gateID: number; tagEpc: string; status: string , carrier: number}) {
         this.timeStamp = new Date().getTime().toString();
         this.gate = await readGateByID(data.gateID);
         this.tag = await readTagByEPC(data.tagEpc);
+        this.carrier = await readCarrierById(data.carrier)
     }
+
+    @AfterInsert()
+    updated() {
+        if (this.gate.isForPackaging && this.tag.status === 'empty') {
+           updateTagByID({status: "packed", tagID: this.tag.id});
+        }
+    }
+
+
 }

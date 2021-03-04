@@ -1,6 +1,7 @@
 import { AfterInsert, Column, Entity, JoinColumn, JoinTable, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import saveSuperUser from "../Auth/saveSupserUser";
 import branch from "./Branch";
+import Tags from "./Tags";
 import Users from "./Users";
 
 @Entity()
@@ -9,7 +10,9 @@ export default class Company {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({
+        unique: true
+    })
     name: string;
 
     @Column({
@@ -18,24 +21,39 @@ export default class Company {
     city: string;
 
     @Column({
+        default: new Date().getTime().toString()
+    })
+    registered: string;
+
+    @Column({
         nullable: true
     })
     info: string;
 
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     headOffice: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     email: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     streetRoad: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     primaryNumber: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     secondaryNumber: string;
 
     @OneToMany(type => branch, branch => branch.company)
@@ -46,12 +64,16 @@ export default class Company {
     @JoinColumn()
     superAdmin: Users;
 
+    @OneToMany(type => Tags, tag => tag.company)
+    @JoinTable()
+    tags: Tags[];
+
     @AfterInsert()
     async createSuperUser() {
-        createSuperSu(this.name, this.id)
+        // createSuperSu(this.name, this.id)
     }
 }
 
-const createSuperSu = async (name, id) => {
-    return await saveSuperUser(name, id);
-}
+// const createSuperSu = async (name, id) => {
+    // return await saveSuperUser(name, id);
+// }

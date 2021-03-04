@@ -10,10 +10,10 @@ const readHistoryByGate = async (gateID: number) => {
         .where('history.gate.id =:id', { id: gateID })
         .leftJoinAndSelect('history.carrier', 'carrier')
         .leftJoinAndSelect('carrier.type', 'carrierType')
-        .leftJoinAndSelect('history.alerts', 'alerts')
         .leftJoinAndSelect('history.tag', 'tag')
         .leftJoinAndSelect('tag.pallet', 'pallet')
-        .leftJoinAndSelect('pallet.product', 'product')
+        .leftJoinAndSelect('tag.product', 'product')
+        .leftJoinAndSelect('tag.alerts', 'alert')
         .getMany();
 }
 

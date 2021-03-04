@@ -35,8 +35,6 @@ class SectionManager{
 
     async updatePresetMeta(req, res){
         const presetMeta = await updatePresetByGate(req.params.id,req.body);
-        console.log(presetMeta);
-
     }
 
 }

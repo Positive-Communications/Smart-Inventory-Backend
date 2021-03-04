@@ -1,10 +1,10 @@
 import { getConnection } from "typeorm";
 import Tags from "../../../entity/Tags";
 
-const saveTags = async data => {
+const saveTags = async (data, id) => {
 
     let tag = new Tags;
-    await tag.createItself(data);
+    await tag.createItself(data, id);
 
     try {
 

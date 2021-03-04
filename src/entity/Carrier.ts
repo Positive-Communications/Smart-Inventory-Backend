@@ -7,6 +7,7 @@ import readUserByID from "../helpers/R/ByID/ReadUserByID";
 import Tags from "./Tags";
 import assignRandomTag from "../helpers/U/Custom/AssignRandomTag";
 import ScanProductHistory from "./ScanProductHistory";
+import Move from "./Move";
 
 @Entity()
 export default class Carrier {
@@ -44,6 +45,10 @@ export default class Carrier {
     @OneToOne(type => Tags, tag => tag.carrier)
     tag: Tags;
 
+    @OneToMany(type =>Move, move=> move.carrier)
+    @JoinTable()
+    toMove: Move[]
+
 
     async createItSelf(data) {
         this.No = data.number;
@@ -54,10 +59,10 @@ export default class Carrier {
         this.tag = await assignRandomTag();
     }
 
-    @AfterInsert()
-    updateTag = () => {
-        updateTag(this.tag);
-    }
+    // @AfterInsert()
+    // updateTag = () => {
+    //     updateTag(this.tag);
+    // }
 
 }
 

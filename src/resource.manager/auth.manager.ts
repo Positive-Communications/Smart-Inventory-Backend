@@ -10,7 +10,7 @@ class AuthHandler {
 
 
     async createSuperUser(req, res) {
-        let superUser = await saveSuperUser(req, res);
+        let superUser = await saveSuperUser(req);
     }
 
     // console.log(here);

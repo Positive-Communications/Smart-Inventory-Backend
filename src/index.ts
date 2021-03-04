@@ -97,6 +97,8 @@ app.post('/save-company/', companyHandler.createCompany);
 
 app.get('/company/:id/', frisk, companyHandler.getCompanyByID);
 
+app.get('/all-companies/', companyHandler.getAllCompanies)
+
 
 /*
 * Branch
@@ -121,6 +123,16 @@ const dispatchManager = new DispatchManager();
 app.get('/dispatch/:branchID', frisk, dispatchManager.checkBranchDispatch);
 
 app.post('/add-dispatch/:branchID/', frisk, dispatchManager.createBranchDispatch);
+
+app.post('/new-order/', frisk, dispatchManager.saveOrder);  
+
+app.get('/all-orders/', frisk, dispatchManager.getAllOrders);
+
+app.get('/order/:number', frisk, dispatchManager.getOrderByNumber);
+
+app.post('/save-order-que/', frisk, dispatchManager.saveOrderQue);
+
+app.get('/order-que/:id', frisk, dispatchManager.getOrderQue);
 
 
 /*
@@ -212,10 +224,12 @@ app.get('/all-sections/', frisk, sectionManager.getAllSections);
 const tagsManager = new TagsManager();
 
 
-app.post('/new-tags/', frisk, tagsManager.saveNewTags);
+app.post('/new-tags/:id', frisk, tagsManager.saveNewTags);
 
 app.get('/tag/:epc', frisk, tagsManager.getTagByEPC);
 app.get('/all-unassigned-tags/', frisk, tagsManager.getAllUnasignedTags);
+
+app.get('/all-transactions/', frisk, tagsManager.getAllTransactions)
 
 
 
@@ -240,16 +254,13 @@ const productManager = new ProductManager()
 app.get('/all-product-units/', frisk, productManager.getAllUnits);
 app.get('/all-products/', frisk, productManager.getAllProducts);
 app.get('/all-units/', frisk, productManager.getAllUnits)
-
 app.get('/section/:id/products/', frisk, productManager.getProductsBySection)
 
 app.post('/scan/', frisk, productManager.proccessScan)
-
 app.post('/save-pallet/', frisk, productManager.addPallet);
 app.post('/save-product/', frisk, productManager.saveProduct);
 app.post('/save-manual-entry/', frisk, productManager.saveManualEntry);
 app.post('/save-unit/', frisk, productManager.saveUnit);
-
 app.post('/save-history/', frisk, productManager.saveProductHistory);
 
 

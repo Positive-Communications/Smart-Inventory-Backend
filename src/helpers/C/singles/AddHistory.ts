@@ -1,7 +1,8 @@
 import { getConnection } from "typeorm";
 import ScanProductHistory from "../../../entity/ScanProductHistory";
 
-const addHistory = async (data: { gateID: number; tagEpc: string; }) => {
+const addHistory = async (data: { gateID: number; tagEpc: string; status: string, carrier: number}) => {
+
 
     let history = new ScanProductHistory();
     await history.createItself(data)

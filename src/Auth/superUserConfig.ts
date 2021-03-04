@@ -16,7 +16,7 @@ const superUserGenerator = () => {
         phone: "../",
         mobile: ".../",
         email: "../",
-        joined: "../",
+        joined: new Date().getTime().toString(),
         privileges: {
             isAdmin: true,
             "addOrEditUsers": false,

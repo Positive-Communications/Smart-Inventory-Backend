@@ -1,6 +1,8 @@
-import { Column, Entity, JoinColumn, JoinTable, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { AfterUpdate, Column, Entity, JoinColumn, JoinTable, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import readCompanyByID from "../helpers/R/ByID/ReadCompanyByID";
 import Alerts from "./Alerts";
 import Carrier from "./Carrier";
+import Company from "./Company";
 import Pallet from "./Pallet";
 import Product from "./Product";
 import ScanProductHistory from "./ScanProductHistory";
@@ -46,11 +48,16 @@ class Tags {
     })
     isCarrierTag: boolean;
 
+
+    @OneToMany(type => Alerts, alerts => alerts.tag)
+    @JoinTable()
+    alerts: Alerts[];
+
     @OneToMany(type => ScanProductHistory, history => history.tag)
     @JoinTable()
     history: ScanProductHistory[];
-
-    @OneToOne(type => Product, product => product.tag)
+    
+    @ManyToOne(type => Product, product => product.tags)
     product: Product
 
     @OneToOne(type => Pallet, pallet => pallet.tag)
@@ -61,8 +68,19 @@ class Tags {
     @JoinColumn()
     carrier: Carrier;
 
-    async createItself(data: string) {
-        this.epc = data
+    @ManyToOne(type => Company, company => company.tags)
+    company: Company;
+
+    async createItself(epc, id) {
+        this.epc = epc
+        this.company = await readCompanyByID(id)
+    }
+
+    @AfterUpdate()
+    update() {
+        console.log('====================================');
+        console.log("i updated");
+        console.log('====================================');
     }
 
 }

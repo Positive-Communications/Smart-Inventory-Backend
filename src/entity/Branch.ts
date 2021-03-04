@@ -87,9 +87,13 @@ export default class Branch {
     @JoinTable()
     issueOrders: Orders[]
 
-    @OneToMany(type=>Orders, order=>order.collectedFrom)
+    @OneToMany(type=>Orders, order=>order.orderBranch)
     @JoinTable()
-    ordersToCollect: Orders[];
+    branchOrders: Orders[];
+
+    @OneToMany(type=>Orders, order=>order.orderBranch)
+    @JoinTable()
+    pendingOrders: Orders[];
 
     @AfterInsert()
     async saveDispatchT(){

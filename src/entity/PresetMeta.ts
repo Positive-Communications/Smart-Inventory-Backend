@@ -18,19 +18,16 @@ class PresetMeta {
 
     @Column({
         default: "01/07/2021",
-        nullable: true
     })
     expiry: string
 
     @Column({
-        default: "isProductTag",
-        nullable: true
+        default: "productTag",
     })
     trackRFIDTagType: string;
 
     @Column({
-        default: "plastic",
-        nullable: true
+        default: "empty",
     })
     palletType: string
 
@@ -43,12 +40,12 @@ class PresetMeta {
     @OneToOne(type => Gate, gate => gate.presetMeta)
     gate: Gate;
 
-    async createItself(data: { preset: any; expiry: string; trackRFIDTagType: string; palletType: string; product: { id: any; }; gateID: any; }) {
-        this.preset = await readPresetByID(data.preset) || null;
-        this.expiry = data.expiry;
-        this.trackRFIDTagType = data.trackRFIDTagType;
-        this.palletType = data.palletType;
-        this.product = await readProductByID(data.product.id);
+    async createItself(data: { presetID: any; expiry: string; trackRFIDTagType: string; palletType: string; product: any; gateID: any; }) {
+        this.preset = await readPresetByID(data.presetID);
+        this.expiry = data.expiry || "2021-05-2021";
+        this.trackRFIDTagType = data.trackRFIDTagType || "productTagOnly";
+        this.palletType = data.palletType || "empty";
+        this.product = await readProductByID(data.product);
         this.gate = await gateManager.readGate(data.gateID) 
     }
 }

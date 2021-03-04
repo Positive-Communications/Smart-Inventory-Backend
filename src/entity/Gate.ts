@@ -1,4 +1,4 @@
-import { AfterInsert, Column, Entity, getConnection, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import Sections from "./Sections";
 import TemporaryStaff from "./TemporaryStaff";
 import VisitorAccessTags from "./VisitorAccessTags";
@@ -22,40 +22,62 @@ export default class Gate {
     @Column()
     name: string;
 
-    @Column()
+    @Column({
+        unique: true,
+    })
     readerAddress: string;
 
     @Column()
     numberOfAnts: string;
 
-    @Column()
+    @Column({
+        default: 1
+    })
     antToDetectOutgoing: number;
 
-    @Column()
+    @Column({
+        default: 3
+    })
     antToDetectIncoming: number;
 
-    @Column()
+    @Column({
+        default: false
+    })
     ant1: boolean;
 
-    @Column()
+    @Column({
+        default: false
+    })
     ant2: boolean;
 
-    @Column()
+    @Column({
+        default: false
+    })
     ant3: boolean;
 
-    @Column()
+    @Column({
+        default: false
+    })
     ant4: boolean;
 
-    @Column()
+    @Column({
+        default: "90"
+    })
     ant1Power: string;
 
-    @Column()
+    @Column({
+        default: "90"
+    })
     ant2Power: string;
 
-    @Column()
+    @Column({
+        default: "90"
+    })
     ant3Power: string;
 
-    @Column()
+    @Column({
+        default: "90"
+    })
     ant4Power: string;
 
 
@@ -211,16 +233,16 @@ export default class Gate {
         this.name = data.name;
         this.readerAddress = data.readerAddress;
         this.numberOfAnts = data.numberOfAnts;
-        this.antToDetectOutgoing = data.antToDetectOutgoing
-        this.antToDetectIncoming = data.antToDetectIncoming
-        this.ant1 = data.ant1
-        this.ant2 = data.ant2
-        this.ant3 = data.ant3
-        this.ant4 = data.ant4
-        this.ant1Power = data.ant1Power
-        this.ant2Power = data.ant2Power
-        this.ant3Power = data.ant3Power
-        this.ant4Power = data.ant4Power
+        this.antToDetectOutgoing = data.antToDetectOutgoing || 1;
+        this.antToDetectIncoming = data.antToDetectIncoming || 3
+        this.ant1 = data.ant1 || false
+        this.ant2 = data.ant2 || false
+        this.ant3 = data.ant3 || false
+        this.ant4 = data.ant4 || false
+        this.ant1Power = data.ant1Power || "90"
+        this.ant2Power = data.ant2Power || "90"
+        this.ant3Power = data.ant3Power || "90"
+        this.ant4Power = data.ant4Power || "90"
         this.role = data.role;
         this.branch = await readBranchByID(data.branchID)
     }
@@ -229,16 +251,5 @@ export default class Gate {
         return true;
     }
 
-    @AfterInsert()
-    async createPresetMetadata() {
-       await  addPresetMeta(this.id)
-    }
-
 }
 
-
-
-const addPresetMeta = async (id: number) => {
-    console.log("Adding Meta to gate cmes here");
-    
-}

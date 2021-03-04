@@ -1,4 +1,4 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import Product from "./Product";
 import ProductUnit from "./ProductUnit";
 import Orders from "./Orders";
@@ -17,16 +17,22 @@ export default class OrderDetails {
     @Column()
     quantity: string;
 
+    @Column({
+        default: false
+    })
+    isOpenQuantity: boolean;
+
     @ManyToOne(type => ProductUnit, unit => unit.orderDetails)
     unit: ProductUnit;
 
     @ManyToOne(type => Orders, orders => orders.orderDetails)
     order: Orders;
 
-    async createItself(data) {
-        this.product = await readProductByID(data.productID);
+    async createItself(data: { product: { id: any; }; isOpenQuantity: boolean; quantity: string; unit: { id: any; }; }) {
+        this.product = await readProductByID(data.product.id);
+        data.isOpenQuantity = data.isOpenQuantity || false;
         this.quantity = data.quantity;
-        this.unit = await readProductUnitByID(data.productUnitID);
+        this.unit = await readProductUnitByID(data.unit.id);
     }
 
     async isLegit() {
@@ -34,3 +40,4 @@ export default class OrderDetails {
     }
 
 }
+

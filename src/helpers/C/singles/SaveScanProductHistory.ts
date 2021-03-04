@@ -22,12 +22,6 @@ export default async function saveScanProductHistory(data) {
 
     scanHistory.timeStamp = data.timeStamp;
     scanHistory.isReadByHandHeld = data.isReadByHandHeld;
-    data.context === "gate" ?
-        scanHistory.gate = await context
-        : data.context === "device" ?
-        scanHistory.device = await context
-        : null;
-    scanHistory.product = await readProductByID(data.productID);
 
     try {
 

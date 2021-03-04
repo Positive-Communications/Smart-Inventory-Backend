@@ -1,8 +1,7 @@
 import Orders from "../../../entity/Orders";
 import {getConnection} from "typeorm";
-import {callbackify} from "util";
 
-export default async function saveOrder(data) {
+export default async function saveOrder(data: {orderNumber: string; date: string; customerName: string; typeOfClient: string; customerEmail: string; customerPhone: string; isBranchDeportOrder: boolean; collectionBy: string; identificationType: string; identificationNumber: string; vehicleReg: string; issuedBy: any; collectionFrom: any; checkedBy: string; orderDetails: any; }) {
 
     let order = new Orders();
 
@@ -16,3 +15,4 @@ export default async function saveOrder(data) {
             console.log(e)
         }
 }
+

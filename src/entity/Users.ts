@@ -78,10 +78,6 @@ export default class Users {
     @OneToOne(type => PackingTags, parking => parking.driver)
     parkingTags: PackingTags;
 
-    @OneToMany(type => Orders, orders => orders.checkedBy)
-    @JoinTable()
-    checkedOrders: Orders[];
-
 
     hashPassword() {
         this.password = bcrypt.hashSync(this.password, 8);

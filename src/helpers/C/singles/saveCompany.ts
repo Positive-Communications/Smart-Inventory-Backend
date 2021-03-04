@@ -1,37 +1,28 @@
 import Company from "../../../entity/Company";
-import {getConnection} from "typeorm";
+import { getConnection } from "typeorm";
+import saveSuperUser from "../../../Auth/saveSupserUser";
 
 export default async function saveCompany(data) {
 
     let company = new Company();
 
-    company.name = data.name;
-    company.headOffice = data.headOffice;
-    company.city = data.city;
-    company.info = data.info; 
-    company.email = data.email;
-    company.streetRoad = data.streetRoad;
-    company.primaryNumber = data.primaryNumber;
-    company.secondaryNumber = data.secondaryNumber;
-    
+    company.name = data.company;
+    company.superAdmin = await saveSuperUser(data);
 
-    try{
+
+    try {
 
         return await
             getConnection().manager.save(company);
-    }catch (e) {
+    } catch (e) {
         console.log(e)
     }
 
 }
 
-let config = {
-    name: "",
-    headOffice: "",
-    email:"",
-    streetRoad: "",
-    primaryNumber:"",
-    secondaryNumber:"",
-    city: "",
-    info: "",
-}
+  // company: "",
+    // admin_name: "",
+    // admin_phone: "",
+    // admin_email: "",
+    // admin_password: "",
+    // confirm_password: ""

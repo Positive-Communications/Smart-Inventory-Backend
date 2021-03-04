@@ -49,10 +49,10 @@ export default class Pallet {
         this.tag = await assignRandomTag();
     }
 
-    @AfterInsert()
-    updateTag() {
-        updateAssigedTag(this.tag)
-    }
+    // @AfterInsert()
+    // updateTag() {
+    //     updateAssigedTag(this.tag)
+    // }
 }
 
 

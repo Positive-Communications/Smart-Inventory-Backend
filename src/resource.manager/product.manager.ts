@@ -48,7 +48,7 @@ class ProductManager {
 
     async saveManualEntry(req, res) {
         const manualEntry = await addManualEntry(req.body);
-    res.json({ manualEntry: manualEntry });
+        res.json({ manualEntry: manualEntry });
     }
 
     async saveProductHistory(req, res) {
@@ -56,12 +56,17 @@ class ProductManager {
         res.json({ history: history });
     }
 
-    async saveAlert(data: { reason: string; severity: string; type: string; }, history: number) {
+    async saveAlert(data: { reason: string; severity: string; type: string; }, tag: string) {
         const alert = new Alerts();
+        await alert.createItself(data, tag)
         try {
-            return await
-                getConnection().manager.save(await alert.createItself(data, history))
-        } catch (err) { }
+            return  await
+                getConnection().manager.save(alert)
+
+        } catch (err) { 
+            console.log(err);
+            
+        }
 
     }
 
@@ -74,8 +79,8 @@ class ProductManager {
     async proccessScan(req, res) {
         let tag = await readTagByEPC(req.body.epc);
         let gate = await readGateByID(req.body.gateID);
-        let diagnosis = await proccessScan(tag, gate);
-        res.json({history: diagnosis})
+        let diagnosis = await proccessScan(tag, gate, req.body.carrier);
+        res.json({ history: diagnosis })
     }
 
 }
