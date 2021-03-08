@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -36,11 +35,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var typeorm_1 = require("typeorm");
+var Alerts_1 = require("../entity/Alerts");
 var SaveProductUnit_1 = require("../entity/SaveProductUnit");
+var ConstructScanHistory_1 = require("../helpers/C/Custom/ConstructScanHistory");
+var SaveAlerts_1 = require("../helpers/C/Multiple/SaveAlerts");
 var AddManualEntry_1 = require("../helpers/C/singles/AddManualEntry");
 var AddProduct_1 = require("../helpers/C/singles/AddProduct");
 var AddUnit_1 = require("../helpers/C/singles/AddUnit");
 var SavePallet_1 = require("../helpers/C/singles/SavePallet");
+var ReadGateByID_1 = require("../helpers/R/ByID/ReadGateByID");
+var ReadHistoryBySection_1 = require("../helpers/R/Custom/ReadHistoryBySection");
+var tagByEpc_1 = require("../helpers/R/Custom/tagByEpc");
 var AllProducts_1 = require("../helpers/R/Many/AllProducts");
 var ReadAllProductUnit_1 = require("../helpers/R/Many/ReadAllProductUnit");
 var ProductManager = /** @class */ (function () {
@@ -138,6 +144,79 @@ var ProductManager = /** @class */ (function () {
                     case 0: return [4 /*yield*/, AddManualEntry_1.default(req.body)];
                     case 1:
                         manualEntry = _a.sent();
+                        res.json({ manualEntry: manualEntry });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProductManager.prototype.saveProductHistory = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var history;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, ConstructScanHistory_1.default(req.body)];
+                    case 1:
+                        history = _a.sent();
+                        res.json({ history: history });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProductManager.prototype.saveAlert = function (data, tag) {
+        return __awaiter(this, void 0, void 0, function () {
+            var alert, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        alert = new Alerts_1.default();
+                        return [4 /*yield*/, alert.createItself(data, tag)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 4, , 5]);
+                        return [4 /*yield*/, typeorm_1.getConnection().manager.save(alert)];
+                    case 3: return [2 /*return*/, _a.sent()];
+                    case 4:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProductManager.prototype.getProductsBySection = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var products;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, ReadHistoryBySection_1.default(req.params.id)];
+                    case 1:
+                        products = _a.sent();
+                        res.json({ products: products });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProductManager.prototype.proccessScan = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var tag, gate, diagnosis;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, tagByEpc_1.default(req.body.epc)];
+                    case 1:
+                        tag = _a.sent();
+                        return [4 /*yield*/, ReadGateByID_1.default(req.body.gateID)];
+                    case 2:
+                        gate = _a.sent();
+                        return [4 /*yield*/, SaveAlerts_1.default(tag, gate, req.body.carrier)];
+                    case 3:
+                        diagnosis = _a.sent();
+                        res.json({ history: diagnosis });
                         return [2 /*return*/];
                 }
             });

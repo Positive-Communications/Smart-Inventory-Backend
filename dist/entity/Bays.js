@@ -30,11 +30,15 @@ var Bays = /** @class */ (function () {
         __metadata("design:type", String)
     ], Bays.prototype, "role", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", Boolean)
     ], Bays.prototype, "hasErrors", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", Boolean)
     ], Bays.prototype, "isActive", void 0);
     __decorate([
@@ -42,9 +46,8 @@ var Bays = /** @class */ (function () {
         __metadata("design:type", String)
     ], Bays.prototype, "storageType", void 0);
     __decorate([
-        typeorm_1.ManyToMany(function (type) { return Product_1.default; }, function (product) { return product.bay; }),
-        typeorm_1.JoinTable(),
-        __metadata("design:type", Array)
+        typeorm_1.ManyToOne(function (type) { return Product_1.default; }, function (product) { return product.bay; }),
+        __metadata("design:type", Product_1.default)
     ], Bays.prototype, "product", void 0);
     __decorate([
         typeorm_1.ManyToMany(function (type) { return Gate_1.default; }, function (gate) { return gate.bays; }),

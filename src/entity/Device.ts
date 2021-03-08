@@ -1,4 +1,4 @@
-import {Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import { Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import Sections from "./Sections";
 import ScanProductHistory from "./ScanProductHistory";
 import Alerts from "./Alerts";
@@ -14,46 +14,70 @@ export default class Device {
     @Column()
     name: string;
 
-    @Column()
+    @Column({
+        default: "empty"
+    })
     role: string;
 
-    @Column()
+    @Column({
+        default: false
+    })
     allowPalletsToBeCountedManually: boolean;
 
-    @Column()
+    @Column({
+        default: true
+    })
     isActive: boolean;
 
-    @Column()
+    @Column({
+        default: false
+    })
     hasErrors: boolean;
 
-    @Column()
+    @Column({
+        default: false
+    })
     doNotAllowRemovalOfEmptyPallet: boolean;
 
-    @Column()
+    @Column({
+        default: false
+    })
     verifyStoredUsingHandHeld: boolean;
 
-    @Column()
+    @Column({
+        default: false
+    })
     showProductCountError: boolean;
 
-    @Column()
+    @Column({
+        default: false
+    })
     doNotAllowRemoval: boolean;
 
-    @Column()
+    @Column({
+        default: false
+    })
     verifyProductNotTrackedByRFID: boolean;
 
-    @Column()
+    @Column({
+        default: false
+    })
     automaticallyActivateRecallProductIfRequired: boolean;
 
-    @Column()
+    @Column({
+        default: false
+    })
     recordEmptyPallets: boolean;
 
-    @Column()
+    @Column({
+        default: false
+    })
     dispatchingOrReceiving: boolean;
 
     @ManyToOne(type => Sections, section => section.devices)
     sections: Sections
 
-    @ManyToOne(type => Bays, bays=>bays.devices )
+    @ManyToOne(type => Bays, bays => bays.devices)
     bays: Bays;
 
 
@@ -61,6 +85,6 @@ export default class Device {
     @JoinTable()
     alerts: Alerts[];
 
-    @ManyToOne(type=>Branch, branch=>branch.devices)
+    @ManyToOne(type => Branch, branch => branch.devices)
     branch: Branch;
 }

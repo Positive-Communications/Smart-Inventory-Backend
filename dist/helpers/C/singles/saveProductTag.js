@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -36,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var ProductTags_1 = require("../../../entity/ProductTags");
+var Tags_1 = require("../../../entity/Tags");
 var ReadProductByID_1 = require("../../R/ByID/ReadProductByID");
 var typeorm_1 = require("typeorm");
 function saveProductTag(data) {
@@ -45,10 +44,8 @@ function saveProductTag(data) {
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
-                    productTag = new ProductTags_1.default();
+                    productTag = new Tags_1.default();
                     productTag.epc = data.epc;
-                    productTag.tid = data.tid;
-                    productTag.type = data.type;
                     _a = data.context;
                     switch (_a) {
                         case "HAS_PRODUCT": return [3 /*break*/, 1];

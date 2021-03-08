@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -36,8 +35,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var typeorm_1 = require("typeorm");
+var Gate_1 = require("../entity/Gate");
 var AddGate_1 = require("../helpers/C/singles/AddGate");
+var ReadGateByID_1 = require("../helpers/R/ByID/ReadGateByID");
+var ReadHistoryByGate_1 = require("../helpers/R/Custom/ReadHistoryByGate");
 var ReadAllGates_1 = require("../helpers/R/Many/ReadAllGates");
+var UpdateGate_1 = require("../helpers/U/ByID/UpdateGate");
 var GateManager = /** @class */ (function () {
     function GateManager() {
     }
@@ -65,6 +69,67 @@ var GateManager = /** @class */ (function () {
                         gates = _a.sent();
                         res.json({ gates: gates });
                         return [2 /*return*/];
+                }
+            });
+        });
+    };
+    GateManager.prototype.updateGate = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var gate;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, UpdateGate_1.default(req.body, req.params.id)];
+                    case 1:
+                        gate = _a.sent();
+                        res.json({ gate: gate });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    GateManager.prototype.readGate = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, ReadGateByID_1.default(id)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    GateManager.prototype.readHistoryByGate = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var history;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, ReadHistoryByGate_1.default(parseInt(req.params.id))];
+                    case 1:
+                        history = _a.sent();
+                        res.json({ history: history });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    GateManager.prototype.deleteGate = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var gate, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, typeorm_1.getConnection().createQueryBuilder().delete().from(Gate_1.default).where('id =:id', { id: parseInt(req.params.id) }).execute()];
+                    case 1:
+                        gate = _a.sent();
+                        res.json({ gate: gate });
+                        return [3 /*break*/, 3];
+                    case 2:
+                        e_1 = _a.sent();
+                        console.log('====================================');
+                        console.log(e_1);
+                        console.log('====================================');
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
             });
         });

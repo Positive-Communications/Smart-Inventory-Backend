@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -37,44 +36,39 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Sections_1 = require("../../../entity/Sections");
-var ReadBranchByID_1 = require("../../R/ByID/ReadBranchByID");
 var typeorm_1 = require("typeorm");
 function saveSections(data) {
     return __awaiter(this, void 0, void 0, function () {
-        var section, _a, e_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var section, e_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
                     section = new Sections_1.default();
-                    section.role = data.role;
-                    section.name = data.name;
-                    section.capacity = data.capacity;
-                    section.hasErrors = data.hasErrors;
-                    _a = section;
-                    return [4 /*yield*/, ReadBranchByID_1.default(data.branchID)];
+                    section.name = data;
+                    _a.label = 1;
                 case 1:
-                    _a.branch = _b.sent();
-                    _b.label = 2;
-                case 2:
-                    _b.trys.push([2, 4, , 5]);
+                    _a.trys.push([1, 3, , 4]);
                     return [4 /*yield*/, typeorm_1.getConnection().manager.save(section)];
-                case 3: return [2 /*return*/, _b.sent()];
-                case 4:
-                    e_1 = _b.sent();
+                case 2: return [2 /*return*/, _a.sent()];
+                case 3:
+                    e_1 = _a.sent();
                     console.log(e_1);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     });
 }
 exports.default = saveSections;
-var json = {
-    role: "",
-    name: "",
-    capacity: "",
-    hasErrors: false,
-    branchID: "",
-    presetID: ""
+var config = {
+    expiry: "2021-01-",
+    palletType: "Wood",
+    presetID: 4,
+    productID: 1,
+    palletID: 1,
+    palletIsTrackedByRFID: true,
+    units: 1,
+    trackRFIDTagType: "isProductTagOnly",
+    gateID: ""
 };
 //# sourceMappingURL=SaveSections.js.map

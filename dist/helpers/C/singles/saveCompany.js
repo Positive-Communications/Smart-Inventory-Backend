@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -38,44 +37,38 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Company_1 = require("../../../entity/Company");
 var typeorm_1 = require("typeorm");
+var saveSupserUser_1 = require("../../../Auth/saveSupserUser");
 function saveCompany(data) {
     return __awaiter(this, void 0, void 0, function () {
-        var company, e_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var company, _a, e_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     company = new Company_1.default();
-                    company.name = data.name;
-                    company.headOffice = data.headOffice;
-                    company.city = data.city;
-                    company.info = data.info;
-                    company.email = data.email;
-                    company.streetRoad = data.streetRoad;
-                    company.primaryNumber = data.primaryNumber;
-                    company.secondaryNumber = data.secondaryNumber;
-                    _a.label = 1;
+                    company.name = data.company;
+                    _a = company;
+                    return [4 /*yield*/, saveSupserUser_1.default(data)];
                 case 1:
-                    _a.trys.push([1, 3, , 4]);
+                    _a.superAdmin = _b.sent();
+                    _b.label = 2;
+                case 2:
+                    _b.trys.push([2, 4, , 5]);
                     return [4 /*yield*/, typeorm_1.getConnection().manager.save(company)];
-                case 2: return [2 /*return*/, _a.sent()];
-                case 3:
-                    e_1 = _a.sent();
+                case 3: return [2 /*return*/, _b.sent()];
+                case 4:
+                    e_1 = _b.sent();
                     console.log(e_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });
 }
 exports.default = saveCompany;
-var config = {
-    name: "",
-    headOffice: "",
-    email: "",
-    streetRoad: "",
-    primaryNumber: "",
-    secondaryNumber: "",
-    city: "",
-    info: "",
-};
+// company: "",
+// admin_name: "",
+// admin_phone: "",
+// admin_email: "",
+// admin_password: "",
+// confirm_password: ""
 //# sourceMappingURL=saveCompany.js.map

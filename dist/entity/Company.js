@@ -9,11 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -46,8 +45,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var saveSupserUser_1 = require("../Auth/saveSupserUser");
 var Branch_1 = require("./Branch");
+var Tags_1 = require("./Tags");
 var Users_1 = require("./Users");
 var Company = /** @class */ (function () {
     function Company() {
@@ -55,7 +54,6 @@ var Company = /** @class */ (function () {
     Company.prototype.createSuperUser = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                createSuperSu(this.name, this.id);
                 return [2 /*return*/];
             });
         });
@@ -65,7 +63,9 @@ var Company = /** @class */ (function () {
         __metadata("design:type", Number)
     ], Company.prototype, "id", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            unique: true
+        }),
         __metadata("design:type", String)
     ], Company.prototype, "name", void 0);
     __decorate([
@@ -76,28 +76,44 @@ var Company = /** @class */ (function () {
     ], Company.prototype, "city", void 0);
     __decorate([
         typeorm_1.Column({
+            default: new Date().getTime().toString()
+        }),
+        __metadata("design:type", String)
+    ], Company.prototype, "registered", void 0);
+    __decorate([
+        typeorm_1.Column({
             nullable: true
         }),
         __metadata("design:type", String)
     ], Company.prototype, "info", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", String)
     ], Company.prototype, "headOffice", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", String)
     ], Company.prototype, "email", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", String)
     ], Company.prototype, "streetRoad", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", String)
     ], Company.prototype, "primaryNumber", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", String)
     ], Company.prototype, "secondaryNumber", void 0);
     __decorate([
@@ -111,6 +127,11 @@ var Company = /** @class */ (function () {
         __metadata("design:type", Users_1.default)
     ], Company.prototype, "superAdmin", void 0);
     __decorate([
+        typeorm_1.OneToMany(function (type) { return Tags_1.default; }, function (tag) { return tag.company; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
+    ], Company.prototype, "tags", void 0);
+    __decorate([
         typeorm_1.AfterInsert(),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", []),
@@ -122,12 +143,7 @@ var Company = /** @class */ (function () {
     return Company;
 }());
 exports.default = Company;
-var createSuperSu = function (name, id) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, saveSupserUser_1.default(name, id)];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
+// const createSuperSu = async (name, id) => {
+// return await saveSuperUser(name, id);
+// }
 //# sourceMappingURL=Company.js.map

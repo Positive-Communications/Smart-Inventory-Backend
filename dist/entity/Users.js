@@ -9,11 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -52,7 +51,6 @@ var Branch_1 = require("./Branch");
 var Carrier_1 = require("./Carrier");
 var PackingTags_1 = require("./PackingTags");
 var ReadBranchByID_1 = require("../helpers/R/ByID/ReadBranchByID");
-var Orders_1 = require("./Orders");
 var SaveUserPrivileges_1 = require("../helpers/C/singles/SaveUserPrivileges");
 var Company_1 = require("./Company");
 var Users = /** @class */ (function () {
@@ -106,7 +104,9 @@ var Users = /** @class */ (function () {
         __metadata("design:type", String)
     ], Users.prototype, "userPicture", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            unique: true
+        }),
         __metadata("design:type", String)
     ], Users.prototype, "userName", void 0);
     __decorate([
@@ -174,11 +174,6 @@ var Users = /** @class */ (function () {
         typeorm_1.OneToOne(function (type) { return PackingTags_1.default; }, function (parking) { return parking.driver; }),
         __metadata("design:type", PackingTags_1.default)
     ], Users.prototype, "parkingTags", void 0);
-    __decorate([
-        typeorm_1.OneToMany(function (type) { return Orders_1.default; }, function (orders) { return orders.checkedBy; }),
-        typeorm_1.JoinTable(),
-        __metadata("design:type", Array)
-    ], Users.prototype, "checkedOrders", void 0);
     Users = __decorate([
         typeorm_1.Entity()
     ], Users);

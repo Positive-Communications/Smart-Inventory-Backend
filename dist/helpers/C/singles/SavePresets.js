@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -37,43 +36,37 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Presets_1 = require("../../../entity/Presets");
-var ReadSectionByID_1 = require("../../R/ByID/ReadSectionByID");
-var ReadProductByID_1 = require("../../R/ByID/ReadProductByID");
 var typeorm_1 = require("typeorm");
+var GetOrCreateSection_1 = require("../Custom/GetOrCreateSection");
 function savePresets(data) {
     return __awaiter(this, void 0, void 0, function () {
-        var preset, _a, _b, e_1;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var preset, _a, e_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     preset = new Presets_1.default();
                     _a = preset;
-                    return [4 /*yield*/, ReadSectionByID_1.default(data.sectionID)];
+                    return [4 /*yield*/, GetOrCreateSection_1.default(data.section)];
                 case 1:
-                    _a.section = _c.sent();
+                    _a.section = _b.sent();
                     preset.presetName = data.presetName;
-                    _b = preset;
-                    return [4 /*yield*/, ReadProductByID_1.default(data.productID)];
+                    _b.label = 2;
                 case 2:
-                    _b.product = _c.sent();
-                    _c.label = 3;
-                case 3:
-                    _c.trys.push([3, 5, , 6]);
+                    _b.trys.push([2, 4, , 5]);
                     return [4 /*yield*/, typeorm_1.getConnection().manager.save(preset)];
-                case 4: return [2 /*return*/, _c.sent()];
-                case 5:
-                    e_1 = _c.sent();
+                case 3: return [2 /*return*/, _b.sent()];
+                case 4:
+                    e_1 = _b.sent();
                     console.log(e_1);
-                    return [3 /*break*/, 6];
-                case 6: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });
 }
 exports.default = savePresets;
 var json = {
-    sectionID: "",
+    section: "",
     presetName: "",
-    productID: ""
 };
 //# sourceMappingURL=SavePresets.js.map

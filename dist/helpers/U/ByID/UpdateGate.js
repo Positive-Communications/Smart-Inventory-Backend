@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -38,30 +37,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var Gate_1 = require("../../../entity/Gate");
-function updateGate(data) {
+function updateGate(data, id) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, typeorm_1.getConnection()
                         .createQueryBuilder()
                         .update(Gate_1.default)
-                        .set({
-                        name: "",
-                        role: "",
-                        hasErrors: false,
-                        isaActive: true,
-                        allowEmpty: false,
-                        verifyNotTrackedByRFID: false,
-                        checkContinuouslyForUnauthorized: false,
-                        doNotAllowRemoved: false,
-                        useForDispatchOrReceiving: false,
-                        allowDispatchForAllOrders: false,
-                        showProductCountError: false,
-                        allowEmptyPallets: false,
-                        getToDetermineItemPosition: false,
-                        verifyCarrierIsEmpty: false,
-                    })
-                        .where('id =:id', { id: parseInt(data.gateID) })
+                        .set(data)
+                        .where('id =:id', { id: parseInt(id) })
                         .execute()];
                 case 1: return [2 /*return*/, _a.sent()];
             }

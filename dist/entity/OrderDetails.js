@@ -9,11 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -61,12 +60,13 @@ var OrderDetails = /** @class */ (function () {
                 switch (_c.label) {
                     case 0:
                         _a = this;
-                        return [4 /*yield*/, ReadProductByID_1.default(data.productID)];
+                        return [4 /*yield*/, ReadProductByID_1.default(data.product.id)];
                     case 1:
                         _a.product = _c.sent();
+                        data.isOpenQuantity = data.isOpenQuantity || false;
                         this.quantity = data.quantity;
                         _b = this;
-                        return [4 /*yield*/, ReadProductUnitByID_1.default(data.productUnitID)];
+                        return [4 /*yield*/, ReadProductUnitByID_1.default(data.unit.id)];
                     case 2:
                         _b.unit = _c.sent();
                         return [2 /*return*/];
@@ -93,6 +93,12 @@ var OrderDetails = /** @class */ (function () {
         typeorm_1.Column(),
         __metadata("design:type", String)
     ], OrderDetails.prototype, "quantity", void 0);
+    __decorate([
+        typeorm_1.Column({
+            default: false
+        }),
+        __metadata("design:type", Boolean)
+    ], OrderDetails.prototype, "isOpenQuantity", void 0);
     __decorate([
         typeorm_1.ManyToOne(function (type) { return ProductUnit_1.default; }, function (unit) { return unit.orderDetails; }),
         __metadata("design:type", ProductUnit_1.default)

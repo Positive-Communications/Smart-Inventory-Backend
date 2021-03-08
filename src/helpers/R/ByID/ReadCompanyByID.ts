@@ -11,6 +11,7 @@ export default async function readCompanyByID(companyID) {
                 .select('company')
                 .from(Company, 'company')
                 .where('company.id =:id', {id: parseInt(companyID)})
+                .leftJoinAndSelect('company.superAdmin', 'admin')
                 .getOne();
     } catch (e) {
         console.log(e);

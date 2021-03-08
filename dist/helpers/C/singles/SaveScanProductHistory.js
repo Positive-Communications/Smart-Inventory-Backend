@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -39,13 +38,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ScanProductHistory_1 = require("../../../entity/ScanProductHistory");
 var ReadGateByID_1 = require("../../R/ByID/ReadGateByID");
 var ReadDeviceByID_1 = require("../../R/ByID/ReadDeviceByID");
-var ReadProductByID_1 = require("../../R/ByID/ReadProductByID");
 var typeorm_1 = require("typeorm");
 function saveScanProductHistory(data) {
     return __awaiter(this, void 0, void 0, function () {
-        var context, scanHistory, _a, _b, _c, _d, _e, e_1;
-        return __generator(this, function (_f) {
-            switch (_f.label) {
+        var context, scanHistory, e_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
                     switch (data.context) {
                         case "gate":
@@ -58,41 +56,16 @@ function saveScanProductHistory(data) {
                     scanHistory = new ScanProductHistory_1.default();
                     scanHistory.timeStamp = data.timeStamp;
                     scanHistory.isReadByHandHeld = data.isReadByHandHeld;
-                    if (!(data.context === "gate")) return [3 /*break*/, 2];
-                    _b = scanHistory;
-                    return [4 /*yield*/, context];
+                    _a.label = 1;
                 case 1:
-                    _a = _b.gate = _f.sent();
-                    return [3 /*break*/, 6];
-                case 2:
-                    if (!(data.context === "device")) return [3 /*break*/, 4];
-                    _d = scanHistory;
-                    return [4 /*yield*/, context];
-                case 3:
-                    _c = _d.device = _f.sent();
-                    return [3 /*break*/, 5];
-                case 4:
-                    _c = null;
-                    _f.label = 5;
-                case 5:
-                    _a = _c;
-                    _f.label = 6;
-                case 6:
-                    _a;
-                    _e = scanHistory;
-                    return [4 /*yield*/, ReadProductByID_1.default(data.productID)];
-                case 7:
-                    _e.product = _f.sent();
-                    _f.label = 8;
-                case 8:
-                    _f.trys.push([8, 10, , 11]);
+                    _a.trys.push([1, 3, , 4]);
                     return [4 /*yield*/, typeorm_1.getConnection().manager.save(scanHistory)];
-                case 9: return [2 /*return*/, _f.sent()];
-                case 10:
-                    e_1 = _f.sent();
+                case 2: return [2 /*return*/, _a.sent()];
+                case 3:
+                    e_1 = _a.sent();
                     console.log(e_1);
-                    return [3 /*break*/, 11];
-                case 11: return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     });

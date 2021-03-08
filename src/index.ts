@@ -27,6 +27,9 @@ import OrderQueManager from "./resource.manager/orderque.manager";
 import ProductManager from "./resource.manager/product.manager";
 import StorageBayManager from "./resource.manager/bays.manager";
 import TagsManager from "./resource.manager/tags.manager";
+import assignRandomTag from "./helpers/U/Custom/AssignRandomTag";
+import readGateByID from "./helpers/R/ByID/ReadGateByID";
+import proccessScan from "./helpers/C/Multiple/SaveAlerts";
 
 const app = express();
 
@@ -124,7 +127,7 @@ app.get('/dispatch/:branchID', frisk, dispatchManager.checkBranchDispatch);
 
 app.post('/add-dispatch/:branchID/', frisk, dispatchManager.createBranchDispatch);
 
-app.post('/new-order/', frisk, dispatchManager.saveOrder);  
+app.post('/new-order/', frisk, dispatchManager.saveOrder);
 
 app.get('/all-orders/', frisk, dispatchManager.getAllOrders);
 
@@ -174,6 +177,11 @@ app.post('/save-carrier-type/', frisk, carrierManager.saveCarrierType);
 
 app.get('/all-carrier-types/', frisk, carrierManager.getAllCarrierTypes);
 app.get('/all-carriers/', frisk, carrierManager.summonAllCarrierTypes);
+
+app.post('/move/', frisk, carrierManager.moveProducts);
+app.get('/all-moves/', frisk, carrierManager.getAllMoves)
+
+app.get('/moves/', frisk, carrierManager.getMovesByGateTo);
 
 
 /*
@@ -227,11 +235,9 @@ const tagsManager = new TagsManager();
 app.post('/new-tags/:id', frisk, tagsManager.saveNewTags);
 
 app.get('/tag/:epc', frisk, tagsManager.getTagByEPC);
-app.get('/all-unassigned-tags/', frisk, tagsManager.getAllUnasignedTags);
+app.get('/all-assigned-tags/', frisk, tagsManager.getAllUnasignedTags);
 
-app.get('/all-transactions/', frisk, tagsManager.getAllTransactions)
-
-
+app.get('/all-transactions/', tagsManager.getAllTransactions)
 
 
 
@@ -284,60 +290,69 @@ io.on('connection', client => {
     io.emit('msg', 'Connecption Successful!');
     console.log(`Client ${.1}' -> Connected successfully. :101`)
 
-    io.on('tag', msg => {
-        io.emit('user', 'I received the tag. I will be a user');
-    })
+    // scan();
+})
+
+const scan = async () => {
+    setInterval(async () => {
+        let tag = await assignRandomTag();
+        let gate = await readGateByID(1);
+        console.log(await proccessScan(tag, gate, 1));
+    }, 500)
+}
 
 
-    // setTimeout(()=>{
-    //     console.log('Me');
-    // }, 2000)
 
 
-    // let Tags = [];
-    //
-    // try {
-    //     const readerConnection = new EventSource("http://localhost:8080/subscribe", {
-    //         withCredentials: true,
-    //     });
-    //     readerConnection.onopen = function () {
-    //         console.log('Reader connected!... :104')
-    //         axios.get('http://localhost:8080/start-inventory').then(res => {
-    //             console.log('Inventory has been started sucessfully... :105')
-    //         }).catch(err => {
-    //             console.log('Couldn\'t start inventory... :203');
-    //         });
-    //     }
-    //     readerConnection.onmessage = function (event) {
-    //         if (Tags.includes(event.data)) {
-    //             console.log('Tag already scanned..')
-    //         } else {
-    //             Tags.push(event.data)
-    //             getItem(event.data).then(data => {
-    //                 io.emit('item', data);
-    //                 if (data.hasErrors) {
-    //                     console.log('Happened here....')
-    //                 }
-    //                 console.log(data)
-    //             });
-    //         }
-    //     }
-    // } catch (err) {
-    //     console.log(err)
-    // }
-    //
-    // client.on('tag', msg => {
-    //     getItem(msg).then(data => {
-    //         io.emit('item', data);
-    //         console.log(data)
-    //     });
-    // })
+// setTimeout(()=>{
+//     console.log('Me');
+// }, 2000)
 
-    client.on('ping', () => {
-        io.emit('pong', 'I got a ping, here\'s a pong!.')
-    })
 
-});
+// let Tags = [];
+//
+// try {
+//     const readerConnection = new EventSource("http://localhost:8080/subscribe", {
+//         withCredentials: true,
+//     });
+//     readerConnection.onopen = function () {
+//         console.log('Reader connected!... :104')
+//         axios.get('http://localhost:8080/start-inventory').then(res => {
+//             console.log('Inventory has been started sucessfully... :105')
+//         }).catch(err => {
+//             console.log('Couldn\'t start inventory... :203');
+//         });
+//     }
+//     readerConnection.onmessage = function (event) {
+//         if (Tags.includes(event.data)) {
+//             console.log('Tag already scanned..')
+//         } else {
+//             Tags.push(event.data)
+//             getItem(event.data).then(data => {
+//                 io.emit('item', data);
+//                 if (data.hasErrors) {
+//                     console.log('Happened here....')
+//                 }
+//                 console.log(data)
+//             });
+//         }
+//     }
+// } catch (err) {
+//     console.log(err)
+// }
+//
+// client.on('tag', msg => {
+//     getItem(msg).then(data => {
+//         io.emit('item', data);
+//         console.log(data)
+//     });
+// })
+
+// client.on('ping', () => {
+//     io.emit('pong', 'I got a ping, here\'s a pong!.')
+// })
+
+// });
 
 
 server.listen(prod ? process.env.PORT : socketPort, () => {

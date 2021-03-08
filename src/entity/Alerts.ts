@@ -9,6 +9,7 @@ import ScanProductHistory from "./ScanProductHistory";
 import readHistoryByID from "../helpers/R/ByID/ReadHistoryByID";
 import Tags from "./Tags";
 import readTagByEPC from "../helpers/R/Custom/tagByEpc";
+import Move from "./Move";
 
 @Entity()
 export default class Alerts {
@@ -61,6 +62,9 @@ export default class Alerts {
 
     @ManyToOne(type => Tags, tags => tags.alerts)
     tag: Tags
+
+    @ManyToOne(type => Move,  move => move.alerts)
+    move: Move;
 
     async createItself(data: { severity: string; reason: string; type: string; }, tag: string) {
         this.severity = data.severity;

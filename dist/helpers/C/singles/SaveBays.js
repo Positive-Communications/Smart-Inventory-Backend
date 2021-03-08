@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -38,29 +37,40 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var Bays_1 = require("../../../entity/Bays");
+var ReadProductByID_1 = require("../../R/ByID/ReadProductByID");
+var GetOrCreateStore_1 = require("../Custom/GetOrCreateStore");
 function saveBays(data) {
     return __awaiter(this, void 0, void 0, function () {
-        var bay, e_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var bay, _a, _b, e_1;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
+                    console.log(data);
                     bay = new Bays_1.default();
-                    bay.name = data.name;
+                    bay.name = data.nameNumber;
                     bay.role = data.role;
                     bay.isActive = data.isActive;
-                    // bay.store = store;
+                    _a = bay;
+                    return [4 /*yield*/, GetOrCreateStore_1.default(data.store)];
+                case 1:
+                    _a.store = _c.sent();
                     bay.storageType = data.storageType;
                     bay.hasErrors = data.hasErrors;
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, typeorm_1.getConnection().manager.save(bay)];
-                case 2: return [2 /*return*/, _a.sent()];
+                    _b = bay;
+                    return [4 /*yield*/, ReadProductByID_1.default(data.product.id)];
+                case 2:
+                    _b.product = _c.sent();
+                    console.log(data.product.id);
+                    _c.label = 3;
                 case 3:
-                    e_1 = _a.sent();
+                    _c.trys.push([3, 5, , 6]);
+                    return [4 /*yield*/, typeorm_1.getConnection().manager.save(bay)];
+                case 4: return [2 /*return*/, _c.sent()];
+                case 5:
+                    e_1 = _c.sent();
                     console.log(e_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     });
@@ -71,6 +81,7 @@ var json = {
     role: "",
     isActive: "",
     storageType: "",
-    hasErrors: ""
+    hasErrors: "",
+    store: ''
 };
 //# sourceMappingURL=SaveBays.js.map

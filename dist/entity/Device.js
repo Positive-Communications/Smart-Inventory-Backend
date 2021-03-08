@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var Sections_1 = require("./Sections");
-var ScanProductHistory_1 = require("./ScanProductHistory");
 var Alerts_1 = require("./Alerts");
 var Bays_1 = require("./Bays");
 var Branch_1 = require("./Branch");
@@ -27,51 +26,75 @@ var Device = /** @class */ (function () {
         __metadata("design:type", String)
     ], Device.prototype, "name", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: "empty"
+        }),
         __metadata("design:type", String)
     ], Device.prototype, "role", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Device.prototype, "allowPalletsToBeCountedManually", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: true
+        }),
         __metadata("design:type", Boolean)
     ], Device.prototype, "isActive", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Device.prototype, "hasErrors", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Device.prototype, "doNotAllowRemovalOfEmptyPallet", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Device.prototype, "verifyStoredUsingHandHeld", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Device.prototype, "showProductCountError", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Device.prototype, "doNotAllowRemoval", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Device.prototype, "verifyProductNotTrackedByRFID", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Device.prototype, "automaticallyActivateRecallProductIfRequired", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Device.prototype, "recordEmptyPallets", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Device.prototype, "dispatchingOrReceiving", void 0);
     __decorate([
@@ -82,11 +105,6 @@ var Device = /** @class */ (function () {
         typeorm_1.ManyToOne(function (type) { return Bays_1.default; }, function (bays) { return bays.devices; }),
         __metadata("design:type", Bays_1.default)
     ], Device.prototype, "bays", void 0);
-    __decorate([
-        typeorm_1.OneToMany(function (type) { return ScanProductHistory_1.default; }, function (history) { return history.device; }),
-        typeorm_1.JoinTable(),
-        __metadata("design:type", ScanProductHistory_1.default)
-    ], Device.prototype, "history", void 0);
     __decorate([
         typeorm_1.OneToMany(function (type) { return Alerts_1.default; }, function (alert) { return alert.device; }),
         typeorm_1.JoinTable(),

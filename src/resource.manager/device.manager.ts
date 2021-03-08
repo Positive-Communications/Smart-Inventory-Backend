@@ -5,7 +5,7 @@ import updateDevices from "../helpers/U/ByID/UpdateDevice";
 class DeviceManager{
 
     async registerDevice(req, res){
-        const device = await saveDevice(req.body);
+        const device = await saveDevice(req.params.branchID);
         res.json({device: device});
     }
 

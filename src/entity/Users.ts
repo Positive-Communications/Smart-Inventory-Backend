@@ -83,6 +83,7 @@ export default class Users {
         this.password = bcrypt.hashSync(this.password, 8);
     }
 
+
     async createItSelf(data) {
 
         this.privileges = await saveUserPrivileges(data.privileges)

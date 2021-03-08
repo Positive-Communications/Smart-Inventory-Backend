@@ -10,3 +10,4 @@ const readAllProducts = async () => {
 
 export default readAllProducts;
 
+

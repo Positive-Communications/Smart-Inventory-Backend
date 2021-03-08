@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -36,8 +35,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var typeorm_1 = require("typeorm");
+var Move_1 = require("../entity/Move");
 var SaveCarrier_1 = require("../helpers/C/singles/SaveCarrier");
 var SaveCarrierTypes_1 = require("../helpers/C/singles/SaveCarrierTypes");
+var SaveMove_1 = require("../helpers/C/singles/SaveMove");
+var ReadMovesByGate_1 = require("../helpers/R/Custom/ReadMovesByGate");
 var CarrierTypes_1 = require("../helpers/R/Many/CarrierTypes");
 var GetAllCarriers_1 = require("../helpers/R/Many/GetAllCarriers");
 var CarrierManager = /** @class */ (function () {
@@ -47,9 +50,13 @@ var CarrierManager = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var carrier;
             return __generator(this, function (_a) {
-                carrier = SaveCarrier_1.default(req.body);
-                res.json({ carrier: carrier });
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, SaveCarrier_1.default(req.body)];
+                    case 1:
+                        carrier = _a.sent();
+                        res.json({ carrier: carrier });
+                        return [2 /*return*/];
+                }
             });
         });
     };
@@ -90,6 +97,52 @@ var CarrierManager = /** @class */ (function () {
                     case 1:
                         carriers = _a.sent();
                         res.json({ carriers: carriers });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CarrierManager.prototype.moveProducts = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var move;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, SaveMove_1.default(req.body)];
+                    case 1:
+                        move = _a.sent();
+                        res.json({ move: move });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CarrierManager.prototype.getAllMoves = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        _b = (_a = res).json;
+                        _c = {};
+                        return [4 /*yield*/, typeorm_1.getConnection().manager.find(Move_1.default)];
+                    case 1:
+                        _b.apply(_a, [(_c.moves = _d.sent(), _c)]);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CarrierManager.prototype.getMovesByGateTo = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        _b = (_a = res).json;
+                        _c = {};
+                        return [4 /*yield*/, ReadMovesByGate_1.default(req.params.id)];
+                    case 1:
+                        _b.apply(_a, [(_c.moves = _d.sent(), _c)]);
                         return [2 /*return*/];
                 }
             });

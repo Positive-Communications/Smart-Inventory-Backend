@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var Sections_1 = require("./Sections");
-var Product_1 = require("./Product");
+var PresetMeta_1 = require("./PresetMeta");
 var Presets = /** @class */ (function () {
     function Presets() {
     }
@@ -20,8 +20,7 @@ var Presets = /** @class */ (function () {
         __metadata("design:type", Number)
     ], Presets.prototype, "id", void 0);
     __decorate([
-        typeorm_1.OneToOne(function (type) { return Sections_1.default; }, function (section) { return section.presets; }),
-        typeorm_1.JoinColumn(),
+        typeorm_1.ManyToOne(function (type) { return Sections_1.default; }, function (section) { return section.presets; }),
         __metadata("design:type", Sections_1.default)
     ], Presets.prototype, "section", void 0);
     __decorate([
@@ -29,13 +28,16 @@ var Presets = /** @class */ (function () {
         __metadata("design:type", String)
     ], Presets.prototype, "presetName", void 0);
     __decorate([
-        typeorm_1.OneToOne(function (type) { return Product_1.default; }, function (product) { return product.preset; }),
-        __metadata("design:type", Product_1.default)
-    ], Presets.prototype, "product", void 0);
+        typeorm_1.OneToMany(function (type) { return PresetMeta_1.default; }, function (meta) { return meta.preset; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
+    ], Presets.prototype, "meta", void 0);
     Presets = __decorate([
         typeorm_1.Entity()
     ], Presets);
     return Presets;
 }());
 exports.default = Presets;
+var saveOrCreateSection = function () {
+};
 //# sourceMappingURL=Presets.js.map

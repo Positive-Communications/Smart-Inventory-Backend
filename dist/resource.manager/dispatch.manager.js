@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -36,8 +35,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var CreateOrderQue_1 = require("../helpers/C/singles/CreateOrderQue");
 var SaveDispatchTimes_1 = require("../helpers/C/singles/SaveDispatchTimes");
+var SaveOrder_1 = require("../helpers/C/singles/SaveOrder");
 var GetDispatchByBranch_1 = require("../helpers/R/ByBranch/GetDispatchByBranch");
+var ReadOrderQue_1 = require("../helpers/R/ByBranch/ReadOrderQue");
+var ReadOrderByNumber_1 = require("../helpers/R/Custom/ReadOrderByNumber");
+var ReadAllOrders_1 = require("../helpers/R/Many/ReadAllOrders");
 var DispatchManager = /** @class */ (function () {
     function DispatchManager() {
     }
@@ -64,6 +68,86 @@ var DispatchManager = /** @class */ (function () {
                     case 1:
                         dispatch = _a.sent();
                         res.json({ dispatch: dispatch });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DispatchManager.prototype.saveOrder = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        _b = (_a = res).json;
+                        _c = {};
+                        return [4 /*yield*/, SaveOrder_1.default(req.body)];
+                    case 1:
+                        _b.apply(_a, [(_c.order = _d.sent(), _c)]);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DispatchManager.prototype.getAllOrders = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        _b = (_a = res).json;
+                        _c = {};
+                        return [4 /*yield*/, ReadAllOrders_1.default()];
+                    case 1:
+                        _b.apply(_a, [(_c.orders = _d.sent(), _c)]);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DispatchManager.prototype.getOrderByNumber = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        _b = (_a = res).json;
+                        _c = {};
+                        return [4 /*yield*/, ReadOrderByNumber_1.default(req.params.number)];
+                    case 1:
+                        _b.apply(_a, [(_c.order = _d.sent(), _c)]);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DispatchManager.prototype.saveOrderQue = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        _b = (_a = res).json;
+                        _c = {};
+                        return [4 /*yield*/, CreateOrderQue_1.default(req.body)];
+                    case 1:
+                        _b.apply(_a, [(_c.orderQue = _d.sent(), _c)]);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DispatchManager.prototype.getOrderQue = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        _b = (_a = res).json;
+                        _c = {};
+                        return [4 /*yield*/, ReadOrderQue_1.default(req.params.id)];
+                    case 1:
+                        _b.apply(_a, [(_c.orderQue = _d.sent(), _c)]);
                         return [2 /*return*/];
                 }
             });

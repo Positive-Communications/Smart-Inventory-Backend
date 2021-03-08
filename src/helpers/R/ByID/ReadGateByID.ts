@@ -5,5 +5,5 @@ export default async function readGateByID(gateID: number) {
 
 
     return await
-        getConnection().manager.findOne(Gate,gateID, {relations: ["presetMeta", "presetMeta.product"]});
+        getConnection().manager.findOne(Gate,gateID, {relations: ["presetMeta", "presetMeta.product", "presetMeta.preset", "presetMeta.preset.section"]});
 }

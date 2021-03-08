@@ -7,8 +7,8 @@ export default async function saveProductTag(data) {
     let productTag = new ProductTags();
 
     productTag.epc = data.epc;
-    productTag.tid = data.tid;
-    productTag.type = data.type;
+    // productTag.tid = data.tid;
+    // productTag.type = data.type;
 
     switch (data.context){
         case "HAS_PRODUCT":

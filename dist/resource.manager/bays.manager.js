@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -37,16 +36,35 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var SaveBays_1 = require("../helpers/C/singles/SaveBays");
+var ReadAllStores_1 = require("../helpers/R/Many/ReadAllStores");
 var StorageBayManager = /** @class */ (function () {
     function StorageBayManager() {
     }
     StorageBayManager.prototype.createBays = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var bays;
+            var bay;
             return __generator(this, function (_a) {
-                bays = SaveBays_1.default(req.body);
-                res.json({ bays: bays });
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, SaveBays_1.default(req.body)];
+                    case 1:
+                        bay = _a.sent();
+                        res.json({ bay: bay });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    StorageBayManager.prototype.getAllStores = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var stores;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, ReadAllStores_1.default()];
+                    case 1:
+                        stores = _a.sent();
+                        res.json({ stores: stores });
+                        return [2 /*return*/];
+                }
             });
         });
     };

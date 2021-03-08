@@ -59,7 +59,7 @@ export default class Product {
     isStoredOnPallet: boolean;
 
     @Column({
-        nullable: true
+        default: false
     })
     palletIsTrackedByRFID: boolean;
 
@@ -120,8 +120,8 @@ export default class Product {
         this.units = await saveMultipleProductUnits(data.units)
         this.dispatchGate = await assignGateToProduct(data.gates);
         this.isStoredOnPallet = data.isStoredOnPallet;
-        this.palletIsTrackedByRFID = data.palleptIsTrackedByRFID;
-        this.pallet = await saveMultiplePallets(data.pallets);
+        this.palletIsTrackedByRFID = data.palletIsTrackedByRFID;
+        this.pallet = await saveMultiplePallets(data.pallets) || [];
     }
 
     async isLegit() {
@@ -133,3 +133,4 @@ export default class Product {
 }
 
 
+   

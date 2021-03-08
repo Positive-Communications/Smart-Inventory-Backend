@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -38,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var saveCompany_1 = require("../helpers/C/singles/saveCompany");
 var ReadCompanyByID_1 = require("../helpers/R/ByID/ReadCompanyByID");
+var ReadAllCompanies_1 = require("../helpers/R/Many/ReadAllCompanies");
 var CompanyHandler = /** @class */ (function () {
     function CompanyHandler() {
     }
@@ -64,6 +64,20 @@ var CompanyHandler = /** @class */ (function () {
                     case 1:
                         company = _a.sent();
                         res.json({ company: company });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CompanyHandler.prototype.getAllCompanies = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var companies;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, ReadAllCompanies_1.default()];
+                    case 1:
+                        companies = _a.sent();
+                        res.json({ companies: companies });
                         return [2 /*return*/];
                 }
             });

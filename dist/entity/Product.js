@@ -9,11 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -49,17 +48,17 @@ var typeorm_1 = require("typeorm");
 var ProductUnit_1 = require("./ProductUnit");
 var Pallet_1 = require("./Pallet");
 var Gate_1 = require("./Gate");
-var ScanProductHistory_1 = require("./ScanProductHistory");
 var Sections_1 = require("./Sections");
 var ManualEntry_1 = require("./ManualEntry");
-var Presets_1 = require("./Presets");
-var ProductTags_1 = require("./ProductTags");
 var Store_1 = require("./Store");
 var Bays_1 = require("./Bays");
 var OrderDetails_1 = require("./OrderDetails");
 var SaveMultipleProductUnits_1 = require("../helpers/C/Multiple/SaveMultipleProductUnits");
 var SaveMultiplePallets_1 = require("../helpers/C/Multiple/SaveMultiplePallets");
 var AssignGateToProduct_1 = require("../helpers/C/Multiple/AssignGateToProduct");
+var PresetMeta_1 = require("./PresetMeta");
+var Tags_1 = require("./Tags");
+var Alerts_1 = require("./Alerts");
 var Product = /** @class */ (function () {
     function Product() {
     }
@@ -139,10 +138,15 @@ var Product = /** @class */ (function () {
     ], Product.prototype, "isStoredOnPallet", void 0);
     __decorate([
         typeorm_1.Column({
-            nullable: true
+            default: false
         }),
         __metadata("design:type", Boolean)
     ], Product.prototype, "palletIsTrackedByRFID", void 0);
+    __decorate([
+        typeorm_1.OneToMany(function (type) { return Alerts_1.default; }, function (alert) { return alert.product; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
+    ], Product.prototype, "alerts", void 0);
     __decorate([
         typeorm_1.OneToMany(function (type) { return ProductUnit_1.default; }, function (unit) { return unit.product; }),
         typeorm_1.JoinTable(),
@@ -154,31 +158,27 @@ var Product = /** @class */ (function () {
         __metadata("design:type", Array)
     ], Product.prototype, "dispatchGate", void 0);
     __decorate([
-        typeorm_1.OneToOne(function (type) { return ProductTags_1.default; }, function (tag) { return tag.product; }),
-        typeorm_1.JoinColumn(),
-        __metadata("design:type", ProductTags_1.default)
-    ], Product.prototype, "tag", void 0);
+        typeorm_1.OneToMany(function (type) { return Tags_1.default; }, function (tag) { return tag.product; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
+    ], Product.prototype, "tags", void 0);
     __decorate([
-        typeorm_1.OneToOne(function (type) { return Presets_1.default; }, function (preset) { return preset.product; }),
+        typeorm_1.OneToMany(function (type) { return PresetMeta_1.default; }, function (meta) { return meta.product; }),
         typeorm_1.JoinColumn(),
-        __metadata("design:type", Presets_1.default)
-    ], Product.prototype, "preset", void 0);
+        __metadata("design:type", PresetMeta_1.default)
+    ], Product.prototype, "meta", void 0);
     __decorate([
         typeorm_1.OneToMany(function (type) { return Pallet_1.default; }, function (pallet) { return pallet.product; }),
         typeorm_1.JoinTable(),
         __metadata("design:type", Array)
     ], Product.prototype, "pallet", void 0);
     __decorate([
-        typeorm_1.OneToMany(function (type) { return ScanProductHistory_1.default; }, function (scanHistory) { return scanHistory.product; }),
-        typeorm_1.JoinTable(),
-        __metadata("design:type", ScanProductHistory_1.default)
-    ], Product.prototype, "scanHistory", void 0);
-    __decorate([
         typeorm_1.ManyToOne(function (type) { return Sections_1.default; }, function (section) { return section.currentProducts; }),
         __metadata("design:type", Sections_1.default)
     ], Product.prototype, "currentSection", void 0);
     __decorate([
-        typeorm_1.ManyToMany(function (type) { return Bays_1.default; }, function (bay) { return bay.product; }),
+        typeorm_1.OneToMany(function (type) { return Bays_1.default; }, function (bay) { return bay.product; }),
+        typeorm_1.JoinTable(),
         __metadata("design:type", Array)
     ], Product.prototype, "bay", void 0);
     __decorate([

@@ -4,7 +4,7 @@
    "port": 5432,
    "username": "postgres",
    "password": "  ",
-   "database": "salty",
+   "database": "wink",
    "logging": false,
    "entities": [
       "src/entity/**/*.ts"

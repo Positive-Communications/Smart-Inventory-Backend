@@ -9,11 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -56,6 +55,8 @@ var Branch_1 = require("./Branch");
 var Bays_1 = require("./Bays");
 var PackingTags_1 = require("./PackingTags");
 var ReadBranchByID_1 = require("../helpers/R/ByID/ReadBranchByID");
+var Store_1 = require("./Store");
+var PresetMeta_1 = require("./PresetMeta");
 var Gate = /** @class */ (function () {
     function Gate() {
     }
@@ -68,16 +69,16 @@ var Gate = /** @class */ (function () {
                         this.name = data.name;
                         this.readerAddress = data.readerAddress;
                         this.numberOfAnts = data.numberOfAnts;
-                        this.antToDetectOutgoing = data.antToDetectOutgoing;
-                        this.antToDetectIncoming = data.antToDetectIncoming;
-                        this.ant1 = data.ant1;
-                        this.ant2 = data.ant2;
-                        this.ant3 = data.ant3;
-                        this.ant4 = data.ant4;
-                        this.ant1Power = data.ant1Power;
-                        this.ant2Power = data.ant2Power;
-                        this.ant3Power = data.ant3Power;
-                        this.ant4Power = data.ant4Power;
+                        this.antToDetectOutgoing = data.antToDetectOutgoing || 1;
+                        this.antToDetectIncoming = data.antToDetectIncoming || 3;
+                        this.ant1 = data.ant1 || false;
+                        this.ant2 = data.ant2 || false;
+                        this.ant3 = data.ant3 || false;
+                        this.ant4 = data.ant4 || false;
+                        this.ant1Power = data.ant1Power || "90";
+                        this.ant2Power = data.ant2Power || "90";
+                        this.ant3Power = data.ant3Power || "90";
+                        this.ant4Power = data.ant4Power || "90";
                         this.role = data.role;
                         _a = this;
                         return [4 /*yield*/, ReadBranchByID_1.default(data.branchID)];
@@ -104,7 +105,9 @@ var Gate = /** @class */ (function () {
         __metadata("design:type", String)
     ], Gate.prototype, "name", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            unique: true,
+        }),
         __metadata("design:type", String)
     ], Gate.prototype, "readerAddress", void 0);
     __decorate([
@@ -112,45 +115,89 @@ var Gate = /** @class */ (function () {
         __metadata("design:type", String)
     ], Gate.prototype, "numberOfAnts", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: 1
+        }),
         __metadata("design:type", Number)
     ], Gate.prototype, "antToDetectOutgoing", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: 3
+        }),
         __metadata("design:type", Number)
     ], Gate.prototype, "antToDetectIncoming", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Gate.prototype, "ant1", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Gate.prototype, "ant2", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Gate.prototype, "ant3", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Gate.prototype, "ant4", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: "90"
+        }),
         __metadata("design:type", String)
     ], Gate.prototype, "ant1Power", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: "90"
+        }),
         __metadata("design:type", String)
     ], Gate.prototype, "ant2Power", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: "90"
+        }),
         __metadata("design:type", String)
     ], Gate.prototype, "ant3Power", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: "90"
+        }),
         __metadata("design:type", String)
     ], Gate.prototype, "ant4Power", void 0);
+    __decorate([
+        typeorm_1.Column({
+            default: true
+        }),
+        __metadata("design:type", Boolean)
+    ], Gate.prototype, "isActive", void 0);
+    __decorate([
+        typeorm_1.Column({
+            default: false
+        }),
+        __metadata("design:type", Boolean)
+    ], Gate.prototype, "isForPackaging", void 0);
+    __decorate([
+        typeorm_1.Column({
+            default: false
+        }),
+        __metadata("design:type", Boolean)
+    ], Gate.prototype, "isForStorage", void 0);
+    __decorate([
+        typeorm_1.Column({
+            default: false
+        }),
+        __metadata("design:type", Boolean)
+    ], Gate.prototype, "isForDispatch", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
@@ -240,15 +287,20 @@ var Gate = /** @class */ (function () {
         __metadata("design:type", Boolean)
     ], Gate.prototype, "verifyCarrierIsEmpty", void 0);
     __decorate([
-        typeorm_1.ManyToOne(function (type) { return PackingTags_1.default; }, function (parking) { return parking.accessGates; }),
+        typeorm_1.OneToOne(function () { return PresetMeta_1.default; }, function (meta) { return meta.gate; }),
+        typeorm_1.JoinColumn(),
+        __metadata("design:type", PresetMeta_1.default)
+    ], Gate.prototype, "presetMeta", void 0);
+    __decorate([
+        typeorm_1.ManyToOne(function () { return PackingTags_1.default; }, function (parking) { return parking.accessGates; }),
         __metadata("design:type", PackingTags_1.default)
     ], Gate.prototype, "parkingAccess", void 0);
     __decorate([
-        typeorm_1.ManyToOne(function (type) { return Branch_1.default; }, function (branch) { return branch.gates; }),
+        typeorm_1.ManyToOne(function () { return Branch_1.default; }, function (branch) { return branch.gates; }),
         __metadata("design:type", Branch_1.default)
     ], Gate.prototype, "branch", void 0);
     __decorate([
-        typeorm_1.OneToMany(function (type) { return VisitorAccessTags_1.default; }, function (visitor) { return visitor.entryGate; }),
+        typeorm_1.OneToMany(function () { return VisitorAccessTags_1.default; }, function (visitor) { return visitor.entryGate; }),
         typeorm_1.JoinTable(),
         __metadata("design:type", Array)
     ], Gate.prototype, "visitorEntries", void 0);
@@ -268,7 +320,7 @@ var Gate = /** @class */ (function () {
         __metadata("design:type", Array)
     ], Gate.prototype, "visitorAccess", void 0);
     __decorate([
-        typeorm_1.OneToMany(function (type) { return VisitorAccessTags_1.default; }, function (visitor) { return visitor.exitGate; }),
+        typeorm_1.OneToMany(function () { return VisitorAccessTags_1.default; }, function (visitor) { return visitor.exitGate; }),
         typeorm_1.JoinTable(),
         __metadata("design:type", Array)
     ], Gate.prototype, "visitorExit", void 0);
@@ -291,14 +343,18 @@ var Gate = /** @class */ (function () {
         __metadata("design:type", Array)
     ], Gate.prototype, "sections", void 0);
     __decorate([
-        typeorm_1.ManyToMany(function (type) { return Bays_1.default; }, function (bays) { return bays.gates; }),
+        typeorm_1.ManyToMany(function () { return Bays_1.default; }, function (bays) { return bays.gates; }),
         typeorm_1.JoinTable(),
         __metadata("design:type", Array)
     ], Gate.prototype, "bays", void 0);
     __decorate([
-        typeorm_1.ManyToOne(function (type) { return VisitorAccessTags_1.default; }, function (visitor) { return visitor.accessGates; }),
+        typeorm_1.ManyToOne(function () { return VisitorAccessTags_1.default; }, function (visitor) { return visitor.accessGates; }),
         __metadata("design:type", Array)
     ], Gate.prototype, "visitors", void 0);
+    __decorate([
+        typeorm_1.ManyToOne(function () { return Store_1.default; }, function (store) { return store.gates; }),
+        __metadata("design:type", Store_1.default)
+    ], Gate.prototype, "stores", void 0);
     Gate = __decorate([
         typeorm_1.Entity()
     ], Gate);

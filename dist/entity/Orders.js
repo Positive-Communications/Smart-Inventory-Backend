@@ -9,11 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -47,53 +46,48 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var Branch_1 = require("./Branch");
-var Users_1 = require("./Users");
 var OrderDetails_1 = require("./OrderDetails");
 var ReadBranchByID_1 = require("../helpers/R/ByID/ReadBranchByID");
-var ReadUserByID_1 = require("../helpers/R/ByID/ReadUserByID");
 var SaveMultipleOrderDetails_1 = require("../helpers/C/Multiple/SaveMultipleOrderDetails");
-var OrdersOrders = /** @class */ (function () {
-    function OrdersOrders() {
+var Orders = /** @class */ (function () {
+    function Orders() {
     }
-    OrdersOrders.prototype.createItself = function (data) {
+    Orders.prototype.createItself = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, _b, _c, _d;
-            return __generator(this, function (_e) {
-                switch (_e.label) {
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         this.orderNumber = data.orderNumber;
                         this.date = data.date;
-                        this.collectionOrderFor = data.collectionOrderFor;
                         this.customerName = data.customerName;
+                        this.typeOfClient = data.typeOfClient;
                         this.customerEmail = data.customerEmail;
-                        this.orderNumber = data.orderAmount;
-                        this.paymentStatus = data.paymentStatus;
+                        this.customerPhone = data.customerPhone;
+                        this.isBranchDeportOrder = data.isBranchDeportOrder;
                         this.collectionBy = data.collectionBy;
                         this.identificationType = data.identificationType;
                         this.identificationNumber = data.identificationNumber;
                         this.vehicleReg = data.vehicleReg;
                         _a = this;
-                        return [4 /*yield*/, ReadBranchByID_1.default(data.branchID)];
+                        return [4 /*yield*/, ReadBranchByID_1.default(data.issuedBy)];
                     case 1:
-                        _a.collectedFrom = _e.sent();
+                        _a.issuedBy = _d.sent();
                         _b = this;
-                        return [4 /*yield*/, ReadBranchByID_1.default(data.branchID)];
+                        return [4 /*yield*/, ReadBranchByID_1.default(data.collectionFrom)];
                     case 2:
-                        _b.issuedBy = _e.sent();
+                        _b.collectionFrom = _d.sent();
+                        this.checkedBy = data.checkedBy;
                         _c = this;
-                        return [4 /*yield*/, ReadUserByID_1.default(data.userID)];
-                    case 3:
-                        _c.checkedBy = _e.sent();
-                        _d = this;
                         return [4 /*yield*/, SaveMultipleOrderDetails_1.default(data.orderDetails)];
-                    case 4:
-                        _d.orderDetails = _e.sent();
+                    case 3:
+                        _c.orderDetails = _d.sent();
                         return [2 /*return*/];
                 }
             });
         });
     };
-    OrdersOrders.prototype.isLegit = function () {
+    Orders.prototype.isLegit = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 return [2 /*return*/, true];
@@ -103,72 +97,96 @@ var OrdersOrders = /** @class */ (function () {
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
         __metadata("design:type", Number)
-    ], OrdersOrders.prototype, "id", void 0);
+    ], Orders.prototype, "id", void 0);
+    __decorate([
+        typeorm_1.Column({
+            unique: true,
+        }),
+        __metadata("design:type", String)
+    ], Orders.prototype, "orderNumber", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
-    ], OrdersOrders.prototype, "orderNumber", void 0);
+    ], Orders.prototype, "date", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
-    ], OrdersOrders.prototype, "date", void 0);
+    ], Orders.prototype, "typeOfClient", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", Boolean)
+    ], Orders.prototype, "isBranchDeportOrder", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
-    ], OrdersOrders.prototype, "collectionOrderFor", void 0);
+    ], Orders.prototype, "customerName", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
-    ], OrdersOrders.prototype, "customerName", void 0);
+    ], Orders.prototype, "customerEmail", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
-    ], OrdersOrders.prototype, "customerEmail", void 0);
+    ], Orders.prototype, "customerPhone", void 0);
+    __decorate([
+        typeorm_1.Column({
+            default: "issued"
+        }),
+        __metadata("design:type", String)
+    ], Orders.prototype, "status", void 0);
+    __decorate([
+        typeorm_1.Column({
+            default: "0",
+        }),
+        __metadata("design:type", String)
+    ], Orders.prototype, "orderAmount", void 0);
+    __decorate([
+        typeorm_1.Column({
+            default: "pending"
+        }),
+        __metadata("design:type", String)
+    ], Orders.prototype, "paymentStatus", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
-    ], OrdersOrders.prototype, "orderAmount", void 0);
+    ], Orders.prototype, "collectionBy", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
-    ], OrdersOrders.prototype, "paymentStatus", void 0);
+    ], Orders.prototype, "identificationType", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
-    ], OrdersOrders.prototype, "collectionBy", void 0);
+    ], Orders.prototype, "identificationNumber", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
-    ], OrdersOrders.prototype, "identificationType", void 0);
+    ], Orders.prototype, "vehicleReg", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
-    ], OrdersOrders.prototype, "identificationNumber", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", String)
-    ], OrdersOrders.prototype, "vehicleReg", void 0);
+    ], Orders.prototype, "checkedBy", void 0);
     __decorate([
         typeorm_1.OneToMany(function (type) { return OrderDetails_1.default; }, function (details) { return details.order; }),
         typeorm_1.JoinTable(),
         __metadata("design:type", Array)
-    ], OrdersOrders.prototype, "orderDetails", void 0);
+    ], Orders.prototype, "orderDetails", void 0);
     __decorate([
-        typeorm_1.ManyToOne(function (type) { return Branch_1.default; }, function (branch) { return branch.ordersToCollect; }),
+        typeorm_1.ManyToOne(function (type) { return Branch_1.default; }, function (branch) { return branch.branchOrders; }),
         __metadata("design:type", Branch_1.default)
-    ], OrdersOrders.prototype, "collectedFrom", void 0);
+    ], Orders.prototype, "orderBranch", void 0);
+    __decorate([
+        typeorm_1.ManyToOne(function (type) { return Branch_1.default; }, function (branch) { return branch.pendingOrders; }),
+        __metadata("design:type", Branch_1.default)
+    ], Orders.prototype, "collectionFrom", void 0);
     __decorate([
         typeorm_1.ManyToOne(function (type) { return Branch_1.default; }, function (branch) { return branch.issueOrders; }),
         __metadata("design:type", Branch_1.default)
-    ], OrdersOrders.prototype, "issuedBy", void 0);
-    __decorate([
-        typeorm_1.ManyToOne(function (type) { return Users_1.default; }, function (users) { return users.checkedOrders; }),
-        __metadata("design:type", Users_1.default)
-    ], OrdersOrders.prototype, "checkedBy", void 0);
-    OrdersOrders = __decorate([
+    ], Orders.prototype, "issuedBy", void 0);
+    Orders = __decorate([
         typeorm_1.Entity()
-    ], OrdersOrders);
-    return OrdersOrders;
+    ], Orders);
+    return Orders;
 }());
-exports.default = OrdersOrders;
+exports.default = Orders;
 //# sourceMappingURL=Orders.js.map

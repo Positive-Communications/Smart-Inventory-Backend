@@ -24,7 +24,9 @@ var Sections = /** @class */ (function () {
         __metadata("design:type", Number)
     ], Sections.prototype, "id", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            nullable: true
+        }),
         __metadata("design:type", String)
     ], Sections.prototype, "role", void 0);
     __decorate([
@@ -32,20 +34,29 @@ var Sections = /** @class */ (function () {
         __metadata("design:type", String)
     ], Sections.prototype, "name", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: 0
+        }),
         __metadata("design:type", Number)
     ], Sections.prototype, "capacity", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            default: false
+        }),
         __metadata("design:type", Boolean)
     ], Sections.prototype, "hasErrors", void 0);
+    __decorate([
+        typeorm_1.Column({ default: true }),
+        __metadata("design:type", Boolean)
+    ], Sections.prototype, "isActive", void 0);
     __decorate([
         typeorm_1.ManyToOne(function (type) { return Branch_1.default; }, function (branch) { return branch.sections; }),
         __metadata("design:type", Branch_1.default)
     ], Sections.prototype, "branch", void 0);
     __decorate([
-        typeorm_1.OneToOne(function (type) { return Presets_1.default; }, function (preset) { return preset.section; }),
-        __metadata("design:type", Presets_1.default)
+        typeorm_1.OneToMany(function (type) { return Presets_1.default; }, function (preset) { return preset.section; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
     ], Sections.prototype, "presets", void 0);
     __decorate([
         typeorm_1.OneToMany(function (type) { return Product_1.default; }, function (product) { return product.currentSection; }),

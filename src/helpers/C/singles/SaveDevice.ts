@@ -5,7 +5,7 @@ import readBayByID from "../../R/ByID/ReadBayByID";
 import readSectionByID from "../../R/ByID/ReadSectionByID";
 import readBranchByID from "../../R/ByID/ReadBranchByID";
 
-export default async function saveDevice(data) {
+export default async function saveDevice(data: any) {
 
     // let context;
     // switch (data.context) {
@@ -24,21 +24,8 @@ export default async function saveDevice(data) {
 
     let device = new Device();
 
-    device.name = data.name;
-    device.role = data.role;
-    device.allowPalletsToBeCountedManually = data.allowPalletsToBeCountedManually;
-    device.isActive = data.isActive;
-    device.hasErrors = data.hasErrors;
-    device.doNotAllowRemovalOfEmptyPallet = data.doNotAllowRemovalOfEmptyPallet;
-    device.verifyStoredUsingHandHeld = data.verifyStoredUsingHandHeld;
-    device.showProductCountError = data.showProductCountError;
-    device.doNotAllowRemoval = data.doNotAllowRemoval;
-    device.verifyProductNotTrackedByRFID = data.verifyProductNotTrackedByRFID;
-    device.automaticallyActivateRecallProductIfRequired = data.automaticallyActivateRecallProductIfRequired;
-    device.recordEmptyPallets = data.recordEmptyPallets;
-    device.dispatchingOrReceiving = data.dispatchingOrReceiving;
-    device.branch = await readBranchByID(data.branchID)
-    // data.context === "packaging" ? device.sections = context : data.context === "storage" ? device.bays = context : null;
+    device.name = Math.floor(Math.random() *10).toString();
+    device.branch = await readBranchByID(data)
 
     try {
 

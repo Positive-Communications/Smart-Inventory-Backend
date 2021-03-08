@@ -3,6 +3,7 @@ import readCompanyByID from "../helpers/R/ByID/ReadCompanyByID";
 import Alerts from "./Alerts";
 import Carrier from "./Carrier";
 import Company from "./Company";
+import Move from "./Move";
 import Pallet from "./Pallet";
 import Product from "./Product";
 import ScanProductHistory from "./ScanProductHistory";
@@ -48,7 +49,6 @@ class Tags {
     })
     isCarrierTag: boolean;
 
-
     @OneToMany(type => Alerts, alerts => alerts.tag)
     @JoinTable()
     alerts: Alerts[];
@@ -70,6 +70,9 @@ class Tags {
 
     @ManyToOne(type => Company, company => company.tags)
     company: Company;
+
+    @ManyToOne(type =>Move, move => move.tags)
+    moves: Move;
 
     async createItself(epc, id) {
         this.epc = epc

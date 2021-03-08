@@ -9,11 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -44,6 +43,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var Users_1 = require("./Users");
@@ -51,26 +51,34 @@ var ManualEntry_1 = require("./ManualEntry");
 var CarrierType_1 = require("./CarrierType");
 var ReadCarrierTypeByID_1 = require("../helpers/R/ByID/ReadCarrierTypeByID");
 var ReadUserByID_1 = require("../helpers/R/ByID/ReadUserByID");
+var Tags_1 = require("./Tags");
+var AssignRandomTag_1 = require("../helpers/U/Custom/AssignRandomTag");
+var ScanProductHistory_1 = require("./ScanProductHistory");
+var Move_1 = require("./Move");
 var Carrier = /** @class */ (function () {
     function Carrier() {
     }
     Carrier.prototype.createItSelf = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         this.No = data.number;
                         _a = this;
                         return [4 /*yield*/, ReadCarrierTypeByID_1.default(data.type)];
                     case 1:
-                        _a.type = _c.sent();
+                        _a.type = _d.sent();
                         _b = this;
                         return [4 /*yield*/, ReadUserByID_1.default(data.user)];
                     case 2:
-                        _b.user = _c.sent();
+                        _b.user = _d.sent();
                         this.isFixedUse = data.isFixed;
-                        this.status = data.status;
+                        this.status = "empty";
+                        _c = this;
+                        return [4 /*yield*/, AssignRandomTag_1.default()];
+                    case 3:
+                        _c.tag = _d.sent();
                         return [2 /*return*/];
                 }
             });
@@ -106,10 +114,44 @@ var Carrier = /** @class */ (function () {
         typeorm_1.JoinTable(),
         __metadata("design:type", Array)
     ], Carrier.prototype, "manualEntry", void 0);
+    __decorate([
+        typeorm_1.OneToMany(function (type) { return ScanProductHistory_1.default; }, function (history) { return history.carrier; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
+    ], Carrier.prototype, "palletHistory", void 0);
+    __decorate([
+        typeorm_1.OneToOne(function (type) { return Tags_1.default; }, function (tag) { return tag.carrier; }),
+        __metadata("design:type", Tags_1.default)
+    ], Carrier.prototype, "tag", void 0);
+    __decorate([
+        typeorm_1.OneToMany(function (type) { return Move_1.default; }, function (move) { return move.carrier; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
+    ], Carrier.prototype, "toMove", void 0);
     Carrier = __decorate([
         typeorm_1.Entity()
     ], Carrier);
     return Carrier;
 }());
 exports.default = Carrier;
+var updateTag = function (tag) { return __awaiter(_this, void 0, void 0, function () {
+    var tag_;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getConnection()
+                    .createQueryBuilder()
+                    .update(Tags_1.default)
+                    .where('id =:id', { id: tag.id })
+                    .set({
+                    isCarrierTag: true,
+                    isAssigned: true,
+                })
+                    .execute()];
+            case 1:
+                tag_ = _a.sent();
+                console.log('carrier ', tag_);
+                return [2 /*return*/];
+        }
+    });
+}); };
 //# sourceMappingURL=Carrier.js.map

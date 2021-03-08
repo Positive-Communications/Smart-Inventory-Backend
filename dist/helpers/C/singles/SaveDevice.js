@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -46,23 +45,9 @@ function saveDevice(data) {
             switch (_b.label) {
                 case 0:
                     device = new Device_1.default();
-                    device.name = data.name;
-                    device.role = data.role;
-                    device.allowPalletsToBeCountedManually = data.allowPalletsToBeCountedManually;
-                    device.isActive = data.isActive;
-                    device.hasErrors = data.hasErrors;
-                    device.doNotAllowRemovalOfEmptyPallet = data.doNotAllowRemovalOfEmptyPallet;
-                    device.verifyStoredUsingHandHeld = data.verifyStoredUsingHandHeld;
-                    device.showProductCountError = data.showProductCountError;
-                    device.doNotAllowRemoval = data.doNotAllowRemoval;
-                    device.verifyProductNotTrackedByRFID = data.verifyProductNotTrackedByRFID;
-                    device.automaticallyActivateRecallProductIfRequired = data.automaticallyActivateRecallProductIfRequired;
-                    device.recordEmptyPallets = data.recordEmptyPallets;
-                    device.dispatchingOrReceiving = data.dispatchingOrReceiving;
+                    device.name = Math.floor(Math.random() * 10).toString();
                     _a = device;
-                    return [4 /*yield*/, ReadBranchByID_1.default(data.branchID)
-                        // data.context === "packaging" ? device.sections = context : data.context === "storage" ? device.bays = context : null;
-                    ];
+                    return [4 /*yield*/, ReadBranchByID_1.default(data)];
                 case 1:
                     _a.branch = _b.sent();
                     _b.label = 2;
