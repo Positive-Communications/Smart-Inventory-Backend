@@ -27,7 +27,3 @@ export default class Presets {
     meta: PresetMeta[];
 
 }
-
-const saveOrCreateSection = () => {
-
-}

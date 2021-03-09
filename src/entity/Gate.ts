@@ -11,6 +11,7 @@ import PackingTags from "./PackingTags";
 import readBranchByID from "../helpers/R/ByID/ReadBranchByID";
 import Store from "./Store";
 import PresetMeta from "./PresetMeta";
+import Tags from "./Tags";
 
 
 @Entity()
@@ -174,6 +175,14 @@ export default class Gate {
     })
     verifyCarrierIsEmpty: boolean;
 
+    @OneToMany(type=> Tags, tags=> tags.scan)
+    @JoinTable()
+    scans: Tags[];
+
+    @OneToMany(type=> Tags, tags => tags.previousScan)
+    @JoinTable()
+    previousScans: Tags[];
+
     @OneToOne(() => PresetMeta, meta => meta.gate)
     @JoinColumn()
     presetMeta: PresetMeta
@@ -202,7 +211,7 @@ export default class Gate {
 
     @OneToMany(() => VisitorAccessTags, visitor => visitor.exitGate)
     @JoinTable()
-    visitorExit: VisitorAccessTags[]
+    visitorExit: VisitorAccessTags[];
 
     @ManyToOne(() => Product, product => product.dispatchGate)
     dispatchedProducts: Product;
@@ -223,10 +232,10 @@ export default class Gate {
     bays: Bays[];
 
     @ManyToOne(() => VisitorAccessTags, visitor => visitor.accessGates)
-    visitors: VisitorAccessTags[]
+    visitors: VisitorAccessTags[];
 
     @ManyToOne(() => Store, store => store.gates)
-    stores: Store
+    stores: Store;
 
     async createItself(data) {
 

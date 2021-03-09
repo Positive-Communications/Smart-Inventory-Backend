@@ -3,6 +3,7 @@ import readCompanyByID from "../helpers/R/ByID/ReadCompanyByID";
 import Alerts from "./Alerts";
 import Carrier from "./Carrier";
 import Company from "./Company";
+import Gate from "./Gate";
 import Move from "./Move";
 import Pallet from "./Pallet";
 import Product from "./Product";
@@ -56,9 +57,9 @@ class Tags {
     @OneToMany(type => ScanProductHistory, history => history.tag)
     @JoinTable()
     history: ScanProductHistory[];
-    
+
     @ManyToOne(type => Product, product => product.tags)
-    product: Product
+    product: Product;
 
     @OneToOne(type => Pallet, pallet => pallet.tag)
     @JoinColumn()
@@ -71,8 +72,14 @@ class Tags {
     @ManyToOne(type => Company, company => company.tags)
     company: Company;
 
-    @ManyToOne(type =>Move, move => move.tags)
+    @ManyToOne(type => Move, move => move.tags)
     moves: Move;
+
+    @ManyToOne(type => Gate, gate => gate.scans)
+    scan: Gate;
+
+    @ManyToOne(type => Gate, previousScan => previousScan.previousScans)
+    previousScan: Gate;
 
     async createItself(epc, id) {
         this.epc = epc

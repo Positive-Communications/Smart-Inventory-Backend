@@ -13,6 +13,8 @@ const readTagByEPC = async (epc: string) =>{
         .leftJoinAndSelect('tag.product', 'product')
         .leftJoinAndSelect('tag.pallet', 'pallet')
         .leftJoinAndSelect('tag.carrier', 'carrier')
+        .leftJoinAndSelect('tag.scan', 'scan')
+        .leftJoinAndSelect('tag.previousScan', 'previousScan')
         .getOne();
 
 }

@@ -30,6 +30,7 @@ import TagsManager from "./resource.manager/tags.manager";
 import assignRandomTag from "./helpers/U/Custom/AssignRandomTag";
 import readGateByID from "./helpers/R/ByID/ReadGateByID";
 import proccessScan from "./helpers/C/Multiple/SaveAlerts";
+import readCarrierById from "./helpers/R/ByID/ReadCarrierByID";
 
 const app = express();
 
@@ -286,19 +287,20 @@ app.get('/all-bays/', frisk, readAllBays);
 app.get('/all-stores/', frisk, storageBayManager.getAllStores)
 
 
-io.on('connection', client => {
-    io.emit('msg', 'Connecption Successful!');
+io.on('connection', socket => {
+    io.emit('msg', 'Connection Successful!');
     console.log(`Client ${.1}' -> Connected successfully. :101`)
 
-    // scan();
+    scan();
 })
 
 const scan = async () => {
     setInterval(async () => {
         let tag = await assignRandomTag();
         let gate = await readGateByID(1);
-        console.log(await proccessScan(tag, gate, 1));
-    }, 500)
+        let carrier = await readCarrierById(1)
+        await proccessScan(tag, gate, carrier);
+    }, 2000)
 }
 
 
