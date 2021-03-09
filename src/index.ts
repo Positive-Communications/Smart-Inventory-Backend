@@ -291,6 +291,10 @@ io.on('connection', socket => {
     io.emit('msg', 'Connection Successful!');
     console.log(`Client ${.1}' -> Connected successfully. :101`)
 
+    socket.on("ping", msg=>{
+        io.emit("pong", "Happened")
+    })
+
     // scan();
 })
 
