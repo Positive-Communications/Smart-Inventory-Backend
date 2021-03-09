@@ -291,7 +291,7 @@ io.on('connection', socket => {
     io.emit('msg', 'Connection Successful!');
     console.log(`Client ${.1}' -> Connected successfully. :101`)
 
-    scan();
+    // scan();
 })
 
 const scan = async () => {
