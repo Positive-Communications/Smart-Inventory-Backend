@@ -311,7 +311,7 @@ io.on('connection', socket => {
     })
 
     socket.on("readying_loading", msg => {
-        // io.emit("onGreen");
+        io.emit("onRed");
     })
 
     socket.on("started", msg=>{
