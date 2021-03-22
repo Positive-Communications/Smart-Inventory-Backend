@@ -33,7 +33,7 @@ import Device from "./entity/Device";
 
 const app = express();
 
-const prod = false;
+const prod = true;
 
 const socketPort = 2000;
 const server = http.createServer(app);
