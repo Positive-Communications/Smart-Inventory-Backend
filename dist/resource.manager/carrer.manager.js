@@ -124,7 +124,7 @@ var CarrierManager = /** @class */ (function () {
                     case 0:
                         _b = (_a = res).json;
                         _c = {};
-                        return [4 /*yield*/, typeorm_1.getConnection().manager.find(Move_1.default)];
+                        return [4 /*yield*/, typeorm_1.getConnection().manager.find(Move_1.default, { relations: ["alerts", "tags"] })];
                     case 1:
                         _b.apply(_a, [(_c.moves = _d.sent(), _c)]);
                         return [2 /*return*/];

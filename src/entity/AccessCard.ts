@@ -1,4 +1,4 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, getConnection, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import Branch from "./Branch";
 
 @Entity()
@@ -12,6 +12,9 @@ export default class Visitor {
 
     @Column()
     userName: string;
+
+    @Column()
+    isActive: boolean;
 
     @Column()
     identificationType: string;
@@ -30,5 +33,5 @@ export default class Visitor {
 
     @ManyToOne(type=>Branch, branch=>branch.staffAccessCards)
     branch: Branch;
-VM
+
 }

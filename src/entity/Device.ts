@@ -11,8 +11,40 @@ export default class Device {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     name: string;
+
+    @Column({
+        default:false
+    })
+    isHandHeld: boolean;
+
+    @Column({
+        default:false
+    })
+    isSensor: boolean;
+
+    @Column({
+        default: false
+    })
+    isTablet: boolean;
+
+    @Column({
+        default: false
+    })
+    isWeb: boolean;
+
+    @Column({
+        default: "unrecognized"
+    })
+    uuid: string;
+
+    @Column({
+        default: false
+    })
+    isFixed: boolean
 
     @Column({
         default: "empty"
@@ -25,7 +57,7 @@ export default class Device {
     allowPalletsToBeCountedManually: boolean;
 
     @Column({
-        default: true
+        default: false
     })
     isActive: boolean;
 
@@ -87,4 +119,16 @@ export default class Device {
 
     @ManyToOne(type => Branch, branch => branch.devices)
     branch: Branch;
+
+    assignUUID = async()=>{
+        this.uuid = uuidv4();
+    }
+}
+
+
+const uuidv4 = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
 }

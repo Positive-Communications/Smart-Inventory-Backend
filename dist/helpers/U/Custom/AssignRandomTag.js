@@ -40,13 +40,14 @@ var typeorm_1 = require("typeorm");
 var Tags_1 = require("../../../entity/Tags");
 // import readAllUnasignedTags from "../../R/Many/AllUnassignedTags";
 var assignRandomTag = function () { return __awaiter(_this, void 0, void 0, function () {
-    var tags;
+    var tags, productTags;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getConnection().manager.find(Tags_1.default)];
+            case 0: return [4 /*yield*/, typeorm_1.getConnection().manager.find(Tags_1.default, { relations: ["product", "scan", "previousScan"] })];
             case 1:
                 tags = _a.sent();
-                return [2 /*return*/, tags[Math.floor(Math.random() * tags.length)]];
+                productTags = tags.filter(function (tag) { return tag.epc.startsWith("product"); });
+                return [2 /*return*/, productTags[Math.floor(Math.random() * tags.length)]];
         }
     });
 }); };

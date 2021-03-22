@@ -36,141 +36,122 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
+var typeorm_1 = require("typeorm");
+var Alerts_1 = require("../../../entity/Alerts");
+var Move_1 = require("../../../entity/Move");
+var Tags_1 = require("../../../entity/Tags");
 var product_manager_1 = require("../../../resource.manager/product.manager");
-var AddHistory_1 = require("../singles/AddHistory");
+var tagByEpc_1 = require("../../R/Custom/tagByEpc");
 var proccessScan = function (tag, gate, carrier) { return __awaiter(_this, void 0, void 0, function () {
-    var productManager, _a, entry, product;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var productManager, prev, moves, updated, updated, newTag;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
                 productManager = new product_manager_1.default();
-                _a = tag.status;
-                switch (_a) {
-                    case "empty": return [3 /*break*/, 1];
-                    case "no_status": return [3 /*break*/, 3];
-                    case "dispatched": return [3 /*break*/, 7];
-                    case "order_moved_out": return [3 /*break*/, 19];
-                    case "packed": return [3 /*break*/, 21];
-                    case "defective": return [3 /*break*/, 23];
-                    case "moved_out": return [3 /*break*/, 29];
-                }
-                return [3 /*break*/, 35];
+                prev = tag.previousScan || null;
+                return [4 /*yield*/, typeorm_1.getConnection().manager.find(Move_1.default)];
             case 1:
-                if (!(gate.isForPackaging && tag.epc.startsWith("product"))) return [3 /*break*/, 3];
-                entry = AddHistory_1.default({ gateID: gate.id, tagEpc: tag.epc, status: "packed", carrier: parseInt(carrier) });
-                return [4 /*yield*/, entry];
-            case 2: return [2 /*return*/, _b.sent()];
-            case 3:
-                if (!(gate.isForDispatch && tag.isProductTag)) return [3 /*break*/, 5];
-                return [4 /*yield*/, saveProductAlert(tag.epc, gate.id, { reason: "Product not Packed", severity: "Unauthorised Storage", "type": "" })];
-            case 4: return [2 /*return*/, _b.sent()];
-            case 5:
-                if (!(gate.isForStorage && tag.isProductTag)) return [3 /*break*/, 7];
-                return [4 /*yield*/, saveProductAlert(tag.epc, gate.id, { reason: "Product not Packed", severity: "Unauthorised storage", type: "recall" })];
-            case 6: return [2 /*return*/, _b.sent()];
-            case 7:
-                if (!(gate.isForDispatch && tag.isPalletTag)) return [3 /*break*/, 9];
-                return [4 /*yield*/, savePalletAlert(tag.epc, gate.id, { reason: "Empty Pallet not returned", severity: "Unauthorised", type: "recall" })];
-            case 8: return [2 /*return*/, _b.sent()];
-            case 9:
-                if (!(gate.isForDispatch && tag.isProductTag)) return [3 /*break*/, 11];
-                return [4 /*yield*/, saveProductAlert(tag.epc, gate.id, { reason: "Empty Pallet Not returned", severity: "Unauthorised", type: "recall" })];
-            case 10: return [2 /*return*/, _b.sent()];
-            case 11:
-                if (!(gate.isForStorage && tag.isProductTag)) return [3 /*break*/, 13];
-                return [4 /*yield*/, saveProductAlert(tag.epc, gate.id, { reason: "Product Dispatched For Order Number", severity: "Unauthorised", type: "recall" })];
-            case 12: return [2 /*return*/, _b.sent()];
-            case 13:
-                if (!(gate.isForStorage && tag.isPalletTag)) return [3 /*break*/, 15];
-                return [4 /*yield*/, savePalletAlert(tag.epc, gate.id, { reason: "Empty Pallet not returned", severity: "Unauthorised", type: "recall" })];
-            case 14: return [2 /*return*/, _b.sent()];
-            case 15:
-                if (!(gate.isForPackaging && tag.isPalletTag)) return [3 /*break*/, 17];
-                return [4 /*yield*/, savePalletAlert(tag.epc, gate.id, { reason: "Empty Pallet not returned", severity: "Unauthorised Product", type: "recall" })];
-            case 16: return [2 /*return*/, _b.sent()];
-            case 17:
-                if (!(gate.isForPackaging && tag.isProductTag)) return [3 /*break*/, 19];
-                return [4 /*yield*/, saveProductAlert(tag.epc, gate.id, { reason: "Product Dispatched For OrderNumber", severity: "Unauthorised Product", "type": "" })];
-            case 18: return [2 /*return*/, _b.sent()];
-            case 19:
-                if (!(gate.isForPackaging && tag.isProductTag)) return [3 /*break*/, 21];
-                return [4 /*yield*/, saveProductAlert(tag.epc, gate.id, { reason: "Product is For Dispatch", severity: "Unauthorised", type: "recall" })];
-            case 20: return [2 /*return*/, _b.sent()];
-            case 21:
-                if (!(gate.isForPackaging && tag.epc.startsWith("product"))) return [3 /*break*/, 23];
-                return [4 /*yield*/, productManager.saveAlert({
-                        reason: "Product already Packed",
-                        severity: "Unauthorised Item",
-                        type: "error"
-                    }, tag.epc)];
-            case 22:
-                product = _b.sent();
-                return [2 /*return*/, product];
-            case 23:
-                if (!(gate.isForPackaging && tag.isProductTag)) return [3 /*break*/, 25];
-                return [4 /*yield*/, saveProductDoesNotBelongAlert(tag.epc, gate.id, { reason: "Product is Not for this packaging section", severity: "Unauthorised", type: "recall" })];
-            case 24: return [2 /*return*/, _b.sent()];
-            case 25:
-                if (!(gate.isForDispatch && tag.isProductTag)) return [3 /*break*/, 27];
-                return [4 /*yield*/, saveProductAlert(tag.epc, gate.id, { reason: "Defective Product Found", severity: "Unauthorised", type: "recall" })];
-            case 26: return [2 /*return*/, _b.sent()];
-            case 27:
-                if (!(gate.isForStorage && tag.isProductTag)) return [3 /*break*/, 29];
-                return [4 /*yield*/, saveProductAlert(tag.epc, gate.id, { reason: "Defective Product Found", severity: "Unauthorised", type: "recall" })];
-            case 28: return [2 /*return*/, _b.sent()];
-            case 29:
-                if (!(gate.isForPackaging && tag.isProductTag)) return [3 /*break*/, 31];
-                return [4 /*yield*/, saveProductDoesNotBelongAlert(tag.epc, gate.id, { reason: "Product is not for this packaging section", severity: "Unauthorised", type: "recall" })];
-            case 30: return [2 /*return*/, _b.sent()];
-            case 31:
-                if (!(gate.isForDispatch && tag.isProductTag)) return [3 /*break*/, 33];
-                return [4 /*yield*/, saveProductDoesNotBelongAlert(tag.epc, gate.id, { reason: "Product is not for this packaging section", severity: "Unauthorised", type: "recall" })];
-            case 32: return [2 /*return*/, _b.sent()];
-            case 33:
-                if (!(gate.isForStorage && tag.isProductTag)) return [3 /*break*/, 35];
-                return [4 /*yield*/, saveProductDoesNotBelongAlert(tag.epc, gate.id, { reason: "Product is not for this packaging section", severity: "Unauthorised", type: "recall" })];
-            case 34: return [2 /*return*/, _b.sent()];
-            case 35:
-                if (!(tag.isPalletTag || tag.isProductTag)) return [3 /*break*/, 37];
-                return [4 /*yield*/, saveAlert(tag.epc, gate.id, { reason: "Stored In Store", severity: "Unauthorised", type: "" })];
-            case 36: return [2 /*return*/, _b.sent()];
-            case 37: return [2 /*return*/];
+                moves = _a.sent();
+                if (!(prev === null || prev === undefined)) return [3 /*break*/, 3];
+                return [4 /*yield*/, typeorm_1.getConnection().createQueryBuilder()
+                        .update(Tags_1.default)
+                        .set({ scan: gate, })
+                        .where('id =:id', { id: tag.id })
+                        .execute()];
+            case 2:
+                updated = _a.sent();
+                return [3 /*break*/, 5];
+            case 3: return [4 /*yield*/, typeorm_1.getConnection().createQueryBuilder()
+                    .update(Tags_1.default).set({
+                    scan: gate,
+                    previousScan: prev,
+                }).where('id =:id', { id: tag.id }).execute()];
+            case 4:
+                updated = _a.sent();
+                _a.label = 5;
+            case 5: return [4 /*yield*/, tagByEpc_1.default(tag.epc)];
+            case 6:
+                newTag = _a.sent();
+                return [2 /*return*/, newTag];
         }
     });
 }); };
 exports.default = proccessScan;
-function saveProductAlert(epc, gateID, alert) {
-    return __awaiter(this, void 0, void 0, function () {
-        var productManager;
-        return __generator(this, function (_a) {
-            productManager = new product_manager_1.default();
-            return [2 /*return*/];
-        });
+var updateTag = function (context, tagID, productID, moveID) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getConnection().createQueryBuilder()
+                    .update(Tags_1.default).set({
+                    product: productID,
+                    moves: moveID,
+                    status: context,
+                    isAssigned: true
+                }).where("id =:id", { id: tagID }).execute()];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, typeorm_1.getConnection().manager.findOne(Tags_1.default, tagID)];
+            case 2: return [2 /*return*/, _a.sent()];
+        }
     });
-}
-function saveProductDoesNotBelongAlert(epc, gateID, alert) {
-    return __awaiter(this, void 0, void 0, function () {
-        var productManager;
-        return __generator(this, function (_a) {
-            productManager = new product_manager_1.default();
-            return [2 /*return*/];
-        });
+}); };
+var createErrorAlert = function (context, move, carrier, tag) { return __awaiter(_this, void 0, void 0, function () {
+    var _a, alert, _b, e_1;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                _a = context;
+                switch (_a) {
+                    case "packaging_unauthorised": return [3 /*break*/, 1];
+                }
+                return [3 /*break*/, 7];
+            case 1:
+                alert = new Alerts_1.default();
+                alert.reason = "Product Already Packed.";
+                alert.type = "unauthorised";
+                _b = alert;
+                return [4 /*yield*/, typeorm_1.getConnection().manager.findOne(Move_1.default, move)];
+            case 2:
+                _b.move = _c.sent();
+                alert.type = "recall";
+                alert.tag = tag;
+                _c.label = 3;
+            case 3:
+                _c.trys.push([3, 6, , 7]);
+                return [4 /*yield*/, typeorm_1.getConnection().manager.save(alert)];
+            case 4:
+                _c.sent();
+                return [4 /*yield*/, typeorm_1.getConnection().manager.findOne(Move_1.default, move, { relations: ["alerts"] })];
+            case 5: return [2 /*return*/, _c.sent()];
+            case 6:
+                e_1 = _c.sent();
+                return [2 /*return*/, "an erroor occured"];
+            case 7: return [2 /*return*/];
+        }
     });
-}
-function savePalletAlert(epc, gateID, alert) {
-    return __awaiter(this, void 0, void 0, function () {
-        var productManager;
-        return __generator(this, function (_a) {
-            productManager = new product_manager_1.default();
-            return [2 /*return*/];
-        });
+}); };
+var newAlertContainer = function (context, product, carrier, to, tag) { return __awaiter(_this, void 0, void 0, function () {
+    var move, moved, e_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                move = new Move_1.default();
+                move.toID = context + "_" + to;
+                move.carrier = carrier;
+                move.fromID = "update_later";
+                move.product = product;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, typeorm_1.getConnection().manager.save(move)];
+            case 2:
+                moved = _a.sent();
+                return [4 /*yield*/, createErrorAlert("packaging_unauthorised", moved.id, carrier, tag)];
+            case 3: return [2 /*return*/, _a.sent()];
+            case 4:
+                e_2 = _a.sent();
+                return [2 /*return*/, "error at new errors"];
+            case 5: return [2 /*return*/];
+        }
     });
-}
-function saveAlert(epc, gateID, alert) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/];
-        });
-    });
-}
+}); };
 //# sourceMappingURL=SaveAlerts.js.map

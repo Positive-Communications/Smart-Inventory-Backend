@@ -49,6 +49,8 @@ var readTagByEPC = function (epc) { return __awaiter(_this, void 0, void 0, func
                     .leftJoinAndSelect('tag.product', 'product')
                     .leftJoinAndSelect('tag.pallet', 'pallet')
                     .leftJoinAndSelect('tag.carrier', 'carrier')
+                    .leftJoinAndSelect('tag.scan', 'scan')
+                    .leftJoinAndSelect('tag.previousScan', 'previousScan')
                     .getOne()];
             case 1: return [2 /*return*/, _a.sent()];
         }

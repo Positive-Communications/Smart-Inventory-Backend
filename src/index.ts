@@ -6,7 +6,7 @@ import * as bodyParser from "body-parser";
 
 
 import {
-    createConnection,
+    createConnection, getConnection,
 } from "typeorm";
 
 import readAllBays from "./helpers/R/Many/ReadAllBays";
@@ -27,10 +27,9 @@ import OrderQueManager from "./resource.manager/orderque.manager";
 import ProductManager from "./resource.manager/product.manager";
 import StorageBayManager from "./resource.manager/bays.manager";
 import TagsManager from "./resource.manager/tags.manager";
-import assignRandomTag from "./helpers/U/Custom/AssignRandomTag";
-import readGateByID from "./helpers/R/ByID/ReadGateByID";
-import proccessScan from "./helpers/C/Multiple/SaveAlerts";
-import readCarrierById from "./helpers/R/ByID/ReadCarrierByID";
+import addDemo from "./helpers/C/singles/AddDemo";
+import Demo from "./entity/Demo";
+import Device from "./entity/Device";
 
 const app = express();
 
@@ -50,6 +49,10 @@ const io = require('socket.io')(server, {
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.options('*', cors());
+
+
 
 createConnection(
     // {
@@ -159,11 +162,11 @@ app.patch('/update-user/', frisk, usersManager.updateUserDetails);
 
 const deviceManager = new DeviceManager();
 
-app.post('/save-device/:branchID', frisk, deviceManager.registerDevice);
+app.post('/save-device/:deviceType', deviceManager.registerDevice);
 
 app.patch('/update-device/:id', frisk, deviceManager.editDevice);
 
-app.get('/all-devices/:branchID/', frisk, deviceManager.availAllDevices);
+app.get('/all-devices/', deviceManager.availAllDevices);
 
 
 
@@ -287,78 +290,74 @@ app.get('/all-bays/', frisk, readAllBays);
 app.get('/all-stores/', frisk, storageBayManager.getAllStores)
 
 
-io.on('connection', socket => {
-    io.emit('msg', 'Connection Successful!');
-    console.log(`Client ${.1}' -> Connected successfully. :101`)
 
-    socket.on("ping", msg=>{
-        io.emit("pong", "Happened")
-    })
-
-    // scan();
+app.post("/expected/", (req, res) => {
+    io.emit("expected", req.body)
 })
 
-const scan = async () => {
-    setInterval(async () => {
-        let tag = await assignRandomTag();
-        let gate = await readGateByID(1);
-        let carrier = await readCarrierById(1)
-        await proccessScan(tag, gate, carrier);
-    }, 2000)
+app.post("/demo/", async (req, res) => {
+    res.json({ demo: await addDemo(req.body) });
+})
+
+app.get("/demos/", async (req, res) => {
+    res.json({ demos: await getConnection().manager.find(Demo) })
+});
+
+io.on('connection', socket => {
+    io.emit('expected', 'Connection Successful!');
+
+    socket.on("heyhey", async msg => {
+        io.emit('device', await getDeviceByUUID(msg.id))
+    })
+
+    socket.on("readying_loading", msg => {
+        io.emit("onRed");
+        io.emit("")
+    })
+
+    socket.on("started", msg=>{
+        io.emit("offRed");
+        io.emit("onGreen")
+    })
+
+    socket.on("paused", msg=>{
+        io.emit("onRed")
+        io.emit("offGreen")
+    })
+
+    socket.on("warn", msg=>{
+        io.emit("onWarn")
+        io.emit("alarm")
+    })
+
+    socket.on("handHeld", msg=>{
+        console.log(msg);
+        io.emit("count");
+    })
+
+    socket.on("okay", msg=>{
+        io.emit("offGreen");
+        io.emit("onRed")
+    })
+    socket.on("fixed", msg=>{
+        console.log(msg)
+        io.emit("count");
+    })
+
+    socket.on("sensor", msg=>{
+        io.emit("count")
+    })
+
+    socket.on("cancel", msg=>{
+        io.emit("onRed")
+        io.emit("offGreen")
+    })
+
+});
+
+const getDeviceByUUID = async (id) => {
+    return  (await getConnection().manager.find(Device)).filter(device => device.uuid == id)[0];
 }
-
-
-
-
-// setTimeout(()=>{
-//     console.log('Me');
-// }, 2000)
-
-
-// let Tags = [];
-//
-// try {
-//     const readerConnection = new EventSource("http://localhost:8080/subscribe", {
-//         withCredentials: true,
-//     });
-//     readerConnection.onopen = function () {
-//         console.log('Reader connected!... :104')
-//         axios.get('http://localhost:8080/start-inventory').then(res => {
-//             console.log('Inventory has been started sucessfully... :105')
-//         }).catch(err => {
-//             console.log('Couldn\'t start inventory... :203');
-//         });
-//     }
-//     readerConnection.onmessage = function (event) {
-//         if (Tags.includes(event.data)) {
-//             console.log('Tag already scanned..')
-//         } else {
-//             Tags.push(event.data)
-//             getItem(event.data).then(data => {
-//                 io.emit('item', data);
-//                 if (data.hasErrors) {
-//                     console.log('Happened here....')
-//                 }
-//                 console.log(data)
-//             });
-//         }
-//     }
-// } catch (err) {
-//     console.log(err)
-// }
-//
-// client.on('tag', msg => {
-//     getItem(msg).then(data => {
-//         io.emit('item', data);
-//         console.log(data)
-//     });
-// })
-
-// client.on('ping', () => {
-//     io.emit('pong', 'I got a ping, here\'s a pong!.')
-// })
-
-// });
 
 
 server.listen(prod ? process.env.PORT : socketPort, () => {

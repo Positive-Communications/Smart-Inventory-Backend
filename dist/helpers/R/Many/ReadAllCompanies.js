@@ -41,7 +41,7 @@ var Company_1 = require("../../../entity/Company");
 var readAllCompanies = function () { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getConnection().manager.find(Company_1.default, { relations: ["branches"] })];
+            case 0: return [4 /*yield*/, typeorm_1.getConnection().manager.find(Company_1.default, { relations: ["branches", "superAdmin"] })];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });

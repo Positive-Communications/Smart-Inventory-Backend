@@ -87,7 +87,7 @@ var Product = /** @class */ (function () {
                         _c = this;
                         return [4 /*yield*/, SaveMultiplePallets_1.default(data.pallets)];
                     case 3:
-                        _c.pallet = _d.sent();
+                        _c.pallet = (_d.sent()) || [];
                         return [2 /*return*/];
                 }
             });

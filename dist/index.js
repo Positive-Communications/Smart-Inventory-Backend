@@ -58,6 +58,10 @@ var orderque_manager_1 = require("./resource.manager/orderque.manager");
 var product_manager_1 = require("./resource.manager/product.manager");
 var bays_manager_1 = require("./resource.manager/bays.manager");
 var tags_manager_1 = require("./resource.manager/tags.manager");
+var AssignRandomTag_1 = require("./helpers/U/Custom/AssignRandomTag");
+var ReadGateByID_1 = require("./helpers/R/ByID/ReadGateByID");
+var SaveAlerts_1 = require("./helpers/C/Multiple/SaveAlerts");
+var ReadCarrierByID_1 = require("./helpers/R/ByID/ReadCarrierByID");
 var app = express();
 var prod = false;
 var socketPort = 2000;
@@ -151,7 +155,7 @@ app.get('/all-carrier-types/', middleware_1.default, carrierManager.getAllCarrie
 app.get('/all-carriers/', middleware_1.default, carrierManager.summonAllCarrierTypes);
 app.post('/move/', middleware_1.default, carrierManager.moveProducts);
 app.get('/all-moves/', middleware_1.default, carrierManager.getAllMoves);
-app.get('/gate/moves/to/:id', middleware_1.default, carrierManager.getMovesByGateTo);
+app.get('/moves/', middleware_1.default, carrierManager.getMovesByGateTo);
 /*
 * Gates
 *
@@ -182,7 +186,7 @@ var tagsManager = new tags_manager_1.default();
 app.post('/new-tags/:id', middleware_1.default, tagsManager.saveNewTags);
 app.get('/tag/:epc', middleware_1.default, tagsManager.getTagByEPC);
 app.get('/all-assigned-tags/', middleware_1.default, tagsManager.getAllUnasignedTags);
-app.get('/all-transactions/', middleware_1.default, tagsManager.getAllTransactions);
+app.get('/all-transactions/', tagsManager.getAllTransactions);
 /*
 * OrderQue
 *
@@ -210,13 +214,85 @@ var storageBayManager = new bays_manager_1.default();
 app.post('/save-bay/:id/', middleware_1.default, storageBayManager.createBays);
 app.get('/all-bays/', middleware_1.default, ReadAllBays_1.default);
 app.get('/all-stores/', middleware_1.default, storageBayManager.getAllStores);
-io.on('connection', function (client) {
-    io.emit('msg', 'Connecption Successful!');
+app.post("/expected/", function (req, res) {
+    io.emit("expected", req.body);
+});
+io.on('connection', function (socket) {
+    io.emit('expected', 'Connection Successful!');
     console.log("Client " + .1 + "' -> Connected successfully. :101");
+    var count = 0;
+    socket.on("sensor", function (msg) {
+        count++;
+        io.emit('sensor', 1);
+        if (count >= 11) {
+            io.emit("siren", "on");
+            io.emit('redLight', "10");
+            io.emit('greenLight', "10");
+        }
+    });
+    var aiCount = 0;
+    socket.on("ai", function (count) {
+        aiCount++;
+        console.log(aiCount);
+    });
+    socket.on("onRed", function (msg) {
+        io.emit('redLight', "10");
+    });
+    socket.on("onGreen", function (res) {
+        io.emit('greenLight', "10");
+    });
+    socket.on("offGreen", function (msg) {
+        io.emit("offGreen", "msg");
+    });
+    socket.on("offRed", function (msg) {
+        io.emit("offRed", msg);
+    });
+    socket.on("startAlarm", function (msg) {
+        io.emit("siren", "on");
+    });
+    socket.on("sim1in", function (msg) {
+        io.emit("carrier1In", "in");
+    });
+    socket.on("sim1out", function (msg) {
+        io.emit("carrier1Out", "out");
+    });
+    socket.on("sim2in", function (msg) {
+        io.emit("carrier2In", "in");
+    });
+    socket.on("sim2out", function (msg) {
+        io.emit("carrier2Out", "out");
+    });
+    socket.on("sim3in", function (msg) {
+        io.emit("carrier3In", "in");
+    });
+    socket.on("sim3out", function (msg) {
+        io.emit("carrier3Out", "out");
+    });
     // scan();
 });
 var scan = function () { return __awaiter(_this, void 0, void 0, function () {
+    var _this = this;
     return __generator(this, function (_a) {
+        setInterval(function () { return __awaiter(_this, void 0, void 0, function () {
+            var tag, gate, carrier;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, AssignRandomTag_1.default()];
+                    case 1:
+                        tag = _a.sent();
+                        return [4 /*yield*/, ReadGateByID_1.default(1)];
+                    case 2:
+                        gate = _a.sent();
+                        return [4 /*yield*/, ReadCarrierByID_1.default(1)];
+                    case 3:
+                        carrier = _a.sent();
+                        return [4 /*yield*/, SaveAlerts_1.default(tag, gate, carrier)];
+                    case 4:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); }, 2000);
         return [2 /*return*/];
     });
 }); };

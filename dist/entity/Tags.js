@@ -49,6 +49,8 @@ var ReadCompanyByID_1 = require("../helpers/R/ByID/ReadCompanyByID");
 var Alerts_1 = require("./Alerts");
 var Carrier_1 = require("./Carrier");
 var Company_1 = require("./Company");
+var Gate_1 = require("./Gate");
+var Move_1 = require("./Move");
 var Pallet_1 = require("./Pallet");
 var Product_1 = require("./Product");
 var ScanProductHistory_1 = require("./ScanProductHistory");
@@ -150,6 +152,18 @@ var Tags = /** @class */ (function () {
         typeorm_1.ManyToOne(function (type) { return Company_1.default; }, function (company) { return company.tags; }),
         __metadata("design:type", Company_1.default)
     ], Tags.prototype, "company", void 0);
+    __decorate([
+        typeorm_1.ManyToOne(function (type) { return Move_1.default; }, function (move) { return move.tags; }),
+        __metadata("design:type", Move_1.default)
+    ], Tags.prototype, "moves", void 0);
+    __decorate([
+        typeorm_1.ManyToOne(function (type) { return Gate_1.default; }, function (gate) { return gate.scans; }),
+        __metadata("design:type", Gate_1.default)
+    ], Tags.prototype, "scan", void 0);
+    __decorate([
+        typeorm_1.ManyToOne(function (type) { return Gate_1.default; }, function (previousScan) { return previousScan.previousScans; }),
+        __metadata("design:type", Gate_1.default)
+    ], Tags.prototype, "previousScan", void 0);
     __decorate([
         typeorm_1.AfterUpdate(),
         __metadata("design:type", Function),

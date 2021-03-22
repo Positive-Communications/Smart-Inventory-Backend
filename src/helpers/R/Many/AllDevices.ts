@@ -4,12 +4,7 @@ import Device from "../../../entity/Device";
 async function readAllDevices(branchID) {
 
     return await
-        getConnection()
-            .createQueryBuilder()
-            .select('device')
-            .from(Device, 'device')
-            .where('device.branch.id =:id', {id: parseInt(branchID)})
-            .getMany();
+        getConnection().manager.find(Device)
 }
 
 export default readAllDevices;

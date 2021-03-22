@@ -49,6 +49,7 @@ function readCompanyByID(companyID) {
                             .select('company')
                             .from(Company_1.default, 'company')
                             .where('company.id =:id', { id: parseInt(companyID) })
+                            .leftJoinAndSelect('company.superAdmin', 'admin')
                             .getOne()];
                 case 1: return [2 /*return*/, _a.sent()];
                 case 2:

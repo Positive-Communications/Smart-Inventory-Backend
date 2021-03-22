@@ -38,6 +38,4 @@ var Presets = /** @class */ (function () {
     return Presets;
 }());
 exports.default = Presets;
-var saveOrCreateSection = function () {
-};
 //# sourceMappingURL=Presets.js.map

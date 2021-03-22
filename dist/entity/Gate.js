@@ -57,6 +57,7 @@ var PackingTags_1 = require("./PackingTags");
 var ReadBranchByID_1 = require("../helpers/R/ByID/ReadBranchByID");
 var Store_1 = require("./Store");
 var PresetMeta_1 = require("./PresetMeta");
+var Tags_1 = require("./Tags");
 var Gate = /** @class */ (function () {
     function Gate() {
     }
@@ -286,6 +287,16 @@ var Gate = /** @class */ (function () {
         }),
         __metadata("design:type", Boolean)
     ], Gate.prototype, "verifyCarrierIsEmpty", void 0);
+    __decorate([
+        typeorm_1.OneToMany(function (type) { return Tags_1.default; }, function (tags) { return tags.scan; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
+    ], Gate.prototype, "scans", void 0);
+    __decorate([
+        typeorm_1.OneToMany(function (type) { return Tags_1.default; }, function (tags) { return tags.previousScan; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
+    ], Gate.prototype, "previousScans", void 0);
     __decorate([
         typeorm_1.OneToOne(function () { return PresetMeta_1.default; }, function (meta) { return meta.gate; }),
         typeorm_1.JoinColumn(),

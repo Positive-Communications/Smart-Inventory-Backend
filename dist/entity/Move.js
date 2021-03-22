@@ -44,9 +44,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var typeorm_1 = require("typeorm");
 var Column_1 = require("typeorm/decorator/columns/Column");
 var PrimaryGeneratedColumn_1 = require("typeorm/decorator/columns/PrimaryGeneratedColumn");
 var Entity_1 = require("typeorm/decorator/entity/Entity");
+var Alerts_1 = require("./Alerts");
+var Tags_1 = require("./Tags");
 var Move = /** @class */ (function () {
     function Move() {
     }
@@ -88,10 +91,28 @@ var Move = /** @class */ (function () {
     ], Move.prototype, "carrier", void 0);
     __decorate([
         Column_1.Column({
+            default: "empty"
+        }),
+        __metadata("design:type", String)
+    ], Move.prototype, "status", void 0);
+    __decorate([
+        Column_1.Column({
             default: false
         }),
         __metadata("design:type", Boolean)
     ], Move.prototype, "arrived", void 0);
+    __decorate([
+        Column_1.Column({
+            default: "empty"
+        }),
+        __metadata("design:type", String)
+    ], Move.prototype, "pendingMoveFrom", void 0);
+    __decorate([
+        Column_1.Column({
+            default: "empty"
+        }),
+        __metadata("design:type", String)
+    ], Move.prototype, "pendingMoveTo", void 0);
     __decorate([
         Column_1.Column({
             nullable: true
@@ -119,7 +140,35 @@ var Move = /** @class */ (function () {
             default: false
         }),
         __metadata("design:type", Boolean)
+    ], Move.prototype, "isStarted", void 0);
+    __decorate([
+        Column_1.Column({
+            default: 0
+        }),
+        __metadata("design:type", Number)
+    ], Move.prototype, "count", void 0);
+    __decorate([
+        Column_1.Column({
+            default: 0
+        }),
+        __metadata("design:type", Number)
+    ], Move.prototype, "quantity", void 0);
+    __decorate([
+        Column_1.Column({
+            default: false
+        }),
+        __metadata("design:type", Boolean)
     ], Move.prototype, "isDefective", void 0);
+    __decorate([
+        typeorm_1.OneToMany(function (type) { return Tags_1.default; }, function (tag) { return tag.moves; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
+    ], Move.prototype, "tags", void 0);
+    __decorate([
+        typeorm_1.OneToMany(function (type) { return Alerts_1.default; }, function (alerts) { return alerts.move; }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
+    ], Move.prototype, "alerts", void 0);
     Move = __decorate([
         Entity_1.Entity()
     ], Move);

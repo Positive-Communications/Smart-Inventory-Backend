@@ -53,6 +53,7 @@ var Store_1 = require("./Store");
 var ScanProductHistory_1 = require("./ScanProductHistory");
 var Tags_1 = require("./Tags");
 var tagByEpc_1 = require("../helpers/R/Custom/tagByEpc");
+var Move_1 = require("./Move");
 var Alerts = /** @class */ (function () {
     function Alerts() {
     }
@@ -136,6 +137,10 @@ var Alerts = /** @class */ (function () {
         typeorm_1.ManyToOne(function (type) { return Tags_1.default; }, function (tags) { return tags.alerts; }),
         __metadata("design:type", Tags_1.default)
     ], Alerts.prototype, "tag", void 0);
+    __decorate([
+        typeorm_1.ManyToOne(function (type) { return Move_1.default; }, function (move) { return move.alerts; }),
+        __metadata("design:type", Move_1.default)
+    ], Alerts.prototype, "move", void 0);
     Alerts = __decorate([
         typeorm_1.Entity()
     ], Alerts);

@@ -36,25 +36,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Alerts_1 = require("../../../entity/Alerts");
-var typeorm_1 = require("typeorm");
-var Sections_1 = require("../../../entity/Sections");
 function saveAlert(_alert, _section) {
     return __awaiter(this, void 0, void 0, function () {
-        var section, alert;
+        var alert;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, typeorm_1.getConnection()
-                        .createQueryBuilder()
-                        .select('sections')
-                        .from(Sections_1.default, 'sections')];
-                case 1:
-                    section = _a.sent();
-                    alert = new Alerts_1.default();
-                    // alert.name = _alert.name;
-                    alert.type = _alert.type;
-                    alert.severity = _alert.severity;
-                    return [2 /*return*/];
-            }
+            alert = new Alerts_1.default();
+            // alert.name = _alert.name;
+            alert.type = _alert.type;
+            alert.severity = _alert.severity;
+            return [2 /*return*/];
         });
     });
 }
