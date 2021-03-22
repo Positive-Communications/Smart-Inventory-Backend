@@ -35,55 +35,47 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var SaveDevice_1 = require("../helpers/C/singles/SaveDevice");
-var AllDevices_1 = require("../helpers/R/Many/AllDevices");
-var UpdateDevice_1 = require("../helpers/U/ByID/UpdateDevice");
-var DeviceManager = /** @class */ (function () {
-    function DeviceManager() {
+var Test1616332337425 = /** @class */ (function () {
+    function Test1616332337425() {
+        this.name = 'Test1616332337425';
     }
-    DeviceManager.prototype.registerDevice = function (req, res) {
+    Test1616332337425.prototype.up = function (queryRunner) {
         return __awaiter(this, void 0, void 0, function () {
-            var device;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, SaveDevice_1.default(req.params.deviceType)];
+                    case 0: return [4 /*yield*/, queryRunner.query("ALTER TABLE \"demo\" RENAME COLUMN \"moveBy\" TO \"gate\"")];
                     case 1:
-                        device = _a.sent();
-                        res.json({ device: device });
+                        _a.sent();
+                        return [4 /*yield*/, queryRunner.query("COMMENT ON COLUMN \"company\".\"registered\" IS NULL")];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, queryRunner.query("ALTER TABLE \"company\" ALTER COLUMN \"registered\" SET DEFAULT '1616332341985'")];
+                    case 3:
+                        _a.sent();
                         return [2 /*return*/];
                 }
             });
         });
     };
-    DeviceManager.prototype.editDevice = function (req, res) {
+    Test1616332337425.prototype.down = function (queryRunner) {
         return __awaiter(this, void 0, void 0, function () {
-            var device;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, UpdateDevice_1.default(req.body, req.params.id)];
+                    case 0: return [4 /*yield*/, queryRunner.query("ALTER TABLE \"company\" ALTER COLUMN \"registered\" SET DEFAULT '1616240232540'")];
                     case 1:
-                        device = _a.sent();
-                        res.json({ device: device });
+                        _a.sent();
+                        return [4 /*yield*/, queryRunner.query("COMMENT ON COLUMN \"company\".\"registered\" IS NULL")];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, queryRunner.query("ALTER TABLE \"demo\" RENAME COLUMN \"gate\" TO \"moveBy\"")];
+                    case 3:
+                        _a.sent();
                         return [2 /*return*/];
                 }
             });
         });
     };
-    DeviceManager.prototype.availAllDevices = function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            var devices;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, AllDevices_1.default(req.params.branchID)];
-                    case 1:
-                        devices = _a.sent();
-                        res.json({ devices: devices });
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    return DeviceManager;
+    return Test1616332337425;
 }());
-exports.default = DeviceManager;
-//# sourceMappingURL=device.manager.js.map
+exports.Test1616332337425 = Test1616332337425;
+//# sourceMappingURL=1616332337425-Test.js.map

@@ -37,26 +37,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Device_1 = require("../../../entity/Device");
 var typeorm_1 = require("typeorm");
-var ReadBranchByID_1 = require("../../R/ByID/ReadBranchByID");
 function saveDevice(data) {
     return __awaiter(this, void 0, void 0, function () {
-        var device, _a, e_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var device, e_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
                     device = new Device_1.default();
-                    device.name = Math.floor(Math.random() * 10).toString();
-                    _a = device;
-                    return [4 /*yield*/, ReadBranchByID_1.default(data)];
+                    return [4 /*yield*/, device.assignUUID()];
                 case 1:
-                    _a.branch = _b.sent();
-                    _b.label = 2;
+                    _a.sent();
+                    data === "isHandheld" ? device.isHandHeld = true : data === "isTablet" ? device.isTablet === true : data === "isFixed" ? device.isFixed === true : data === "isSensor" ? device.isSensor === true : data === "isWeb" ? device.isWeb = true : "E";
+                    _a.label = 2;
                 case 2:
-                    _b.trys.push([2, 4, , 5]);
+                    _a.trys.push([2, 4, , 5]);
                     return [4 /*yield*/, typeorm_1.getConnection().manager.save(device)];
-                case 3: return [2 /*return*/, _b.sent()];
+                case 3: return [2 /*return*/, _a.sent()];
                 case 4:
-                    e_1 = _b.sent();
+                    e_1 = _a.sent();
                     console.log(e_1);
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
@@ -65,22 +63,4 @@ function saveDevice(data) {
     });
 }
 exports.default = saveDevice;
-var json = {
-    name: "",
-    role: "",
-    allowPalletsToBeCountedManually: false,
-    isActive: false,
-    hasErrors: false,
-    doNotAllowRemovalOfEmptyPallet: false,
-    verifyStoredUsingHandHeld: false,
-    showProductCountError: false,
-    doNotAllowRemoval: false,
-    verifyProductNotTrackedByRFID: false,
-    automaticallyActivateRecallProductIfRequired: false,
-    recordEmptyPallets: false,
-    dispatchingOrReceiving: false,
-    branchID: ""
-    // context: "",
-    // contextID: ""
-};
 //# sourceMappingURL=SaveDevice.js.map

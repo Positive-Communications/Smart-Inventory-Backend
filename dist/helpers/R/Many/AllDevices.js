@@ -41,12 +41,7 @@ function readAllDevices(branchID) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, typeorm_1.getConnection()
-                        .createQueryBuilder()
-                        .select('device')
-                        .from(Device_1.default, 'device')
-                        .where('device.branch.id =:id', { id: parseInt(branchID) })
-                        .getMany()];
+                case 0: return [4 /*yield*/, typeorm_1.getConnection().manager.find(Device_1.default)];
                 case 1: return [2 /*return*/, _a.sent()];
             }
         });

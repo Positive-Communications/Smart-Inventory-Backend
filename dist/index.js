@@ -58,10 +58,9 @@ var orderque_manager_1 = require("./resource.manager/orderque.manager");
 var product_manager_1 = require("./resource.manager/product.manager");
 var bays_manager_1 = require("./resource.manager/bays.manager");
 var tags_manager_1 = require("./resource.manager/tags.manager");
-var AssignRandomTag_1 = require("./helpers/U/Custom/AssignRandomTag");
-var ReadGateByID_1 = require("./helpers/R/ByID/ReadGateByID");
-var SaveAlerts_1 = require("./helpers/C/Multiple/SaveAlerts");
-var ReadCarrierByID_1 = require("./helpers/R/ByID/ReadCarrierByID");
+var AddDemo_1 = require("./helpers/C/singles/AddDemo");
+var Demo_1 = require("./entity/Demo");
+var Device_1 = require("./entity/Device");
 var app = express();
 var prod = false;
 var socketPort = 2000;
@@ -75,6 +74,7 @@ var io = require('socket.io')(server, {
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.options('*', cors());
 typeorm_1.createConnection(
 // {
 //     type: "postgres",
@@ -142,9 +142,9 @@ app.patch('/update-user/', middleware_1.default, usersManager.updateUserDetails)
 * Device
 * */
 var deviceManager = new device_manager_1.default();
-app.post('/save-device/:branchID', middleware_1.default, deviceManager.registerDevice);
+app.post('/save-device/:deviceType', deviceManager.registerDevice);
 app.patch('/update-device/:id', middleware_1.default, deviceManager.editDevice);
-app.get('/all-devices/:branchID/', middleware_1.default, deviceManager.availAllDevices);
+app.get('/all-devices/', deviceManager.availAllDevices);
 /*
 * Carriers
 * */
@@ -217,130 +217,94 @@ app.get('/all-stores/', middleware_1.default, storageBayManager.getAllStores);
 app.post("/expected/", function (req, res) {
     io.emit("expected", req.body);
 });
-io.on('connection', function (socket) {
-    io.emit('expected', 'Connection Successful!');
-    console.log("Client " + .1 + "' -> Connected successfully. :101");
-    var count = 0;
-    socket.on("sensor", function (msg) {
-        count++;
-        io.emit('sensor', 1);
-        if (count >= 11) {
-            io.emit("siren", "on");
-            io.emit('redLight', "10");
-            io.emit('greenLight', "10");
+app.post("/demo/", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var _a, _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
+            case 0:
+                _b = (_a = res).json;
+                _c = {};
+                return [4 /*yield*/, AddDemo_1.default(req.body)];
+            case 1:
+                _b.apply(_a, [(_c.demo = _d.sent(), _c)]);
+                return [2 /*return*/];
         }
     });
-    var aiCount = 0;
-    socket.on("ai", function (count) {
-        aiCount++;
-        console.log(aiCount);
+}); });
+app.get("/demos/", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var _a, _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
+            case 0:
+                _b = (_a = res).json;
+                _c = {};
+                return [4 /*yield*/, typeorm_1.getConnection().manager.find(Demo_1.default)];
+            case 1:
+                _b.apply(_a, [(_c.demos = _d.sent(), _c)]);
+                return [2 /*return*/];
+        }
     });
-    socket.on("onRed", function (msg) {
-        io.emit('redLight', "10");
+}); });
+io.on('connection', function (socket) {
+    io.emit('expected', 'Connection Successful!');
+    socket.on("heyhey", function (msg) { return __awaiter(_this, void 0, void 0, function () {
+        var _a, _b, _c;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
+                case 0:
+                    _b = (_a = io).emit;
+                    _c = ['device'];
+                    return [4 /*yield*/, getDeviceByUUID(msg.id)];
+                case 1:
+                    _b.apply(_a, _c.concat([_d.sent()]));
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    socket.on("readying_loading", function (msg) {
+        io.emit("onRed");
+        io.emit("");
     });
-    socket.on("onGreen", function (res) {
-        io.emit('greenLight', "10");
+    socket.on("started", function (msg) {
+        io.emit("offRed");
+        io.emit("onGreen");
     });
-    socket.on("offGreen", function (msg) {
-        io.emit("offGreen", "msg");
+    socket.on("paused", function (msg) {
+        io.emit("onRed");
+        io.emit("offGreen");
     });
-    socket.on("offRed", function (msg) {
-        io.emit("offRed", msg);
+    socket.on("warn", function (msg) {
+        io.emit("onWarn");
+        io.emit("alarm");
     });
-    socket.on("startAlarm", function (msg) {
-        io.emit("siren", "on");
+    socket.on("handHeld", function (msg) {
+        console.log(msg);
+        io.emit("count");
     });
-    socket.on("sim1in", function (msg) {
-        io.emit("carrier1In", "in");
+    socket.on("okay", function (msg) {
+        io.emit("offGreen");
+        io.emit("onRed");
     });
-    socket.on("sim1out", function (msg) {
-        io.emit("carrier1Out", "out");
+    socket.on("fixed", function (msg) {
+        console.log(msg);
+        io.emit("count");
     });
-    socket.on("sim2in", function (msg) {
-        io.emit("carrier2In", "in");
+    socket.on("sensor", function (msg) {
+        io.emit("count");
     });
-    socket.on("sim2out", function (msg) {
-        io.emit("carrier2Out", "out");
+    socket.on("cancel", function (msg) {
+        io.emit("onRed");
+        io.emit("offGreen");
     });
-    socket.on("sim3in", function (msg) {
-        io.emit("carrier3In", "in");
-    });
-    socket.on("sim3out", function (msg) {
-        io.emit("carrier3Out", "out");
-    });
-    // scan();
 });
-var scan = function () { return __awaiter(_this, void 0, void 0, function () {
-    var _this = this;
+var getDeviceByUUID = function (id) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        setInterval(function () { return __awaiter(_this, void 0, void 0, function () {
-            var tag, gate, carrier;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, AssignRandomTag_1.default()];
-                    case 1:
-                        tag = _a.sent();
-                        return [4 /*yield*/, ReadGateByID_1.default(1)];
-                    case 2:
-                        gate = _a.sent();
-                        return [4 /*yield*/, ReadCarrierByID_1.default(1)];
-                    case 3:
-                        carrier = _a.sent();
-                        return [4 /*yield*/, SaveAlerts_1.default(tag, gate, carrier)];
-                    case 4:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        }); }, 2000);
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getConnection().manager.find(Device_1.default)];
+            case 1: return [2 /*return*/, (_a.sent()).filter(function (device) { return device.uuid == id; })[0]];
+        }
     });
 }); };
-// setTimeout(()=>{
-//     console.log('Me');
-// }, 2000)
-// let Tags = [];
-//
-// try {
-//     const readerConnection = new EventSource("http://localhost:8080/subscribe", {
-//         withCredentials: true,
-//     });
-//     readerConnection.onopen = function () {
-//         console.log('Reader connected!... :104')
-//         axios.get('http://localhost:8080/start-inventory').then(res => {
-//             console.log('Inventory has been started sucessfully... :105')
-//         }).catch(err => {
-//             console.log('Couldn\'t start inventory... :203');
-//         });
-//     }
-//     readerConnection.onmessage = function (event) {
-//         if (Tags.includes(event.data)) {
-//             console.log('Tag already scanned..')
-//         } else {
-//             Tags.push(event.data)
-//             getItem(event.data).then(data => {
-//                 io.emit('item', data);
-//                 if (data.hasErrors) {
-//                     console.log('Happened here....')
-//                 }
-//                 console.log(data)
-//             });
-//         }
-//     }
-// } catch (err) {
-//     console.log(err)
-// }
-//
-// client.on('tag', msg => {
-//     getItem(msg).then(data => {
-//         io.emit('item', data);
-//         console.log(data)
-//     });
-// })
-// client.on('ping', () => {
-//     io.emit('pong', 'I got a ping, here\'s a pong!.')
-// })
-// });
 server.listen(prod ? process.env.PORT : socketPort, function () {
     console.log('Application startup successful.... :100 \n' +
         ' Application Listening on port ' + socketPort + '... : 100');

@@ -28,6 +28,10 @@ var Visitor = /** @class */ (function () {
     ], Visitor.prototype, "userName", void 0);
     __decorate([
         typeorm_1.Column(),
+        __metadata("design:type", Boolean)
+    ], Visitor.prototype, "isActive", void 0);
+    __decorate([
+        typeorm_1.Column(),
         __metadata("design:type", String)
     ], Visitor.prototype, "identificationType", void 0);
     __decorate([
