@@ -30,6 +30,7 @@ import TagsManager from "./resource.manager/tags.manager";
 import addDemo from "./helpers/C/singles/AddDemo";
 import Demo from "./entity/Demo";
 import Device from "./entity/Device";
+import { isConditionalExpression } from "typescript";
 
 const app = express();
 
@@ -305,51 +306,51 @@ app.get("/demos/", async (req, res) => {
 
 io.on('connection', socket => {
     io.emit('expected', 'Connection Successful!');
-
-    socket.on("heyhey", async msg => {
-        io.emit('device', await getDeviceByUUID(msg.id))
-    })
+    // socket.on("heyhey", async msg => {
+    //     io.emit('device', await getDeviceByUUID(msg.id))
+    // })
 
     socket.on("readying_loading", msg => {
-        io.emit("onRed");
+        io.emit("alarms", "prepare");
+    });
+
+    socket.on("start_loading", msg=>{
+        io.emit("alarms", "loading")
+        io.emit('start_inventory', "g2")
     })
 
-    socket.on("started", msg=>{
-        io.emit("offRed");
-        io.emit("onGreen")
+    socket.on("pause_loading", msg=>{
+        io.emit("alarms", "prepare")
     })
 
-    socket.on("paused", msg=>{
-        io.emit("onRed")
-        io.emit("offGreen")
+    socket.on("cancel_loading", msg=>{
+        io.emit("alarms", "prepare")
     })
 
     socket.on("warn", msg=>{
-        io.emit("onWarn")
-        io.emit("alarm")
+        io.emit("alarms", "warn")
     })
 
-    socket.on("handHeld", msg=>{
-        console.log(msg);
-        io.emit("count");
+    socket.on("load_test", msg=>{
+        io.emit("alarms", "test")
     })
 
-    socket.on("okay", msg=>{
-        io.emit("offGreen");
-        io.emit("onRed")
-    })
     socket.on("fixed", msg=>{
-        console.log(msg)
-        io.emit("count");
+        io.emit("verifyCam");
     })
 
     socket.on("sensor", msg=>{
+        io.emit("verifyCam");
+    })
+
+
+    socket.on("canCount", msg=>{
         io.emit("count")
     })
 
-    socket.on("cancel", msg=>{
-        io.emit("onRed")
-        io.emit("offGreen")
+    socket.on("wrong_product", msg=>{
+        io.emit("warn");
+        io.emit("wrong_product_detected")
     })
 
 });
