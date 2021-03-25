@@ -344,6 +344,11 @@ io.on('connection', socket => {
     })
 
 
+    socket.on("counting", msg=>{
+        io.emit("count")
+    })
+
+
     socket.on("canCount", msg=>{
         io.emit("count")
     })
