@@ -310,10 +310,12 @@ io.on('connection', socket => {
 
     socket.on('sina_options', msg=>{
         io.emit('count')
+        console.log('czdxfgchvjbknlnjbhvchxfchgvjbknlm;knlbkvjchxztdxgfhcjvbk')
     })
 
     socket.on('tuwadanganye', msg=>{
         io.emit('alarms', 'warn')
+        console.log('ljlugytreatsrydufgihoj;ljhgoufiydtsyrtaeRWREZTXFYCGJVHKB')
     })
 
     socket.on("readying_loading", msg => {
