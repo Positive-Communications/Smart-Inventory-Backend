@@ -30,7 +30,6 @@ import TagsManager from "./resource.manager/tags.manager";
 import addDemo from "./helpers/C/singles/AddDemo";
 import Demo from "./entity/Demo";
 import Device from "./entity/Device";
-import { isConditionalExpression } from "typescript";
 
 const app = express();
 
@@ -305,10 +304,17 @@ app.get("/demos/", async (req, res) => {
 });
 
 io.on('connection', socket => {
+
+
     io.emit('expected', 'Connection Successful!');
-    // socket.on("heyhey", async msg => {
-    //     io.emit('device', await getDeviceByUUID(msg.id))
-    // })
+
+    socket.on('sina_options', msg=>{
+        io.emit('count')
+    })
+
+    socket.on('tuwadanganye', msg=>{
+        io.emit('alarms', 'warn')
+    })
 
     socket.on("readying_loading", msg => {
         io.emit("alarms", "prepare");
@@ -351,6 +357,7 @@ io.on('connection', socket => {
 
     socket.on("canCount", msg=>{
         io.emit("count")
+        console.log("yah")
     })
 
     socket.on("wrong_product", msg=>{
