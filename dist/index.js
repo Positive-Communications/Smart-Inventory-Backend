@@ -62,7 +62,7 @@ var AddDemo_1 = require("./helpers/C/singles/AddDemo");
 var Demo_1 = require("./entity/Demo");
 var Device_1 = require("./entity/Device");
 var app = express();
-var prod = false;
+var prod = true;
 var socketPort = 2000;
 var server = http.createServer(app);
 var io = require('socket.io')(server, {
@@ -247,54 +247,49 @@ app.get("/demos/", function (req, res) { return __awaiter(_this, void 0, void 0,
 }); });
 io.on('connection', function (socket) {
     io.emit('expected', 'Connection Successful!');
-    socket.on("heyhey", function (msg) { return __awaiter(_this, void 0, void 0, function () {
-        var _a, _b, _c;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
-                case 0:
-                    _b = (_a = io).emit;
-                    _c = ['device'];
-                    return [4 /*yield*/, getDeviceByUUID(msg.id)];
-                case 1:
-                    _b.apply(_a, _c.concat([_d.sent()]));
-                    return [2 /*return*/];
-            }
-        });
-    }); });
+    socket.on('sina_options', function (msg) {
+        io.emit('count');
+        console.log('czdxfgchvjbknlnjbhvchxfchgvjbknlm;knlbkvjchxztdxgfhcjvbk');
+    });
+    socket.on('tuwadanganye', function (msg) {
+        io.emit('alarms', 'warn');
+        console.log('ljlugytreatsrydufgihoj;ljhgoufiydtsyrtaeRWREZTXFYCGJVHKB');
+    });
     socket.on("readying_loading", function (msg) {
-        io.emit("onRed");
-        io.emit("");
+        io.emit("alarms", "prepare");
     });
-    socket.on("started", function (msg) {
-        io.emit("offRed");
-        io.emit("onGreen");
+    socket.on("start_loading", function (msg) {
+        io.emit("alarms", "loading");
+        io.emit('start_inventory', "g2");
     });
-    socket.on("paused", function (msg) {
-        io.emit("onRed");
-        io.emit("offGreen");
+    socket.on("pause_loading", function (msg) {
+        io.emit("alarms", "prepare");
+    });
+    socket.on("cancel_loading", function (msg) {
+        io.emit("alarms", "prepare");
     });
     socket.on("warn", function (msg) {
-        io.emit("onWarn");
-        io.emit("alarm");
+        io.emit("alarms", "warn");
     });
-    socket.on("handHeld", function (msg) {
-        console.log(msg);
-        io.emit("count");
-    });
-    socket.on("okay", function (msg) {
-        io.emit("offGreen");
-        io.emit("onRed");
+    socket.on("load_test", function (msg) {
+        io.emit("alarms", "test");
     });
     socket.on("fixed", function (msg) {
-        console.log(msg);
-        io.emit("count");
+        io.emit("verifyCam");
     });
     socket.on("sensor", function (msg) {
+        io.emit("verifyCam");
+    });
+    socket.on("counting", function (msg) {
         io.emit("count");
     });
-    socket.on("cancel", function (msg) {
-        io.emit("onRed");
-        io.emit("offGreen");
+    socket.on("canCount", function (msg) {
+        io.emit("count");
+        console.log("yah");
+    });
+    socket.on("wrong_product", function (msg) {
+        io.emit("warn");
+        io.emit("wrong_product_detected");
     });
 });
 var getDeviceByUUID = function (id) { return __awaiter(_this, void 0, void 0, function () {
